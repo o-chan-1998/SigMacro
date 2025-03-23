@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-21 23:56:38 (ywatanabe)"
+# Timestamp: "2025-03-22 17:09:02 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/com/_COMWrapper.py
 # ----------------------------------------
 import os
@@ -21,12 +21,12 @@ class COMWrapper:
     A wrapper class that exposes COM object properties, methods and child objects
     using a pythonic interface based on inspection.
     """
-    def __init__(self, com_object, path=""):
+    def __init__(self, com_object, access_path=""):
         """
         Initialize the wrapper with a COM object.
         """
         self._com_object = com_object
-        self._path = path
+        self._access_path = access_path
         self._inspected = inspect(com_object)
         self._cached_objects = {}
         self._wrap_properties()
@@ -44,9 +44,9 @@ class COMWrapper:
     #             result = com_method(*args, **kwargs)
     #             # If result is a COM object, wrap it
     #             if hasattr(result, "_oleobj_"):
-    #                 # Calculate new path for method result
-    #                 new_path = f"{self._path}.{name}()" if self._path else f"{name}()"
-    #                 return get_wrapper(result, new_path)
+    #                 # Calculate new access_path for method result
+    #                 new_access_path = f"{self._access_path}.{name}()" if self._access_path else f"{name}()"
+    #                 return get_wrapper(result, new_access_path)
     #             return result
     #         except Exception as e:
     #             print(f"Error calling method {name}: {e}")
@@ -65,9 +65,9 @@ class COMWrapper:
                 result = com_method(*args, **kwargs)
                 # If result is a COM object, wrap it
                 if hasattr(result, "_oleobj_"):
-                    # Calculate new path for method result
-                    new_path = f"{self._path}.{name}()" if self._path else f"{name}()"
-                    return get_wrapper(result, new_path)
+                    # Calculate new access_path for method result
+                    new_access_path = f"{self._access_path}.{name}()" if self._access_path else f"{name}()"
+                    return get_wrapper(result, new_access_path)
                 return result
             except Exception as e:
                 print(f"Error calling method {name}: {e}")
@@ -117,9 +117,9 @@ class COMWrapper:
                         return instance._cached_objects[name]
 
                     value = getattr(instance._com_object, name)
-                    # Calculate new path for this object
-                    new_path = f"{instance._path}.{name}" if instance._path else name
-                    wrapped = get_wrapper(value, new_path)
+                    # Calculate new access_path for this object
+                    new_access_path = f"{instance._access_path}.{name}" if instance._access_path else name
+                    wrapped = get_wrapper(value, new_access_path)
                     instance._cached_objects[name] = wrapped
                     return wrapped
                 except Exception:
@@ -136,8 +136,8 @@ class COMWrapper:
             setattr(type(self), f"{name}_obj", property(getter, setter))
 
     @property
-    def path(self):
-        return self._path
+    def access_path(self):
+        return self._access_path
 
     # # Rest of your methods remain the same
     # def _wrap_methods(self):
@@ -169,9 +169,9 @@ class COMWrapper:
     #                         result = com_method(*args, **kwargs)
     #                         # If result is a COM object, wrap it
     #                         if hasattr(result, "_oleobj_"):
-    #                             # Calculate new path for method result
-    #                             new_path = f"{self._path}.{method_name}()" if self._path else f"{method_name}()"
-    #                             return get_wrapper(result, new_path)
+    #                             # Calculate new access_path for method result
+    #                             new_access_path = f"{self._access_path}.{method_name}()" if self._access_path else f"{method_name}()"
+    #                             return get_wrapper(result, new_access_path)
     #                         return result
     #                     except Exception as e:
     #                         print(f"Error calling method {method_name}: {e}")
@@ -190,8 +190,8 @@ class COMWrapper:
     #             return self._wrap_methods(name)
     #         elif hasattr(attr, "_oleobj_"):
     #             # Wrap nested COM objects
-    #             child_path = f"{self._path}.{name}"
-    #             return get_wrapper(attr, child_path)
+    #             child_access_path = f"{self._access_path}.{name}"
+    #             return get_wrapper(attr, child_access_path)
     #         else:
     #             # Return other attributes directly
     #             return attr
@@ -219,8 +219,8 @@ class COMWrapper:
     #             return self._wrap_methods(name)
     #         elif hasattr(attr, "_oleobj_"):
     #             # Wrap nested COM objects
-    #             child_path = f"{self._path}.{name}"
-    #             return get_wrapper(attr, child_path)
+    #             child_access_path = f"{self._access_path}.{name}"
+    #             return get_wrapper(attr, child_access_path)
     #         else:
     #             # Return other attributes directly
     #             return attr
@@ -250,8 +250,8 @@ class COMWrapper:
                 return self._wrap_methods(name)
             elif hasattr(attr, "_oleobj_"):
                 # Wrap nested COM objects
-                child_path = f"{self._path}.{name}"
-                return get_wrapper(attr, child_path)
+                child_access_path = f"{self._access_path}.{name}"
+                return get_wrapper(attr, child_access_path)
             else:
                 # Return other attributes directly
                 return attr
@@ -303,7 +303,7 @@ class COMWrapper:
             name = getattr(self._com_object, "Name", "Unknown")
         except Exception:
             name = "Unknown"
-        return f"<COMWrapper for {name} at {self._path}>"
+        return f"<COMWrapper for {name} at {self._access_path}>"
 
     def __str__(self):
         """
@@ -324,21 +324,21 @@ class COMWrapper:
         if key == -1 and hasattr(self._com_object, "Count"):
             key = self._com_object.Count - 1
         result = self._com_object(key)
-        path = f"{self._path}({key})" if self._path else f"({key})"
-        return get_wrapper(result, path)
+        access_path = f"{self._access_path}({key})" if self._access_path else f"({key})"
+        return get_wrapper(result, access_path)
 
     def __call__(self, key):
         if key == -1 and hasattr(self._com_object, "Count"):
             key = self._com_object.Count - 1
         result = self._com_object(key)
-        path = f"{self._path}({key})" if self._path else f"({key})"
-        return get_wrapper(result, path)
+        access_path = f"{self._access_path}({key})" if self._access_path else f"({key})"
+        return get_wrapper(result, access_path)
 
     def __getitem__(self, key):
         if key == -1 and hasattr(self._com_object, "Count"):
             key = self._com_object.Count - 1
         result = self._com_object(key)
-        path = f"{self._path}[{key}]" if self._path else f"[{key}]"
-        return get_wrapper(result, path)
+        access_path = f"{self._access_path}[{key}]" if self._access_path else f"[{key}]"
+        return get_wrapper(result, access_path)
 
 # EOF

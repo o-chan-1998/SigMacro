@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-15 00:13:17 (ywatanabe)"
-# File: /home/ywatanabe/proj/SigMacro/PySigMacro/src/pysigmacro/utils/_close_all.py
-
+# Timestamp: "2025-03-23 12:20:40 (ywatanabe)"
+# File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/con/_close_all.py
+# ----------------------------------------
 import os
+__FILE__ = (
+    "/home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/con/_close_all.py"
+)
+__DIR__ = os.path.dirname(__FILE__)
+# ----------------------------------------
 
 __THIS_FILE__ = (
     "/home/ywatanabe/proj/SigMacro/PySigMacro/src/pysigmacro/utils/_close_all.py"

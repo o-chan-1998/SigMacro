@@ -1,15 +1,24 @@
 <!-- ---
-!-- Timestamp: 2025-03-12 16:58:02
+!-- Timestamp: 2025-03-22 16:05:35
 !-- Author: ywatanabe
-!-- File: /home/ywatanabe/proj/SigMacro/PySigMacro/TODO.md
+!-- File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/TODO.md
 !-- --- -->
+
+- [ ] Create a new graph (with graph_item.CreateWizardGraph())
+- [ ] Add Plot
+- [ ] Change Color
+- [ ] Change Fig Size
+- [ ] Ticks
+  - [ ] Length
+  - [ ] Width
+  - [ ] Label
+- [ ] X/Y Labels
+- [ ] Title
+- [ ] Export
+- [ ] ConfusionMatrix
 
 ## TODO
 ## Core Functionality
-- [ ] Creating notebooks (with naming)
-- [ ] Creating sections (with naming)
-- [ ] Data creation and management (with naming), CSV data import
-- [ ] Column name settings (reference: convert first row to column labels - [firstRowToLabel.vba](https://github.com/ywatanabe1989/SigmaPlot-v12.0-Pysigmacro/blob/main/Pysigmacro%20v1.2/src/firstRowToLabel.vba))
 - [ ] Macro to register a macro
 
 ## Styling

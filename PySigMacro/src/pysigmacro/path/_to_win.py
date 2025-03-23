@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-21 06:30:03 (ywatanabe)"
+# Timestamp: "2025-03-22 17:15:28 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/path/_to_win.py
 # ----------------------------------------
 import os
@@ -9,6 +9,8 @@ __FILE__ = (
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+
+import subprocess
 
 def to_win(wsl_path):
     """

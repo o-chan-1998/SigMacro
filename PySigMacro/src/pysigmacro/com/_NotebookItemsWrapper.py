@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-21 14:34:29 (ywatanabe)"
+# Timestamp: "2025-03-22 17:08:48 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/com/_NotebookItemsWrapper.py
 # ----------------------------------------
 import os
@@ -39,28 +39,28 @@ class NotebookItemsWrapper(COMWrapper):
 
     def add_worksheet(self, name=None):
         """Add a new worksheet to the notebook"""
-        worksheet_item = get_wrapper(self._com_object.Add(CT_WORKSHEET), self.path)
+        worksheet_item = get_wrapper(self._com_object.Add(CT_WORKSHEET), self.access_path)
         if name:
             worksheet_item.Name = name
         return worksheet_item
 
     def add_graph(self, name=None):
         """Add a new graph to the notebook"""
-        graph_item = get_wrapper(self._com_object.Add(CT_GRAPHICPAGE), self.path)
+        graph_item = get_wrapper(self._com_object.Add(CT_GRAPHICPAGE), self.access_path)
         if name:
             graph_item.Name = name
         return graph_item
 
     def add_report(self, name=None):
         """Add a new report to the notebook"""
-        report_item = get_wrapper(self._com_object.Add(CT_REPORT), self.path)
+        report_item = get_wrapper(self._com_object.Add(CT_REPORT), self.access_path)
         if name:
             report_item.Name = name
         return report_item
 
     def add_section(self, name=None):
         """Add a new section to the notebook"""
-        section_item = get_wrapper(self._com_object.Add(CT_FOLDER), self.path)
+        section_item = get_wrapper(self._com_object.Add(CT_FOLDER), self.access_path)
         if name:
             section_item.Name = name
         return section_item
@@ -69,22 +69,22 @@ class NotebookItemsWrapper(COMWrapper):
         if key == -1 and hasattr(self._com_object, "Count"):
             key = self._com_object.Count - 1
         result = self._com_object(key)
-        path = f"{self._path}({key})" if self._path else f"({key})"
-        return get_wrapper(result, path)
+        access_path = f"{self._access_path}({key})" if self._access_path else f"({key})"
+        return get_wrapper(result, access_path)
 
     def __call__(self, key):
         if key == -1 and hasattr(self._com_object, "Count"):
             key = self._com_object.Count - 1
         result = self._com_object(key)
-        path = f"{self._path}({key})" if self._path else f"({key})"
-        return get_wrapper(result, path)
+        access_path = f"{self._access_path}({key})" if self._access_path else f"({key})"
+        return get_wrapper(result, access_path)
 
     def __getitem__(self, key):
         if key == -1 and hasattr(self._com_object, "Count"):
             key = self._com_object.Count - 1
         result = self._com_object(key)
-        path = f"{self._path}[{key}]" if self._path else f"[{key}]"
-        return get_wrapper(result, path)
+        access_path = f"{self._access_path}[{key}]" if self._access_path else f"[{key}]"
+        return get_wrapper(result, access_path)
 
     @property
     def list(self):
