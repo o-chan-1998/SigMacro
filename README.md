@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-03-22 16:04:06
+!-- Timestamp: 2025-03-23 13:21:23
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/win/documents/SigMacro/README.md
 !-- --- -->
@@ -20,7 +20,7 @@ A package for automating SigmaPlot routines.
 - SigmaPlot
   - A proprietary software for professional plotting (https://grafiti.com/sigmaplot-detail/)
   - Installation
-    - [`./SigmaPlot_Installer/README.md`](./SigmaPlot_Installer/README.md)
+    - [`./docs/v12_Installer/README.md`](./docs/v12_Installer/README.md)
 
 - SigMacro
   - Series of macros for automating SigmaPlot
@@ -105,7 +105,7 @@ A package for automating SigmaPlot routines.
   - [ ] Label
 - [ ] X/Y Labels
 - [ ] Title
-- [ ] Export
+- [ ] Export as PDF
 - [ ] ConfusionMatrix
 
 ## Contact
