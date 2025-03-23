@@ -108,12 +108,19 @@ A package for automating SigmaPlot routines.
 
 ## TODO
 - [ ] Create a new graph (with graph_item.CreateWizardGraph())
-- [ ] Add Plot
-- [ ] Change Color
-- [ ] X/Y Labels
-- [ ] Export as PDF (300 dpi)
+- [ ] Add Plot from Python
+- [ ] Change Color from Python
+- [ ] X/Y Labels from Python
+- [ ] Export as PDF (300 dpi) from Python
 - [ ] Crop margines
-- [ ] ConfusionMatrix
+- [ ] Types
+  - [ ] Line + Fill
+  - [ ] Violin Plot
+  - [ ] Area
+  - [ ] Contour
+  - [ ] Confusion Matrix
+  - [ ] Polar
+
 - [ ] As a Service
 
 ## Contact
