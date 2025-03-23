@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-03-23 13:21:23
+!-- Timestamp: 2025-03-24 00:03:03
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/win/documents/SigMacro/README.md
 !-- --- -->
@@ -9,6 +9,16 @@
 A package for automating SigmaPlot routines.
 
 ![SigMacro Demo](./docs/demo.gif)
+
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); grid-gap: 10px;">
+  <img src="./SigMacro/Templates/complete/line.gif" alt="Line Plot Demo" />
+  <img src="./SigMacro/Templates/complete/scatter.gif" alt="Scatter Plot Demo" />
+  <img src="./SigMacro/Templates/complete/bar.gif" alt="Bar Plot Demo" />
+  <img src="./SigMacro/Templates/complete/bar_h.gif" alt="Bar Plot Demo (Horizontal)" />
+  <img src="./SigMacro/Templates/complete/box.gif" alt="Box Plot Demo" />
+  <img src="./SigMacro/Templates/complete/box_h.gif" alt="Box Plot Demo (Horizontal)" />
+</div>
+
 
 ## Prerequisite
 
