@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-03-24 09:58:57
+!-- Timestamp: 2025-03-24 10:41:18
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/win/documents/SigMacro/README.md
 !-- --- -->
@@ -11,18 +11,18 @@ A package for automating SigmaPlot routines.
 ![SigMacro Demo](./docs/demo.gif)
 
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 10px;">
-    <img src="./SigMacro/Templates/complete/line.gif" alt="Line Plot" width="150" />
-    <img src="./SigMacro/Templates/complete/filled_line.gif" alt="Filled Line Plot" width="150" />
-    <img src="./SigMacro/Templates/complete/area.gif" alt="Area Plot" width="150" />
-    <img src="./SigMacro/Templates/complete/scatter.gif" alt="Scatter Plot" width="150" />
-    <img src="./SigMacro/Templates/complete/bar.gif" alt="Bar Plot" width="150" />
-    <img src="./SigMacro/Templates/complete/bar_h.gif" alt="Horizontal Bar Plot" width="150" />
-    <img src="./SigMacro/Templates/complete/box.gif" alt="Box Plot" width="150" />
-    <img src="./SigMacro/Templates/complete/box_h.gif" alt="Horizontal Box Plot" width="150" />
-    <img src="./SigMacro/Templates/complete/violin.gif" alt="Violin Plot" width="150" />
-    <img src="./SigMacro/Templates/complete/contour.gif" alt="Contour Plot" width="150" />
-    <img src="./SigMacro/Templates/complete/polar.gif" alt="Polar Plot" width="150" />
-    <img src="./SigMacro/Templates/complete/confusion_matrix.gif" alt="Confusion Matrix" width="150" />
+    <img src="./SigMacro/Templates/complete/line_cropped.gif" alt="Line Plot" width="150" />
+    <img src="./SigMacro/Templates/complete/filled_line_cropped.gif" alt="Filled Line Plot" width="150" />
+    <img src="./SigMacro/Templates/complete/area_cropped.gif" alt="Area Plot" width="150" />
+    <img src="./SigMacro/Templates/complete/scatter_cropped.gif" alt="Scatter Plot" width="150" />
+    <img src="./SigMacro/Templates/complete/bar_cropped.gif" alt="Bar Plot" width="150" />
+    <img src="./SigMacro/Templates/complete/bar_h_cropped.gif" alt="Horizontal Bar Plot" width="150" />
+    <img src="./SigMacro/Templates/complete/box_cropped.gif" alt="Box Plot" width="150" />
+    <img src="./SigMacro/Templates/complete/box_h_cropped.gif" alt="Horizontal Box Plot" width="150" />
+    <img src="./SigMacro/Templates/complete/violin_cropped.gif" alt="Violin Plot" width="150" />
+    <img src="./SigMacro/Templates/complete/contour_cropped.gif" alt="Contour Plot" width="150" />
+    <img src="./SigMacro/Templates/complete/polar_cropped.gif" alt="Polar Plot" width="150" />
+    <img src="./SigMacro/Templates/complete/confusion_matrix_cropped.gif" alt="Confusion Matrix" width="150" />
 </div>
 
 
@@ -113,12 +113,11 @@ A package for automating SigmaPlot routines.
 </details>
 
 ## TODO
-- [ ] Create a new graph (with graph_item.CreateWizardGraph())
-- [ ] Add Plot from Python
-- [ ] Change Color from Python
-- [ ] X/Y Labels from Python
-- [ ] Export as PDF (300 dpi) from Python
-- [ ] Crop margines
+- [ ] From Python...
+  - [ ] Add Plot
+  - [ ] Change Color
+  - [ ] Change X/Y Labels
+  - [ ] Export as PDF (300 dpi)
 - [ ] As a Service
 
 ## Contact
