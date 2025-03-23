@@ -98,15 +98,11 @@ A package for automating SigmaPlot routines.
 - [ ] Create a new graph (with graph_item.CreateWizardGraph())
 - [ ] Add Plot
 - [ ] Change Color
-- [ ] Change Fig Size
-- [ ] Ticks
-  - [ ] Length
-  - [ ] Width
-  - [ ] Label
 - [ ] X/Y Labels
-- [ ] Title
-- [ ] Export as PDF
+- [ ] Export as PDF (300 dpi)
+- [ ] Crop margines
 - [ ] ConfusionMatrix
+- [ ] As a Service
 
 ## Contact
 Yusuke Watanabe (ywatanabe@alumni.u-tokyo.ac.jp)
