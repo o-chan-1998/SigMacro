@@ -630,4 +630,6 @@ flycheck_*.el
 !docs/official/*
 docs/dev
 !SigMacro/*
-PySigMacro/docs/*
+PySigMacro/docs/*SigMacro/SigMacro - Copy.JNB
+SigMacro/SigMacro_backup.zip
+SigMacro/SigMacro - Copy.JNB
