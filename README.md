@@ -113,7 +113,7 @@ A package for automating SigmaPlot routines.
 - [ ] X/Y Labels from Python
 - [ ] Export as PDF (300 dpi) from Python
 - [ ] Crop margines
-- [ ] Types
+- [ ] Graph Types (https://grafiti.com/sigmaplot-v16/sigmaplot-whats-new/)
   - [ ] Line + Fill
   - [ ] Violin Plot
   - [ ] Area
