@@ -1,59 +1,9 @@
 <!-- ---
-!-- Timestamp: 2025-03-24 19:51:03
+!-- Timestamp: 2025-03-24 17:34:06
 !-- Author: ywatanabe
-!-- File: /home/ywatanabe/win/documents/SigMacro/README.md
+!-- File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/com/README.md
 !-- --- -->
 
-# SigMacro
-
-A package for automating SigmaPlot routines.
-
-![SigMacro Demo](./docs/demo.gif)
-
-<div style="display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 10px;">
-    <img src="./SigMacro/Templates/complete/line_cropped.gif" alt="Line Plot" width="150" />
-    <img src="./SigMacro/Templates/complete/filled_line_cropped.gif" alt="Filled Line Plot" width="150" />
-    <img src="./SigMacro/Templates/complete/area_cropped.gif" alt="Area Plot" width="150" />
-    <img src="./SigMacro/Templates/complete/scatter_cropped.gif" alt="Scatter Plot" width="150" />
-    <img src="./SigMacro/Templates/complete/bar_cropped.gif" alt="Bar Plot" width="150" />
-    <img src="./SigMacro/Templates/complete/bar_h_cropped.gif" alt="Horizontal Bar Plot" width="150" />
-    <img src="./SigMacro/Templates/complete/box_cropped.gif" alt="Box Plot" width="150" />
-    <img src="./SigMacro/Templates/complete/box_h_cropped.gif" alt="Horizontal Box Plot" width="150" />
-    <img src="./SigMacro/Templates/complete/violin_cropped.gif" alt="Violin Plot" width="150" />
-    <img src="./SigMacro/Templates/complete/contour_cropped.gif" alt="Contour Plot" width="150" />
-    <img src="./SigMacro/Templates/complete/polar_cropped.gif" alt="Polar Plot" width="150" />
-    <img src="./SigMacro/Templates/complete/confusion_matrix_cropped.gif" alt="Confusion Matrix" width="150" />
-</div>
-
-
-
-
-## Prerequisite
-
- - SigmaPlot License 
- - Windows OS
-
-## Insallation
-
-- SigmaPlot
-  - A proprietary software for professional plotting (https://grafiti.com/sigmaplot-detail/)
-  - Installation
-    - [`./docs/v12_Installer/README.md`](./docs/v12_Installer/README.md)
-
-- SigMacro
-  - Series of macros for automating SigmaPlot
-  - Installation
-    - [`./SigMacro/README.md`](./SigMacro/README.md)
-
-- PySigMacro
-  - Python Interface for calling SigMacro
-  - Installation
-    - [`./PySigMacro/README.md`](./PySigMacro/README.md)
-
-<details>
-<summary>SigmaPlot Objects</summary>
-
-``` plaintext
 **Application**
 └── **Notebooks** (collection)
     └── **Notebook**
@@ -109,17 +59,5 @@ A package for automating SigmaPlot routines.
                             └── Graph Objects (Function) (collection)
                                 ├── Function (Line)
                                 └── Text
-```
-</details>
-
-## TODO
-- [ ] From Python...
-  - [ ] Add Plot
-  - [ ] Change Color
-  - [ ] Change X/Y Labels
-- [ ] As a Service
-
-## Contact
-Yusuke Watanabe (ywatanabe@alumni.u-tokyo.ac.jp)
 
 <!-- EOF -->

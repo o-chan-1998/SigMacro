@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-21 23:21:45 (ywatanabe)"
+# Timestamp: "2025-03-24 16:40:33 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/const/_SIGMAPLOT_OBJECTS.py
 # ----------------------------------------
 import os
@@ -32,7 +32,7 @@ SIGMAPLOT_OBJECTS = [
     "SectionItem",
     "GraphItem",
     "Pages",
-    "GraphObjects",
+    "Graphs",
     "Page",
     "Text",
     "Line",
@@ -65,7 +65,8 @@ SIGMAPLOT_OBJECTS = [
     "Line",
     "GraphObjects",
     "Function",
-    "Line" "Text",
+    "Line",
+    "Text",
 ]
 
 SIGMAPLOT_CUSTOM_OBJECTS = [

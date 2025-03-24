@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-23 12:52:19 (ywatanabe)"
+# Timestamp: "2025-03-24 19:05:20 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/utils/_create_templates.py
 # ----------------------------------------
 import os
@@ -19,7 +19,7 @@ import time
 import numpy as np
 import pandas as pd
 
-from ..com._wrap import wrap as ps_com_wrap
+# from ..com._wrap import wrap as ps_com_wrap
 from ..con._open import open as ps_con_open
 from ..data._import_data import import_data as ps_data_import_data
 
@@ -42,8 +42,8 @@ class TemplateCreator:
         self.filepath = os.path.join(template_dir, f"{plot_type}.JNB")
 
     def process_connection(self, lpath=None, close_others=False):
-        sp = ps_con_open(lpath=lpath, close_others=close_others)
-        self.spw = ps_com_wrap(sp, "SigmaPlot")
+        self.spw = ps_con_open(lpath=lpath, close_others=close_others)
+        # self.spw = ps_com_wrap(sp, "SigmaPlot")
 
     def process_application(self):
         self.app = self.spw.Application_obj
