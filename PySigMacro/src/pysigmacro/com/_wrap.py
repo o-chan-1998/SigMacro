@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-24 19:50:22 (ywatanabe)"
+# Timestamp: "2025-03-25 05:25:23 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/com/_wrap.py
 # ----------------------------------------
 import os
@@ -17,6 +17,7 @@ from ._NotebookWrapper import NotebookWrapper
 from ._NotebooksWrapper import NotebooksWrapper
 from ._NotebookItemsWrapper import NotebookItemsWrapper
 from ._WorksheetItemWrapper import WorksheetItemWrapper
+from ._MacroItemWrapper import MacroItemWrapper
 from ._GraphItemWrapper import GraphItemWrapper
 from ._GraphPagesWrapper import GraphPagesWrapper
 from ._GraphPageWrapper import GraphPageWrapper
@@ -50,49 +51,61 @@ def wrap(com_object, access_path="", path=""):
             wrapper._path = path
         return wrapper
 
+
 def _create_wrapper(com_object, access_path):
     """Create the appropriate wrapper based on access_path pattern"""
+    access_path_last = access_path.split(".")[-1]
     # Notebooks
-    if re.search(r'Notebooks$', access_path):
+    if re.search(r"Notebooks$", access_path_last):
         return NotebooksWrapper(com_object, access_path)
 
     # Notebook
-    elif re.search(r'Notebooks\[\d+\]$', access_path):
+    elif re.search(r"Notebooks\[.*\]$", access_path_last):
         return NotebookWrapper(com_object, access_path)
 
     # NotebookItems
-    elif re.search(r'NotebookItems$', access_path):
+    elif re.search(r"NotebookItems$", access_path_last):
         return NotebookItemsWrapper(com_object, access_path)
 
     # Item
-    elif re.search(r'NotebookItems\[\d+\]$', access_path):
+    elif re.search(r"NotebookItems\[.*\]$", access_path_last):
+
         # GraphItem
-        if hasattr(com_object, "Name") and re.search(r'.*_graph_.*', com_object.Name):
+        if hasattr(com_object, "Name") and re.search(
+            r".*_graph_.*", com_object.Name
+        ):
             return GraphItemWrapper(com_object, access_path)
         # WorksheetItem
-        elif hasattr(com_object, "Name") and re.search(r'.*_worksheet_.*', com_object.Name):
+        elif hasattr(com_object, "Name") and re.search(
+            r".*_worksheet_.*", com_object.Name
+        ):
             return WorksheetItemWrapper(com_object, access_path)
+        # WorksheetItem
+        elif hasattr(com_object, "Name") and re.search(
+            r".*_macro$", com_object.Name
+        ):
+            return MacroItemWrapper(com_object, access_path)
         else:
             return BaseCOMWrapper(com_object, access_path)
 
     # GraphPages
-    elif re.search(r'GraphPages$', access_path):
+    elif re.search(r"GraphPages$", access_path_last):
         return GraphPagesWrapper(com_object, access_path)
 
     # GraphPage
-    elif re.search(r'GraphPages\[\d+\]$', access_path):
+    elif re.search(r"GraphPages\[.*\]$", access_path_last):
         return GraphPageWrapper(com_object, access_path)
 
     # Graphs
-    elif re.search(r'Graphs$', access_path):
+    elif re.search(r"Graphs$", access_path_last):
         return GraphsWrapper(com_object, access_path)
 
     # Graph
-    elif re.search(r'Graphs\[\d+\]$', access_path):
+    elif re.search(r"Graphs\[.*\]$", access_path_last):
         return GraphWrapper(com_object, access_path)
 
     # Plots
-    elif re.search(r'Plots$', access_path):
+    elif re.search(r"Plots$", access_path_last):
         return PlotsWrapper(com_object, access_path)
 
     # SigmaPlot root application
@@ -103,6 +116,7 @@ def _create_wrapper(com_object, access_path):
         # Default to the base COM wrapper for unknown types
         return BaseCOMWrapper(com_object, access_path)
 
+
 # def wrap(com_object, access_path=""):
 #     """
 #     Wrap a COM object in an appropriate wrapper class.
@@ -112,13 +126,13 @@ def _create_wrapper(com_object, access_path):
 #         if re.search(r'Notebooks$', access_path):
 #             return NotebooksWrapper(com_object, access_path)
 #         # Notebook
-#         elif re.search(r'Notebooks\[\d+\]$', access_path):
+#         elif re.search(r'Notebooks\[.*]$', access_path):
 #             return NotebookWrapper(com_object, access_path)
 #         # NotebookItems
 #         elif re.search(r'NotebookItems$', access_path):
 #             return NotebookItemsWrapper(com_object, access_path)
 #         # Item
-#         elif re.search(r'NotebookItems\[\d+\]$', access_path):
+#         elif re.search(r'NotebookItems\[.*]$', access_path):
 #             # GraphItem
 #             if re.search(r'.*_graph_.*', com_object.Name):
 #                 return GraphItemWrapper(com_object, access_path)
@@ -131,13 +145,13 @@ def _create_wrapper(com_object, access_path):
 #         elif re.search(r'GraphPages$', access_path):
 #             return GraphPagesWrapper(com_object, access_path)
 #         # GraphPage
-#         elif re.search(r'GraphPages\[\d+\]$', access_path):
+#         elif re.search(r'GraphPages\[.*]$', access_path):
 #             return GraphPageWrapper(com_object, access_path)
 #         # Graphs
 #         elif re.search(r'Graphs$', access_path):
 #             return GraphsWrapper(com_object, access_path)
 #         # Graph
-#         elif re.search(r'Graps\[\d+\]$', access_path):
+#         elif re.search(r'Graps\[.*]$', access_path):
 #             return GraphWrapper(com_object, access_path)
 #         # Plots
 #         elif re.search(r'Plots$', access_path):
