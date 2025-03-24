@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-23 11:45:59 (ywatanabe)"
+# Timestamp: "2025-03-24 17:11:27 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/__init__.py
 # ----------------------------------------
 import os
@@ -16,5 +16,6 @@ from . import const
 from . import path
 from . import utils
 from . import data
+from . import image
 
 # EOF
