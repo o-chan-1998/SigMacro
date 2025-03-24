@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-24 19:30:11 (ywatanabe)"
+# Timestamp: "2025-03-25 05:30:49 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/con/_open.py
 # ----------------------------------------
 import os
@@ -47,7 +47,7 @@ from ..com._wrap import wrap
 #         print(f"Error opening SigmaPlot: {str(e)}")
 #         return None
 
-def open(lpath=None, close_others=False):
+def open(lpath=None, close_others=False, visible=True):
     try:
         if close_others:
             close_all()
@@ -75,7 +75,9 @@ def open(lpath=None, close_others=False):
 
         sp = win32com.client.Dispatch("SigmaPlot.Application")
         spw = wrap(sp, "SigmaPlot")
-        # spw = wrap(sp, "SigmaPlot")
+
+        if not visible:
+            spw.Visible = visible
 
         # Set the path attribute on the wrapper object
         if lpath:

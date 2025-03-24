@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-03-24 19:51:03
+!-- Timestamp: 2025-03-25 05:34:09
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/win/documents/SigMacro/README.md
 !-- --- -->
@@ -116,7 +116,6 @@ A package for automating SigmaPlot routines.
 - [ ] From Python...
   - [ ] Add Plot
   - [ ] Change Color
-  - [ ] Change X/Y Labels
 - [ ] As a Service
 
 ## Contact
