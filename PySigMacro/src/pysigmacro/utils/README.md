@@ -1,19 +1,12 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-# Timestamp: "2025-03-25 05:36:20 (ywatanabe)"
-# File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/dev.py
-# ----------------------------------------
-import os
-__FILE__ = (
-    "/home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/dev.py"
-)
-__DIR__ = os.path.dirname(__FILE__)
-# ----------------------------------------
+<!-- ---
+!-- Timestamp: 2025-03-25 05:36:56
+!-- Author: ywatanabe
+!-- File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/utils/README.md
+!-- --- -->
 
-"""
-Scratch for Development
-"""
+## Renaming Example
 
+``` python
 import numpy as np
 import pandas as pd
 
@@ -53,5 +46,9 @@ ps.utils.run_macro(
 ps.utils.run_macro(
     graphitem_l, "RenameXYLabels_macro", xlabel="X Label 2", ylabel="Y Label 2"
 )
+```
+
 
 # EOF
+
+<!-- EOF -->
