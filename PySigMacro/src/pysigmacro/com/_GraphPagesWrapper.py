@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-24 18:16:35 (ywatanabe)"
+# Timestamp: "2025-03-26 18:30:01 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/com/_GraphPagesWrapper.py
 # ----------------------------------------
 import os
@@ -18,15 +18,6 @@ class GraphPagesWrapper(BaseCOMWrapper):
     """Specialized wrapper for GraphPages collection"""
 
     __classname__ = "GraphPagesWrapper"
-    # def _list(self):
-    #     """List all graph pages."""
-    #     print("GraphPages")
-    #     for ii in range(self._com_object.Count):
-    #         print(ii, self._com_object[ii].Name)
-
-    # @property
-    # def list(self):
-    #     return self._list()
 
     def Item(self, key):
         if key == -1 and hasattr(self._com_object, "Count"):

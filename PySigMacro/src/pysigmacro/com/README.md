@@ -1,9 +1,12 @@
 <!-- ---
-!-- Timestamp: 2025-03-24 17:34:06
+!-- Timestamp: 2025-03-26 18:44:17
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/com/README.md
 !-- --- -->
 
+## SigmaPlot Object Hierarchy
+
+``` plaintext
 **Application**
 └── **Notebooks** (collection)
     └── **Notebook**
@@ -59,5 +62,6 @@
                             └── Graph Objects (Function) (collection)
                                 ├── Function (Line)
                                 └── Text
+```
 
 <!-- EOF -->

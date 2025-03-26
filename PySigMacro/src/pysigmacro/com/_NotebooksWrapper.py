@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-24 19:46:13 (ywatanabe)"
+# Timestamp: "2025-03-26 18:30:49 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/com/_NotebooksWrapper.py
 # ----------------------------------------
 import os
@@ -21,9 +21,7 @@ class NotebooksWrapper(BaseCOMWrapper):
     __classname__ = "NotebooksWrapper"
 
     def __init__(self, com_object, access_path=""):
-        # Initialize the base class properly with all arguments
         super().__init__(com_object, access_path)
-        # Now you can safely use self.clean() since the object is properly initialized
         self.clean()
 
     def clean(self):

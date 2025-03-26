@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-21 23:46:21 (ywatanabe)"
+# Timestamp: "2025-03-26 18:30:29 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/com/_inspect.py
 # ----------------------------------------
 import os
@@ -42,21 +42,6 @@ def inspect(com_object):
         rows.append({"Name": m, "Type": "Method", "Value": ""})
     summary_df = pd.DataFrame(rows)
     return summary_df
-
-# def _get_valid_xxx(com_object, available_list):
-#     valid_list = []
-#     for possible in available_list:
-#         # if possible in ("Save", "SaveAs"):
-#         #     valid_list.append(possible)
-#         #     continue
-#         try:
-#             getattr(com_object, possible)
-#             valid_list.append(possible)
-#         except Exception as e:
-#             err_str = str(e)
-#             if "VT_EMPTY" in err_str or "VT_BSTR" in err_str or "VT_I2" in err_str or "VT_I4" in err_str:
-#                 valid_list.append(possible)
-#     return valid_list
 
 def _get_valid_xxx(com_object, available_list):
     valid_list = []
