@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-03-25 05:34:09
+!-- Timestamp: 2025-03-26 20:38:09
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/win/documents/SigMacro/README.md
 !-- --- -->
@@ -25,9 +25,6 @@ A package for automating SigmaPlot routines.
     <img src="./SigMacro/Templates/complete/confusion_matrix_cropped.gif" alt="Confusion Matrix" width="150" />
 </div>
 
-
-
-
 ## Prerequisite
 
  - SigmaPlot License 
@@ -47,70 +44,9 @@ A package for automating SigmaPlot routines.
 
 - PySigMacro
   - Python Interface for calling SigMacro
+  - [Demo Movie](https://onedrive.live.com/?qt=allmyphotos&photosData=%2Fshare%2F12F1169924695EF9%213150863%3Fithint%3Dvideo%26e%3DLnoc26&sw=bypassConfig&cid=12F1169924695EF9&id=12F1169924695EF9%213150863&authkey=%21AFE1u69Zha9Sois&v=photos)
   - Installation
     - [`./PySigMacro/README.md`](./PySigMacro/README.md)
-
-<details>
-<summary>SigmaPlot Objects</summary>
-
-``` plaintext
-**Application**
-└── **Notebooks** (collection)
-    └── **Notebook**
-        └── **NotebookItems** (collection)
-            ├── **NativeWorksheetItem**
-            │   ├── **DataTableNamedDataRanges** (collection)
-            │   │   └── **NamedDataRange**
-            │   ├── Smoother
-            │   ├── PlotEquation
-            │   └── **GraphWizard**
-            ├── ExcelItem
-            │   ├── DataTableNamedDataRanges (collection)
-            │   │   └── NamedDataRange
-            │   ├── Smoother
-            │   ├── PlotEquation
-            │   └── **GraphWizard**
-            ├── FitItem
-            │   └── FitResults
-            ├── TransformItem
-            ├── ReportItem
-            ├── **MacroItem**
-            ├── **NotebookItem**
-            ├── **SectionItem**
-            └── **GraphItem**
-                └── **Pages** (collection)
-                    └── **GraphObjects (Page)** (collection)
-                        ├── Text
-                        ├── **Line**
-                        ├── **Solid**
-                        ├── **GraphObject**
-                        ├── Group
-                        ├── Smoother
-                        ├── PlotEquation
-                        └── **Graph**
-                            ├── **Graph Objects (Axis)** (collection)
-                            │   └── **Axis**
-                            ├── **Line** (collection)
-                            ├── Text (collection)
-                            │   └── Text
-                            ├── Group (AutoLegend)
-                            │   ├── Solid
-                            │   └── Text
-                            ├── **Graph Objects (Plots)** (collection)
-                            │   └── **Plot**
-                            │       ├── Symbol
-                            │       ├── **Line**
-                            │       ├── **Solid**
-                            │       └── Text
-                            ├── GraphObjects (Tuple) (collection)
-                            │   └── Tuple
-                            ├── Graph Objects (DropLines) (collection)
-                            │   └── Line
-                            └── Graph Objects (Function) (collection)
-                                ├── Function (Line)
-                                └── Text
-```
-</details>
 
 ## TODO
 - [ ] From Python...
