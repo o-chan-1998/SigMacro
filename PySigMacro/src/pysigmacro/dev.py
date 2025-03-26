@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-25 17:39:35 (ywatanabe)"
+# Timestamp: "2025-03-26 20:10:14 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/dev.py
 # ----------------------------------------
 import os
@@ -9,70 +9,111 @@ __FILE__ = (
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# Time-stamp: "2024-11-03 10:33:13 (ywatanabe)"
+# File: placeholder.py
 
 """
-Scratch for Development
+Functionalities:
+  - Does XYZ
+  - Does XYZ
+  - Does XYZ
+  - Saves XYZ
+
+Dependencies:
+  - scripts:
+    - /path/to/script1
+    - /path/to/script2
+  - packages:
+    - package1
+    - package2
+IO:
+  - input-files:
+    - /path/to/input/file.xxx
+    - /path/to/input/file.xxx
+
+  - output-files:
+    - /path/to/input/file.xxx
+    - /path/to/input/file.xxx
+
+(Remove me: Please fill docstrings above, while keeping the bulette point style, and remove this instruction line)
 """
 
-import numpy as np
-import pandas as pd
+"""Imports"""
+import sys
+import argparse
 
-import pysigmacro as ps
+"""Warnings"""
+# mngs.pd.ignore_SettingWithCopyWarning()
+# warnings.simplefilter("ignore", UserWarning)
+# with warnings.catch_warnings():
+#     warnings.simplefilter("ignore", UserWarning)
 
-# PARAMS
-PLOT_TYPE = "line"
-CLOSE_OTHERS = True
-PATH = ps.path.copy_template("line", rf"C:\Users\wyusu\Downloads")
-spw = ps.con.open(PATH)
-notebooks = spw.Notebooks_obj
-# print(notebooks.list)
-notebook = notebooks[notebooks.find_indices(f"{PLOT_TYPE}")[0]]
+"""Parameters"""
+# from mngs.io import load_configs
+# CONFIG = load_configs()
 
-# From here, templates defines indices and names
-notebookitems = notebook.NotebookItems_obj
-graphitem_s = notebookitems[
-    notebookitems.find_indices(f"{PLOT_TYPE}_graph_S")[0]
-]
-graphitem_s.rename_xy_labels("aaa", "bbb")
-worksheetitem = notebookitems[notebookitems.find_indices(f"{PLOT_TYPE}_worksheet")[0]]
+"""Functions & Classes"""
+def main(args):
+    pass
 
-graphitem_m = notebookitems[
-    notebookitems.find_indices(f"{PLOT_TYPE}_graph_M")[0]
-]
-graphitem_l = notebookitems[
-    notebookitems.find_indices(f"{PLOT_TYPE}_graph_L")[0]
-]
+import argparse
+def parse_args() -> argparse.Namespace:
+    """Parse command line arguments."""
+    import mngs
+    script_mode = mngs.gen.is_script()
+    parser = argparse.ArgumentParser(description='')
+    # parser.add_argument(
+    #     "--var",
+    #     "-v",
+    #     type=int,
+    #     choices=None,
+    #     default=1,
+    #     help="(default: %(default)s)",
+    # )
+    # parser.add_argument(
+    #     "--flag",
+    #     "-f",
+    #     action="store_true",
+    #     default=False,
+    #     help="(default: %%(default)s)",
+    # )
+    args = parser.parse_args()
+    mngs.str.printc(args, c='yellow')
+    return args
 
-# Data
-DF = pd.DataFrame(
-    columns=[ii for ii in range(30)], data=np.random.rand(100, 30)
-)
+def run_main() -> None:
+    """Initialize mngs framework, run main function, and cleanup."""
+    global CONFIG, CC, sys, plt
 
-# spw = ps.con.open(PATH)
-# notebooks = spw.Notebooks_obj
-# # print(notebooks.list)
-# notebook = notebooks[notebooks.find_indices(f"{PLOT_TYPE}")[0]]
+    import sys
+    import matplotlib.pyplot as plt
+    import mngs
 
-# # From here, templates defines indices and names
-# notebookitems = notebookitems
-# graphitem_s = notebookitems[
-#     notebookitems.find_indices(f"{PLOT_TYPE}_graph_S")[0]
-# ]
-# graphitem_m = notebookitems[
-#     notebookitems.find_indices(f"{PLOT_TYPE}_graph_M")[0]
-# ]
-# graphitem_l = notebookitems[
-#     notebookitems.find_indices(f"{PLOT_TYPE}_graph_L")[0]
-# ]
+    args = parse_args()
 
-# ps.utils.run_macro(
-#     graphitem_s, "RenameXYLabels_macro", xlabel="X Label 1", ylabel="Y Label 1"
-# )
-# ps.utils.run_macro(
-#     graphitem_m, "RenameXYLabels_macro", xlabel="X Label", ylabel="Y Label"
-# )
-# ps.utils.run_macro(
-#     graphitem_l, "RenameXYLabels_macro", xlabel="X Label 2", ylabel="Y Label 2"
-# )
+    CONFIG, sys.stdout, sys.stderr, plt, CC = mngs.gen.start(
+        sys,
+        plt,
+        args=args,
+        file=__file__,
+        sdir_suffix=None,
+        verbose=False,
+        agg=True,
+    )
+
+    exit_status = main(args)
+
+    mngs.gen.close(
+        CONFIG,
+        verbose=False,
+        notify=False,
+        message="",
+        exit_status=exit_status,
+    )
+
+if __name__ == '__main__':
+    run_main()
 
 # EOF

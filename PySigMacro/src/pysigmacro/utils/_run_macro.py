@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-26 12:33:07 (ywatanabe)"
+# Timestamp: "2025-03-26 19:07:14 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/utils/_run_macro.py
 # ----------------------------------------
 import os
@@ -16,7 +16,8 @@ from ..con._open import open as ps_con_open
 def run_macro(tgt_obj, macroname, **kwargs):
     # Specify Macro
     to_args(**kwargs)
-    macro_PATH = rf"C:\Users\wyusu\Documents\SigMacro\SigMacro.JNB"
+    macro_PATH = os.getenv("SIGMACRO_JNB_PATH", rf"C:\Users\{os.getlogin()}\Documents\SigMacro\SigMacro.JNB")
+    # Fixme: Macro will be available in the same notebook (= *.jnb file)
     macro_spw = ps_con_open(macro_PATH)
     macro_notebooks = macro_spw.Notebooks_obj
     macro_notebook = macro_notebooks[macro_notebooks.find_indices(os.path.basename(macro_PATH))[0]]

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-24 18:17:32 (ywatanabe)"
+# Timestamp: "2025-03-26 18:31:01 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/com/_PlotsWrapper.py
 # ----------------------------------------
 import os
@@ -17,19 +17,6 @@ class PlotsWrapper(BaseCOMWrapper):
     """Specialized wrapper for Plots collection"""
 
     __classname__ = "PlotsWrapper"
-
-    # def _list(self):
-    #     """List all plots."""
-    #     print("Plots")
-    #     for ii in range(self._com_object.Count):
-    #         try:
-    #             print(ii, self._com_object[ii].Name)
-    #         except:
-    #             print(ii, "Unnamed plot")
-
-    # @property
-    # def list(self):
-    #     return self._list()
 
     def Item(self, key):
         if key == -1 and hasattr(self._com_object, "Count"):

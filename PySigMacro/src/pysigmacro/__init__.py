@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-24 17:11:27 (ywatanabe)"
+# Timestamp: "2025-03-26 19:27:18 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/__init__.py
 # ----------------------------------------
 import os
@@ -17,5 +17,7 @@ from . import path
 from . import utils
 from . import data
 from . import image
+
+utils.print_psm_env_vars()
 
 # EOF

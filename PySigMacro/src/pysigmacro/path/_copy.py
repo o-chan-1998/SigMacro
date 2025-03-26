@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-23 11:19:46 (ywatanabe)"
+# Timestamp: "2025-03-26 19:28:24 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/path/_copy.py
 # ----------------------------------------
 import os
@@ -14,6 +14,7 @@ import shutil
 from ._to_win import to_win
 from ._to_wsl import to_wsl
 from ._add_timestamp import add_timestamp
+
 
 def copy(src_path, dst_path, convert_paths=True):
     """
@@ -29,7 +30,7 @@ def copy(src_path, dst_path, convert_paths=True):
         str: Path to the destination file
     """
     # Check if we're in WSL
-    in_wsl = os.path.exists('/proc/sys/fs/binfmt_misc/WSLInterop')
+    in_wsl = os.path.exists("/proc/sys/fs/binfmt_misc/WSLInterop")
 
     if convert_paths and in_wsl:
         # If in WSL, ensure paths are in WSL format for shutil operations
@@ -51,9 +52,13 @@ def copy(src_path, dst_path, convert_paths=True):
 
     return dst_path
 
+
 def copy_template(plot_type, tgt_dir, src_dir=None):
     if not src_dir:
-        src_dir = r"C:\Users\wyusu\Documents\SigMacro\SigMacro\Templates"
+        src_dir = os.getenv(
+            "SIGMACRO_TEMPLATES_DIR",
+            r"C:\Users\wyusu\Documents\SigMacro\SigMacro\Templates",
+        )
     src_path = os.path.join(src_dir, f"{plot_type}.JNB")
     tgt_path = add_timestamp(os.path.join(tgt_dir, f"{plot_type}.JNB"))
     copy(src_path, tgt_path)

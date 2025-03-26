@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-24 17:09:41 (ywatanabe)"
+# Timestamp: "2025-03-26 18:50:01 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/image/_crop_images.py
 # ----------------------------------------
 import os
@@ -33,6 +33,21 @@ def _mm_to_pixels(mm, dpi):
 
 
 def _find_content_area(image_path):
+    """
+    Find the content area in an image by identifying non-white pixels.
+
+    This function detects the bounding rectangle around all non-white
+    content in the image.
+
+    Args:
+        image_path (str): Path to the image file
+
+    Returns:
+        tuple: (x, y, width, height) coordinates of the bounding rectangle
+
+    Raises:
+        FileNotFoundError: If the image cannot be read
+    """
     # Check if it's a GIF file
     if image_path.lower().endswith(".gif"):
         try:
@@ -93,6 +108,22 @@ def _find_content_area(image_path):
 
 
 def _crop_image(input_path, margin=30):
+    """
+    Crop an image to its content area plus a specified margin.
+
+    This function detects the content area and crops the image around it,
+    adding a margin of the specified number of pixels.
+
+    Args:
+        input_path (str): Path to the input image
+        margin (int, optional): Margin in pixels to add around content. Defaults to 30.
+
+    Returns:
+        PIL.Image: Cropped image
+
+    Raises:
+        FileNotFoundError: If the image cannot be read
+    """
     # Check if it's a GIF file
     if input_path.lower().endswith(".gif"):
         try:
@@ -154,6 +185,16 @@ def _crop_image(input_path, margin=30):
 
 
 def _save_image(image, output_path):
+    """
+    Save an image to the specified output path.
+
+    This function ensures the output path has a valid extension (defaults to PNG)
+    and saves the image.
+
+    Args:
+        image (PIL.Image): The image to save
+        output_path (str): The path where the image will be saved
+    """
     # Check if output path has extension
     base, ext = os.path.splitext(output_path)
     if not ext:
@@ -166,6 +207,20 @@ def _save_image(image, output_path):
 
 
 def add_margins(image, width=None, height=None, width_mm=None, height_mm=None):
+    """
+    Add white margins to an image to achieve target dimensions.
+
+    Args:
+        image (PIL.Image): The input image
+        width (int, optional): Target width in pixels
+        height (int, optional): Target height in pixels
+        width_mm (float, optional): Target width in millimeters
+        height_mm (float, optional): Target height in millimeters
+
+    Returns:
+        PIL.Image: Image with added margins
+    """
+
     # Get the DPI of the original image
     dpi = _get_image_dpi(image)
 
@@ -176,6 +231,7 @@ def add_margins(image, width=None, height=None, width_mm=None, height_mm=None):
         height = _mm_to_pixels(height_mm, dpi)
 
     def _add_margin_up_to_width(image, width=None):
+        """Add horizontal margins to reach target width"""
         if width is not None:
             image_width = image.width
             if image_width < width:
@@ -189,6 +245,7 @@ def add_margins(image, width=None, height=None, width_mm=None, height_mm=None):
         return image
 
     def _add_margin_up_to_height(image, height=None):
+        """Add vertical margins to reach target height"""
         if height is not None:
             image_height = image.height
             if image_height < height:
@@ -219,6 +276,20 @@ def crop_images(
     output_dir=None,
     force=False,
 ):
+    """
+    Crop multiple images to their content area plus margin.
+
+    This function processes one or more images, detecting content areas,
+    applying specified margins, and optionally adjusting to target dimensions.
+
+    Args:
+        input_paths (list): List of paths to input images, wildcards allowed
+        margin (int, optional): Margin in pixels to add around content. Defaults to 30.
+        width_mm (float, optional): Target width in millimeters
+        height_mm (float, optional): Target height in millimeters
+        output_dir (str, optional): Directory to save output images
+        force (bool, optional): Whether to overwrite existing files. Defaults to False.
+    """
     # Expand file paths (in case wildcards were used)
     input_files = []
     for path in input_paths:
@@ -283,6 +354,13 @@ def crop_images(
 
 
 def _parse_args():
+    """
+    Parse command line arguments for the crop_images function.
+
+    Returns:
+        argparse.Namespace: Parsed argument object
+    """
+
     import argparse
 
     # Set up argument parser

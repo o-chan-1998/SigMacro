@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-24 18:16:54 (ywatanabe)"
+# Timestamp: "2025-03-26 18:30:16 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/com/_GraphsWrapper.py
 # ----------------------------------------
 import os
@@ -17,15 +17,6 @@ class GraphsWrapper(BaseCOMWrapper):
     """Specialized wrapper for Graphs collection"""
 
     __classname__ = "GraphsWrapper"
-    # def _list(self):
-    #     """List all graphs."""
-    #     print("Graphs")
-    #     for ii in range(self._com_object.Count):
-    #         print(ii, self._com_object[ii].Name)
-
-    # @property
-    # def list(self):
-    #     return self._list()
 
     def Item(self, key):
         if key == -1 and hasattr(self._com_object, "Count"):
