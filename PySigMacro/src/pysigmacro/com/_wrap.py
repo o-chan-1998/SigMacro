@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-25 05:25:23 (ywatanabe)"
+# Timestamp: "2025-03-25 17:35:38 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/com/_wrap.py
 # ----------------------------------------
 import os
@@ -77,10 +77,10 @@ def _create_wrapper(com_object, access_path):
             return GraphItemWrapper(com_object, access_path)
         # WorksheetItem
         elif hasattr(com_object, "Name") and re.search(
-            r".*_worksheet_.*", com_object.Name
+            r".*_worksheet$", com_object.Name
         ):
             return WorksheetItemWrapper(com_object, access_path)
-        # WorksheetItem
+        # MacroItem
         elif hasattr(com_object, "Name") and re.search(
             r".*_macro$", com_object.Name
         ):

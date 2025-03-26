@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-24 20:09:34 (ywatanabe)"
+# Timestamp: "2025-03-26 12:29:58 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/com/_GraphItemWrapper.py
 # ----------------------------------------
 import os
@@ -96,6 +96,14 @@ class GraphItemWrapper(BaseCOMWrapper):
                 return self.export_as_tif(
                     path, crop=crop, convert_from_bmp=True
                 )
+
+    def rename_xy_labels(self, xlabel, ylabel):
+        from ..utils._run_macro import run_macro
+        run_macro(
+            self, "RenameXYLabels_macro", xlabel=xlabel, ylabel=ylabel
+        )
+
+
 
 
 # class GraphItemWrapper(BaseCOMWrapper):

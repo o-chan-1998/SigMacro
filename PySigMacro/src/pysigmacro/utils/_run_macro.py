@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-25 05:33:39 (ywatanabe)"
+# Timestamp: "2025-03-26 12:33:07 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/utils/_run_macro.py
 # ----------------------------------------
 import os
@@ -28,18 +28,5 @@ def run_macro(tgt_obj, macroname, **kwargs):
 
     # Run the macro
     macroitem.run(tgt_obj=tgt_obj, **kwargs)
-
-# def run_macro(tgt_obj, macroname, **kwargs):
-#     # Specify Macro
-#     to_args(**kwargs)
-#     macro_PATH = rf"C:\Users\wyusu\Documents\SigMacro\SigMacro.JNB"
-#     macro_spw = ps_con_open(macro_PATH)
-#     macro_notebooks = macro_spw.Notebooks_obj
-#     macro_notebook = macro_notebooks[macro_notebooks.find_indices(os.path.basename(macro_PATH))[0]]
-#     macro_notebookitems = macro_notebook.NotebookItems_obj
-#     macroitem = macro_notebookitems[macro_notebookitems.find_indices(macroname)[0]]
-
-#     # Run the macro
-#     macroitem.run(tgt_obj, **kwargs)
 
 # EOF

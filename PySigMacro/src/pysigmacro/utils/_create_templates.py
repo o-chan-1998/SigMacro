@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-24 19:05:20 (ywatanabe)"
+# Timestamp: "2025-03-25 17:37:48 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/utils/_create_templates.py
 # ----------------------------------------
 import os
@@ -19,7 +19,6 @@ import time
 import numpy as np
 import pandas as pd
 
-# from ..com._wrap import wrap as ps_com_wrap
 from ..con._open import open as ps_con_open
 from ..data._import_data import import_data as ps_data_import_data
 
