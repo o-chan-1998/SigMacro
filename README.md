@@ -11,18 +11,18 @@ A package for automating SigmaPlot routines.
 ![SigMacro Demo](./docs/demo.gif)
 
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 10px;">
-    <img src="./SigMacro/Templates/complete/line_cropped.gif" alt="Line Plot" width="150" />
-    <img src="./SigMacro/Templates/complete/filled_line_cropped.gif" alt="Filled Line Plot" width="150" />
-    <img src="./SigMacro/Templates/complete/area_cropped.gif" alt="Area Plot" width="150" />
-    <img src="./SigMacro/Templates/complete/scatter_cropped.gif" alt="Scatter Plot" width="150" />
-    <img src="./SigMacro/Templates/complete/bar_cropped.gif" alt="Bar Plot" width="150" />
-    <img src="./SigMacro/Templates/complete/bar_h_cropped.gif" alt="Horizontal Bar Plot" width="150" />
-    <img src="./SigMacro/Templates/complete/box_cropped.gif" alt="Box Plot" width="150" />
-    <img src="./SigMacro/Templates/complete/box_h_cropped.gif" alt="Horizontal Box Plot" width="150" />
-    <img src="./SigMacro/Templates/complete/violin_cropped.gif" alt="Violin Plot" width="150" />
-    <img src="./SigMacro/Templates/complete/contour_cropped.gif" alt="Contour Plot" width="150" />
-    <img src="./SigMacro/Templates/complete/polar_cropped.gif" alt="Polar Plot" width="150" />
-    <img src="./SigMacro/Templates/complete/confusion_matrix_cropped.gif" alt="Confusion Matrix" width="150" />
+    <img src="./SigMacro/Templates/line_cropped.gif" alt="Line Plot" width="150" />
+    <img src="./SigMacro/Templates/filled_line_cropped.gif" alt="Filled Line Plot" width="150" />
+    <img src="./SigMacro/Templates/area_cropped.gif" alt="Area Plot" width="150" />
+    <img src="./SigMacro/Templates/scatter_cropped.gif" alt="Scatter Plot" width="150" />
+    <img src="./SigMacro/Templates/bar_cropped.gif" alt="Bar Plot" width="150" />
+    <img src="./SigMacro/Templates/bar_h_cropped.gif" alt="Horizontal Bar Plot" width="150" />
+    <img src="./SigMacro/Templates/box_cropped.gif" alt="Box Plot" width="150" />
+    <img src="./SigMacro/Templates/box_h_cropped.gif" alt="Horizontal Box Plot" width="150" />
+    <img src="./SigMacro/Templates/violin_cropped.gif" alt="Violin Plot" width="150" />
+    <img src="./SigMacro/Templates/contour_cropped.gif" alt="Contour Plot" width="150" />
+    <img src="./SigMacro/Templates/polar_cropped.gif" alt="Polar Plot" width="150" />
+    <img src="./SigMacro/Templates/confusion_matrix_cropped.gif" alt="Confusion Matrix" width="150" />
 </div>
 
 ## Prerequisite
