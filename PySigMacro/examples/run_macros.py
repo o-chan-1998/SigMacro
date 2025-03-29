@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-28 22:36:56 (ywatanabe)"
+# Timestamp: "2025-03-29 18:16:20 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/examples/run_macros.py
 # ----------------------------------------
 import os

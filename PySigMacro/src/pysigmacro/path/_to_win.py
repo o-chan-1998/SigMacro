@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-22 17:15:28 (ywatanabe)"
+# Timestamp: "2025-03-29 18:17:34 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/path/_to_win.py
 # ----------------------------------------
 import os
@@ -15,33 +15,43 @@ import subprocess
 def to_win(wsl_path):
     """
     Convert a WSL path to a Windows path.
-
-    Args:
-        wsl_path (str): Path in WSL format (e.g., /home/user/file.txt)
-
-    Returns:
-        str: Converted Windows path (e.g., C:\\Users\\user\\file.txt)
     """
-    # Handle absolute paths
+    # Special handling for your custom path structure
+    if wsl_path.startswith("/home/ywatanabe/win/"):
+        # Map to your actual Windows user directory
+        relative_path = wsl_path[len("/home/ywatanabe/win/") :].replace(
+            "/", "\\"
+        )
+        windows_user = os.environ.get(
+            "USERNAME", "wyusu"
+        )  # Get Windows username or default
+        win_path = f"C:\\Users\\{windows_user}\\{relative_path}"
+        win_path = (
+            win_path.replace("program_files", "Program Files")
+            .replace("program_files_x86", "Program Files (x86)")
+            .replace("template", "Template")
+            .replace("documents", "Documents")
+            .replace("downloads", "Downloads")
+            .replace("desktop", "Desktop")
+        )
+        return win_path
+
+    # Rest of your existing function...
     if os.path.isabs(wsl_path):
         try:
-            # Use wslpath command to convert the path
             result = subprocess.run(
-                ['wslpath', '-w', wsl_path],
+                ["wslpath", "-w", wsl_path],
                 capture_output=True,
                 text=True,
-                check=True
+                check=True,
             )
             return result.stdout.strip()
         except (subprocess.SubprocessError, FileNotFoundError):
-            # Fallback if wslpath doesn't work
-            # Basic conversion for /mnt/c/ style paths
-            if wsl_path.startswith('/mnt/'):
+            if wsl_path.startswith("/mnt/"):
                 drive = wsl_path[5:6].upper()
-                path = wsl_path[7:].replace('/', '\\')
+                path = wsl_path[7:].replace("/", "\\")
                 return f"{drive}:{path}"
             return wsl_path
-    # Handle relative paths by getting the absolute path first
     else:
         abs_path = os.path.abspath(wsl_path)
         return to_win(abs_path)

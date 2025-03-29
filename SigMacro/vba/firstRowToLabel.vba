@@ -71,12 +71,26 @@ Sub PasteAndNameColumn(columnIndex As Long, copiedData As String)
     ActiveDocument.CurrentDataItem.DataTable.NamedRanges.Add copiedData, columnIndex, 0, 1, -1, True, True
 End Sub
 
+' Sub DeleteFirstRow()
+'     'ActiveDocument.CurrentDataItem.InsertCells(0, 0, 18, 0, InsertDown)
+'     'ActiveDocument.CurrentDataItem.Open
+'     ActiveDocument.CurrentDataItem.DeleteCells(0, 0, 18, 0, DeleteUp)
+'     ActiveDocument.CurrentDataItem.Open
+'     ActiveDocument.CurrentDataItem.Open
+' End Sub
+
+
 Sub DeleteFirstRow()
-    'ActiveDocument.CurrentDataItem.InsertCells(0, 0, 18, 0, InsertDown)
-    'ActiveDocument.CurrentDataItem.Open
-    ActiveDocument.CurrentDataItem.DeleteCells(0, 0, 18, 0, DeleteUp)
-    ActiveDocument.CurrentDataItem.Open
-    ActiveDocument.CurrentDataItem.Open
+    'Get the current number of columns
+    Dim colCount As Long
+    colCount = ActiveDocument.CurrentDataItem.DataTable.ColumnCount
+    
+    'Only delete cells that actually exist
+    If colCount > 0 Then
+        ActiveDocument.CurrentDataItem.DeleteCells(0, 0, colCount - 1, 0, DeleteUp)
+        ActiveDocument.CurrentDataItem.Open
+        ActiveDocument.CurrentDataItem.Open
+    End If
 End Sub
 
 

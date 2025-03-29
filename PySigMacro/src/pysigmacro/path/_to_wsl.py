@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-22 17:17:21 (ywatanabe)"
+# Timestamp: "2025-03-29 17:53:15 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/path/_to_wsl.py
 # ----------------------------------------
 import os

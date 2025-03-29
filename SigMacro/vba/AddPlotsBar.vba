@@ -12,6 +12,11 @@ Option Explicit
 ' ----------------------------------------
 Const WORKSHEET_NAME As String = "worksheet"
 Const GRAPH_NAME As String = "graph"
+Const FIRST_DATA_COLUMN As Long = 12
+Const COLUMNS_PER_PLOT As Long = 3
+Const NUM_PLOTS As Long = 13
+Const COLUMN_SPACING As Long = 5
+
 ' Constants for plot configuration
 Const PLOT_TYPE As String = "Vertical Bar Chart"
 Const PLOT_STYLE As String = "Simple Error Bars"
@@ -23,11 +28,6 @@ Const MIN_ANGLE As Double = 0.0
 Const MAX_ANGLE As Double = 360.0
 Const GROUP_STYLE As String = "None"
 Const USE_AUTOMATIC_LEGENDS As Boolean = True
-' Constants for data columns
-Const FIRST_DATA_COLUMN As Long = 12
-Const COLUMNS_PER_PLOT As Long = 3
-Const NUM_PLOTS As Long = 1
-Const COLUMN_SPACING As Long = 5
 ' ----------------------------------------
 ' Functions
 ' ----------------------------------------
@@ -62,7 +62,7 @@ Sub Main()
 
     ' Set column data with spacing of 5 columns
     currentColumn = FIRST_DATA_COLUMN
-    For i = 0 To 13
+    For i = 0 To NUM_PLOTS
 		Dim ColumnsPerPlot()
 		ReDim ColumnsPerPlot(2, 2)
 
