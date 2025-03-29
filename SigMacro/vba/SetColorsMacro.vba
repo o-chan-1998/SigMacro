@@ -8,6 +8,7 @@ Const DEBUG_MODE As Boolean = False
 Const WORKSHEET_NAME As String = "worksheet"
 Const COLOR_COLUMN_FIRST As Long = 16
 Const COLOR_COLUMN_SPACING As Long = 5
+Const SSA_COLOR_ALPHA As Long = &H000008a7&
 
 ' ----------------------------------------
 ' Functions
@@ -36,6 +37,18 @@ Function GetRGBFromColumn(columnIndex As Long) As Long
     ' Standard RGB (VBA default)
     GetRGBFromColumn = RGB(r, g, b)
 End Function
+
+Function GetAlphaFromColumn(columnIndex As Long) As Long
+    ' DebugMsg "GetRGBFromColumn called for plot " & columnIndex
+   Dim alphaValue As Variant
+   
+    ' Read RGB values from worksheet (R, G, B values are assumed to be in adjacent columns)
+    alphaValue = ActiveDocument.NotebookItems(WORKSHEET_NAME).DataTable.GetData(columnIndex, 3, columnIndex, 3)
+
+    ' Standard RGB (VBA default)
+    GetAlphaFromColumn = alphaValue
+End Function
+
 
 Function CalculateColorColumnForPlot(plotIndex As Long) As Long
     CalculateColorColumnForPlot = COLOR_COLUMN_FIRST + (plotIndex * COLOR_COLUMN_SPACING)
@@ -123,12 +136,12 @@ Sub _ChangeColorLine(RGB_VAL As Long, plotIndex As Long)
     With ActiveDocument.CurrentPageItem
        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SEA_COLOR, RGB_VAL)
        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SEA_COLORCOL, -2)       
-       .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SEA_COLORREPEAT, 2)       
+       ' .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SEA_COLORREPEAT, 2)       
        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SOA_COLOR, RGB_VAL)
     End With
 End Sub
 
-Sub _ChangeColorSymbol(RGB_VAL As Long, plotIndex As Long)
+Sub _ChangeColorSymbol(RGB_VAL As Long, ALPHA_VAL As Long, plotIndex As Long)
     ' SSA = Set Symbol Attribute
     ' DebugMsg "_ChangeColorSymbol called"
     SelectGraphObject plotIndex
@@ -137,6 +150,7 @@ Sub _ChangeColorSymbol(RGB_VAL As Long, plotIndex As Long)
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_COLOR, RGB_VAL)
         ' .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_EDGECOLORREPEAT, 2)        
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_COLORREPEAT, 2)
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_COLOR_ALPHA, ALPHA_VAL)
     End With
 End Sub
 
@@ -184,6 +198,7 @@ Sub Main()
     Dim i As Long
     Dim colorColumn As Long
     Dim RGB_VAL As Long
+    Dim ALPHA_VAL As Long
     Dim graphItem As Object
     Dim plotObj As Object
     Dim DetectedPlotType As String
@@ -206,16 +221,17 @@ Sub Main()
     For i = 0 To plotCount - 1
         colorColumn = CalculateColorColumnForPlot(i)
         RGB_VAL = GetRGBFromColumn(colorColumn)
+        ALPHA_VAL = GetAlphaFromColumn(colorColumn)
 
         ' Apply color based on plot type
         Select Case DetectedPlotType
             Case "Line/Scatter"
                 _ChangeColorLine RGB_VAL, i
-                _ChangeColorSymbol RGB_VAL, i
+                _ChangeColorSymbol RGB_VAL, ALPHA_VAL, i
                 _ChangeColorSolid RGB_VAL, i
             Case "3DScatter"
                 _ChangeColorLine RGB_VAL, i
-                _ChangeColorSymbol RGB_VAL, i
+                _ChangeColorSymbol RGB_VAL, ALPHA_VAL, i
             Case "Bar", "Stacked"
                 _ChangeColorSolid RGB_VAL, i
             Case "Box"
