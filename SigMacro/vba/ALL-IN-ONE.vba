@@ -31,8 +31,8 @@ Const SSA_COLOR_ALPHA As Long = &H000008a7&
 
 ' Font Sizes
 Const LABEL_PTS_00 As Variant = "0"
-Const LABEL_PTS_07 As String = "97"
-Const LABEL_PTS_08 As String = "111"
+Const LABEL_PTS_07 As Variant = "97"
+Const LABEL_PTS_08 As Variant = "111"
 
 ' ========================================
 ' Axis Scale Types
@@ -873,7 +873,7 @@ Sub Main()
    ' ' ========================================   
    ' ' Working
    ' ' ========================================   
-   Plot() 
+   ' Plot() 
    ' RemoveLegend()
    ' RemoveXSpine()
    ' RemoveYSpine()
@@ -884,13 +884,13 @@ Sub Main()
    ' SetTicks()   
    ' SetTickSizes()
    ' SetRanges()
-   RemoveTitle()
+   ' RemoveTitle()
    
    ' ========================================   
    ' Not Working
    ' ========================================   
 
-   ' SetLabelSizes()
+   SetLabelSizes()
    
 
 End Sub
