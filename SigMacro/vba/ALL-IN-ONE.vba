@@ -27,7 +27,6 @@ Const TICK_THICKNESS_00 As Variant = &H00000000
 Const TICK_THICKNESS_02 As Variant = &H00000002
 Const TICK_THICKNESS_08 As Variant = &H00000008
 Const TICK_SIZE_08 As Long = 8
-Const TICK_SIZE_32 As Long = 32
 Const SSA_COLOR_ALPHA As Long = &H000008a7&
 
 ' Font Sizes
@@ -389,9 +388,8 @@ Sub RemoveYSpine()
 End Sub
 
 Sub RemoveTitle()
-    ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_GRAPH).NameObject.SetObjectCurrent
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETGRAPHATTR, SGA_FLAG_TITLESUNALIGNED, HIDE_TITLE)
-    ' ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETGRAPHATTR, SGA_TITLESHOW, HIDE_TITLE)
+   ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_GRAPH).SetObjectCurrent
+   ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETGRAPHATTR, SGA_SHOWNAME, 0)
 End Sub
 
 ' ========================================
@@ -872,30 +870,27 @@ End Sub
 ' Main
 ' ========================================
 Sub Main()
-   ' ========================================   
-   ' Working
-   ' ========================================   
+   ' ' ========================================   
+   ' ' Working
+   ' ' ========================================   
    Plot() 
-   RemoveLegend()
-   RemoveXSpine()
-   RemoveYSpine()
-   SetColors()
-   SetFigureSize()
-   SetScales()
-   SetLabels()
-   SetTicks()   
-   SetTickSizes()
-   SetRanges()
+   ' RemoveLegend()
+   ' RemoveXSpine()
+   ' RemoveYSpine()
+   ' SetColors()
+   ' SetFigureSize()
+   ' SetScales()
+   ' SetLabels()
+   ' SetTicks()   
+   ' SetTickSizes()
+   ' SetRanges()
+   RemoveTitle()
    
    ' ========================================   
    ' Not Working
    ' ========================================   
-   ' RemoveTitle()
+
    ' SetLabelSizes()
    
-   ' ========================================   
-   ' Not Checked yet
-   ' ========================================   
-
 
 End Sub
