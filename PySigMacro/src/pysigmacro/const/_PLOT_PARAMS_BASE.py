@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-29 19:42:05 (ywatanabe)"
-# File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/const/_PROP_PARAMS_DICT_BASE.py
+# Timestamp: "2025-03-29 21:28:26 (ywatanabe)"
+# File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/const/_PLOT_PARAMS_BASE.py
 # ----------------------------------------
 import os
 __FILE__ = (
-    "/home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/const/_PROP_PARAMS_DICT_BASE.py"
+    "/home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/const/_PLOT_PARAMS_BASE.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------

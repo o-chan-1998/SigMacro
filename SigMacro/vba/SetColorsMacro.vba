@@ -39,16 +39,10 @@ Function GetRGBFromColumn(columnIndex As Long) As Long
 End Function
 
 Function GetAlphaFromColumn(columnIndex As Long) As Long
-    ' DebugMsg "GetRGBFromColumn called for plot " & columnIndex
    Dim alphaValue As Variant
-   
-    ' Read RGB values from worksheet (R, G, B values are assumed to be in adjacent columns)
-    alphaValue = ActiveDocument.NotebookItems(WORKSHEET_NAME).DataTable.GetData(columnIndex, 3, columnIndex, 3)
-
-    ' Standard RGB (VBA default)
-    GetAlphaFromColumn = alphaValue
+   alphaValue = ActiveDocument.NotebookItems(WORKSHEET_NAME).DataTable.GetData(columnIndex, 3, columnIndex, 3)
+   GetAlphaFromColumn = alphaValue
 End Function
-
 
 Function CalculateColorColumnForPlot(plotIndex As Long) As Long
     CalculateColorColumnForPlot = COLOR_COLUMN_FIRST + (plotIndex * COLOR_COLUMN_SPACING)
@@ -56,7 +50,6 @@ End Function
 
 Function SelectPlotObject(plotIndex As Long) As Object
     On Error Resume Next
-
     Set SelectPlotObject = ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_GRAPH).Plots(plotIndex)
     If Not SelectPlotObject Is Nothing Then
         On Error Resume Next
@@ -126,6 +119,7 @@ Sub SelectGraphObject(plotIndex As Long)
         DebugMsg "Plot object not found in SelectGraphObject for index " & plotIndex
     End If
 End Sub
+
 ' ----------------------------------------
 ' Color Setters
 ' ----------------------------------------

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-26 20:10:11 (ywatanabe)"
+# Timestamp: "2025-03-30 10:37:35 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/examples/set_labels.py
 # ----------------------------------------
 import os
@@ -10,10 +10,13 @@ __FILE__ = (
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
-# Environmental variables
-os.environ["SIGMACRO_JNB_PATH"] = r"C:\Users\wyusu\Documents\SigMacro\SigMacro.JNB"
-os.environ["SIGMACRO_TEMPLATES_DIR"] = r"C:\Users\wyusu\Documents\SigMacro\SigMacro\Templates"
-os.environ["SIGMAPLOT_BIN_PATH_WIN"] = r"C:\Program Files (x86)\SigmaPlot\SPW16\Spw.exe"
+# Environmental variables only set if not already defined
+if "SIGMACRO_JNB_PATH" not in os.environ:
+    os.environ["SIGMACRO_JNB_PATH"] = rf"C:\Users\{os.getlogin()}\Documents\SigMacro\SigMacro.JNB"
+if "SIGMACRO_TEMPLATES_DIR" not in os.environ:
+    os.environ["SIGMACRO_TEMPLATES_DIR"] = rf"C:\Users\{os.getlogin()}\Documents\SigMacro\SigMacro\Templates"
+if "SIGMAPLOT_BIN_PATH_WIN" not in os.environ:
+    os.environ["SIGMAPLOT_BIN_PATH_WIN"] = rf"C:\Program Files (x86)\SigmaPlot\SPW16\Spw.exe"
 
 import pysigmacro as psm
 import pandas as pd

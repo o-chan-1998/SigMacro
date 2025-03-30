@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-29 19:42:18 (ywatanabe)"
+# Timestamp: "2025-03-30 10:08:07 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/const/__init__.py
 # ----------------------------------------
 import os
@@ -16,6 +16,9 @@ Constant variables
 
 from ._CT import *
 from ._GPT import *
+
+from ._PLOT_TYPES import PLOT_TYPES
+
 from ._SIGMAPLOT_OBJECTS import SIGMAPLOT_OBJECTS
 from ._SIGMAPLOT_PROPERTIES import SIGMAPLOT_PROPERTIES
 from ._SIGMAPLOT_METHODS import SIGMAPLOT_METHODS

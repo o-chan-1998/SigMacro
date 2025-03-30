@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-29 18:17:34 (ywatanabe)"
+# Timestamp: "2025-03-30 10:28:05 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/path/_to_win.py
 # ----------------------------------------
 import os
@@ -29,10 +29,9 @@ def to_win(wsl_path):
         win_path = (
             win_path.replace("program_files", "Program Files")
             .replace("program_files_x86", "Program Files (x86)")
-            .replace("template", "Template")
-            .replace("documents", "Documents")
-            .replace("downloads", "Downloads")
-            .replace("desktop", "Desktop")
+            .replace("C:\\Users\\{windows_user}\\template", "C:\\Users\\{windows_user}\\Template")
+            .replace("C:\\Users\\{windows_user}\\documents", "C:\\Users\\{windows_user}\\Documents")
+            .replace("C:\\Users\\{windows_user}\\desktop", "C:\\Users\\{windows_user}\\Desktop")
         )
         return win_path
 

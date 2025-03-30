@@ -1,20 +1,22 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-29 20:59:15 (ywatanabe)"
-# File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/utils/_gen_plot_data.py
+# Timestamp: "2025-03-30 19:45:48 (ywatanabe)"
+# File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/data/_gen_demo_data.py
 # ----------------------------------------
 import os
 __FILE__ = (
-    "/home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/utils/_gen_plot_data.py"
+    "/home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/data/_gen_demo_data.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
 import numpy as np
+import pandas as pd
 
 from ..const._PLOT_PARAMS_BASE import PLOT_PARAMS_BASE
 from ..const import BGRA, COLORS
 
+from ._create_padded_df import create_padded_df
 
 # Functions
 # ------------------------------
@@ -43,32 +45,32 @@ def gen_data_single_base(
 
     # X
     x_label = x_label if x_label is not None else f"X{ii_space}"
-    x_value = x_value if x_value is not None else None
+    x_value = x_value if x_value is not None else np.nan
     xerr_label = xerr_label if xerr_label is not None else f"X Err.{ii_space}"
-    xerr_value = xerr_value if xerr_value is not None else None
+    xerr_value = xerr_value if xerr_value is not None else np.nan
     x_lower_label = (
         x_lower_label if x_lower_label is not None else f"X Lower{ii_space}"
     )
-    x_lower_value = x_lower_value if x_lower_value is not None else None
+    x_lower_value = x_lower_value if x_lower_value is not None else np.nan
     x_upper_label = (
         x_upper_label if x_upper_label is not None else f"X Upper{ii_space}"
     )
-    x_upper_value = x_upper_value if x_upper_value is not None else None
+    x_upper_value = x_upper_value if x_upper_value is not None else np.nan
 
     # Y
     y_label = y_label if y_label is not None else f"Y{ii_space}"
-    y_value = y_value if y_value is not None else None
+    y_value = y_value if y_value is not None else  np.nan
     yerr_label = yerr_label if yerr_label is not None else f"Y Err.{ii_space}"
-    yerr_value = yerr_value if yerr_value is not None else None
+    yerr_value = yerr_value if yerr_value is not None else  np.nan
     rgba_label = rgba_label if rgba_label is not None else f"BGRA{ii_space}"
     y_lower_label = (
         y_lower_label if y_lower_label is not None else f"Y Lower{ii_space}"
     )
-    y_lower_value = y_lower_value if y_lower_value is not None else None
+    y_lower_value = y_lower_value if y_lower_value is not None else np.nan
     y_upper_label = (
         y_upper_label if y_upper_label is not None else f"Y Upper{ii_space}"
     )
-    y_upper_value = y_upper_value if y_upper_value is not None else None
+    y_upper_value = y_upper_value if y_upper_value is not None else  np.nan
 
     if rgba_value is None:
         if ii is not None:
@@ -371,7 +373,7 @@ def gen_single_demo_data_violin(ii):
     )
 
 
-def gen_plot_data(plot_type, n_plots=len(COLORS)):
+def gen_demo_data(plot_type, n_plots=len(COLORS)):
     gen_single_demo_data_func = {
         "scatter": gen_single_demo_data_scatter,
         "line": gen_single_demo_data_line,
@@ -387,16 +389,17 @@ def gen_plot_data(plot_type, n_plots=len(COLORS)):
     out_dict = {}
     for ii in range(n_plots):
         out_dict.update(gen_single_demo_data_func(ii))
-    return out_dict
+
+    # To df
+    out_df = create_padded_df(out_dict)
+    return out_df
 
 
 def gen_single_demo_data_contour():
     pass
 
-
 def gen_single_demo_data_conf_mat():
     pass
-
 
 def gen_single_demo_data_():
     pass

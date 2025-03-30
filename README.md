@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-03-26 20:38:09
+!-- Timestamp: 2025-03-30 10:30:45
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/win/documents/SigMacro/README.md
 !-- --- -->
@@ -48,10 +48,20 @@ A package for automating SigmaPlot routines.
   - Installation
     - [`./PySigMacro/README.md`](./PySigMacro/README.md)
 
+## Key Directories
+
+``` bash
+./PySigMacro/examples
+./PySigMacro/src/pysigmacro/data/temp
+```
+
+## Usage
+
+``` powershell
+python.exe ./PySigMacro/examples/create_demo_data.py
+```
+
 ## TODO
-- [ ] From Python...
-  - [ ] Add Plot
-  - [ ] Change Color
 - [ ] As a Service
 
 ## Contact

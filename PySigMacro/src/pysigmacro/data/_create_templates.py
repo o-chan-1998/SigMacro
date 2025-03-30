@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-26 18:56:57 (ywatanabe)"
-# File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/utils/_create_templates.py
+# Timestamp: "2025-03-30 10:34:21 (ywatanabe)"
+# File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/data/_create_templates.py
 # ----------------------------------------
 import os
 __FILE__ = (
-    "/home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/utils/_create_templates.py"
+    "/home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/data/_create_templates.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -24,7 +24,7 @@ from ..data._import_data import import_data as ps_data_import_data
 
 class TemplateCreator:
     def __init__(
-        self, plot_type, template_dir=None, close_others=False, df=None
+        self, plot_type, templates_dir=None, close_others=False, df=None
     ):
         self.plot_type = plot_type
         self.df = df
@@ -36,9 +36,9 @@ class TemplateCreator:
         self.graph_name = f"{plot_type}_graph"
 
         # Path
-        if not template_dir:
-            template_dir = os.getenv(SIGMACRO_TEMPLATES_DIR, f"C:\\User\\{os.getlogin()}\\Documents")
-        self.filepath = os.path.join(template_dir, f"{plot_type}.JNB")
+        if not templates_dir:
+            templates_dir = os.getenv(SIGMACRO_TEMPLATES_DIR, os.path.join(__DIR__, "templates"))
+        self.filepath = os.path.join(templates_dir, f"{plot_type}.JNB")
 
     def process_connection(self, lpath=None, close_others=False):
         self.spw = ps_con_open(lpath=lpath, close_others=close_others)
