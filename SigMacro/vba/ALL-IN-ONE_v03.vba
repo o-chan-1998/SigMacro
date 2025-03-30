@@ -24,10 +24,8 @@ Const HIDE_TITLE As Long = 0
 
 ' Styling
 Const TICK_THICKNESS_00 As Variant = &H00000000
-Const TICK_THICKNESS_02 As Variant = &H00000002
 Const TICK_THICKNESS_08 As Variant = &H00000008
-Const TICK_SIZE_08 As Long = 8
-Const TICK_SIZE_32 As Long = 32
+Const TICK_WIDTH_20 As Variant = &H00000020
 Const SSA_COLOR_ALPHA As Long = &H000008a7&
 
 ' Font Sizes
@@ -91,8 +89,8 @@ Const Y_MAX_ROW As Long = 9
 
 ' Ticks (Not handled by macros but embedded in JNB file)
 ' ----------------------------------------
-Const X_TICKS_COL As Long = 4
-Const Y_TICKS_COL As Long = 5
+Const _X_TICKS_COL As Long = 4
+Const _Y_TICKS_COL As Long = 5
 
 ' Data Columns
 ' ----------------------------------------
@@ -133,19 +131,6 @@ Function _ReadCell(columnIndex As Long, rowIndex As Long) As Variant
     cellValue = dataTable.GetData(columnIndex, rowIndex, columnIndex, rowIndex)
     _ReadCell = cellValue(0, 0)
 End Function
-
-Sub _SelectXAxis()
-    Dim xAxis As Object
-    ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_AXIS).NameObject.SetObjectCurrent
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_SELECTDIM, AXIS_X)
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_SELECTLINE, AXIS_X)
-End Sub
-
-Sub _SelectYAxis()
-    ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_AXIS).NameObject.SetObjectCurrent
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_SELECTDIM, AXIS_Y)
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_SELECTLINE, AXIS_Y)
-End Sub
 
 ' ========================================
 ' Plot
@@ -378,12 +363,12 @@ Sub RemoveLegend()
    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETGRAPHATTR, SGA_AUTOLEGENDSHOW, HIDE_LEGEND)
 End Sub
 
-Sub RemoveXSpine()
+Sub RemoveXSpines()
     ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_SELECTDIM, AXIS_X)
     ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_SUB2OPTIONS, TICK_THICKNESS_00)
 End Sub
 
-Sub RemoveYSpine()
+Sub RemoveYSpines()
     ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_SELECTDIM, AXIS_Y)
     ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_SUB2OPTIONS, TICK_THICKNESS_00)
 End Sub
@@ -652,8 +637,10 @@ Sub _SetYLabelSize()
 End Sub
 
 Sub SetLabelSizes()
+   On Error Resume Next
    _SetXLabelSize()
    _SetYLabelSize()
+   On Error GoTo 0
 End Sub
 
 ' ========================================
@@ -684,55 +671,33 @@ End Sub
 ' Range
 ' ========================================
 Sub _SetXRange()
-    Dim xMin As String
-    Dim xMax As String
+    Dim xMin As Variant, xMax As Variant
     Dim xAxis As Object
     
     xMin = _ReadCell(GRAPH_PARAMS_COL, X_MIN_ROW)
     xMax = _ReadCell(GRAPH_PARAMS_COL, X_MAX_ROW)
-
-
-   
-    ' ' Get the X axis object directly
-    ' Set xAxis = ActiveDocument.CurrentPageItem.GraphPages(0).Graphs(0).Axes(HORIZONTAL)
     
-    ' ' Set the min and max values
-    ' xAxis.SetAttribute(SAA_FROMVAL, xMin)
-    ' xAxis.SetAttribute(SAA_TOVAL, xMax)
+    ' Get the X axis object directly
+    Set xAxis = ActiveDocument.CurrentPageItem.GraphPages(0).Graphs(0).Axes(AXIS_X)
+    
     ' Set the min and max values
-
-    ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_AXIS).NameObject.SetObjectCurrent
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_SELECTDIM, AXIS_X)
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_OPTIONS, 10)    
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTRSTRING, SAA_FROMVAL, xMin)
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTRSTRING, SAA_TOVAL, xMax)    
-
+    xAxis.SetAttribute(SAA_FROMVAL, xMin)
+    xAxis.SetAttribute(SAA_TOVAL, xMax)
 End Sub
 
 Sub _SetYRange()
-    Dim yMin As String
-    Dim yMax As String
+    Dim yMin As Variant, yMax As Variant
     Dim yAxis As Object
     
     yMin = _ReadCell(GRAPH_PARAMS_COL, Y_MIN_ROW)
     yMax = _ReadCell(GRAPH_PARAMS_COL, Y_MAX_ROW)
     
-    ' ' Get the Y axis object directly
-    ' Set yAxis = ActiveDocument.CurrentPageItem.GraphPages(0).Graphs(0).Axes(VERTICAL)
+    ' Get the Y axis object directly
+    Set yAxis = ActiveDocument.CurrentPageItem.GraphPages(0).Graphs(0).Axes(AXIS_Y)
     
-    ' ' ' Set the min and max values
-    ' ' yAxis.SetAttribute(SAA_FROMVAL, yMin)
-    ' ' yAxis.SetAttribute(SAA_TOVAL, yMax)
-    ' yAxis.SetCurrentObjectAttribute(GPM_SETAXISATTRSTRING, SAA_FROMVAL, yMin)
-    ' yAxis.SetCurrentObjectAttribute(GPM_SETAXISATTRSTRING, SAA_TOVAL, yMax)
-
-
-    ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_AXIS).NameObject.SetObjectCurrent
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_SELECTDIM, AXIS_Y)
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_OPTIONS, 10)
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTRSTRING, SAA_FROMVAL, yMin)
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTRSTRING, SAA_TOVAL, yMax)    
-    
+    ' Set the min and max values
+    yAxis.SetAttribute(SAA_FROMVAL, yMin)
+    yAxis.SetAttribute(SAA_TOVAL, yMax)
 End Sub
 
 
@@ -779,86 +744,59 @@ Function _GetScaleType(cellValue As Variant) As Long
    _GetScaleType = scaleType
 End Function
 
-Sub _SetXScale()
+Sub SetScales()
    On Error Resume Next
-   Dim xScaleData As Variant
-   Dim xScaleType As Long
+   Dim xScaleData As Variant, yScaleData As Variant
+   Dim xScaleType As Long, yScaleType As Long
+
    ' Read scale types from worksheet
    xScaleData = _ReadCell(GRAPH_PARAMS_COL, X_SCALE_TYPE_ROW)
+   yScaleData = _ReadCell(GRAPH_PARAMS_COL, Y_SCALE_TYPE_ROW)   
+
    ' Convert to scale type constants
    xScaleType = _GetScaleType(xScaleData)
-   ' Set X axis scale type
-   _SetAxisType HORIZONTAL, xScaleType
-
-On Error GoTo 0
-End Sub
-
-Sub _SetYScale()
-   On Error Resume Next
-   Dim yScaleData As Variant
-   Dim yScaleType As Long
-   ' Read scale types from worksheet
-   yScaleData = _ReadCell(GRAPH_PARAMS_COL, Y_SCALE_TYPE_ROW)
-   ' Convert to scale type constants
    yScaleType = _GetScaleType(yScaleData)
+
    ' Set X axis scale type
-   _SetAxisType VERTICAL, yScaleType
+   _SetAxisType AXIS_X, xScaleType
+   If Err.Number <> 0 Then
+      DebugMsg "Error setting X axis scale: " & Err.Description
+      Err.Clear
+   End If
+
+   ' Set Y axis scale type
+   _SetAxisType AXIS_Y, yScaleType
+   If Err.Number <> 0 Then
+      DebugMsg "Error setting Y axis scale: " & Err.Description
+      Err.Clear
+   End If
 
 On Error GoTo 0
-End Sub
-
-Sub SetScales()
-   _SetXScale()
-   _SetYScale()
-End Sub   
-
-' ========================================
-' Ticks
-' ========================================
-Sub _SetXTicks()
-    ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_AXIS).NameObject.SetObjectCurrent
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SAA_TICCOLUSED, 1)
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SAA_TICCOL, X_TICKS_COL)    
-End Sub
-
-Sub _SetYTicks()
-    ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_AXIS).NameObject.SetObjectCurrent
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SAA_TICCOLUSED, 1)
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SAA_TICCOL, Y_TICKS_COL)    
-End Sub
-
-Sub SetTicks()
-   On Error Resume Next
-   _SetXTicks()
-   _SetYTicks()
-   On Error GoTo 0
 End Sub
 
 ' ========================================
 ' Tick Sizes
 ' ========================================
 Sub _SetXTickSizes()
-    ' _SelectXAxis()
     ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_AXIS).NameObject.SetObjectCurrent
     ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_SELECTDIM, AXIS_X)
     ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_SELECTLINE, AXIS_X)
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SEA_THICKNESS, TICK_THICKNESS_02)
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_TICSIZE, TICK_SIZE_08)
+    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SEA_THICKNESS, TICK_THICKNESS_08)
+    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_TICSIZE, TICK_THICKNESS_08)
     ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_SELECTLINE, AXIS_Y)
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SEA_THICKNESS, TICK_THICKNESS_02)
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_TICSIZE, TICK_SIZE_08)
+    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SEA_THICKNESS, TICK_THICKNESS_08)
+    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_TICSIZE, TICK_THICKNESS_08)
 End Sub
 
 Sub _SetYTickSizes()
-    ' _SelectYAxis()
     ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_AXIS).NameObject.SetObjectCurrent
     ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_SELECTDIM, AXIS_Y)
     ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_SELECTLINE, AXIS_Y)
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SEA_THICKNESS, TICK_THICKNESS_02)
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_TICSIZE, TICK_SIZE_08)
+    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SEA_THICKNESS, TICK_THICKNESS_08)
+    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_TICSIZE, TICK_THICKNESS_08)
     ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_SELECTLINE, AXIS_X)
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SEA_THICKNESS, TICK_THICKNESS_02)
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_TICSIZE, TICK_SIZE_08)
+    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SEA_THICKNESS, TICK_THICKNESS_08)
+    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_TICSIZE, TICK_THICKNESS_08)
 End Sub
 
 Sub SetTickSizes()
@@ -872,30 +810,16 @@ End Sub
 ' Main
 ' ========================================
 Sub Main()
-   ' ========================================   
-   ' Working
-   ' ========================================   
-   Plot() 
+   Plot()   
    RemoveLegend()
-   RemoveXSpine()
-   RemoveYSpine()
+   RemoveXSpines()
+   RemoveYSpines()
+   RemoveTitle()
    SetColors()
    SetFigureSize()
-   SetScales()
-   SetLabels()
-   SetTicks()   
+   SetScales()   
+   SetLabels()   
+   SetLabelSizes() ' Does not work for y label
+   SetRanges() ' Does not work for yMax line
    SetTickSizes()
-   SetRanges()
-   
-   ' ========================================   
-   ' Not Working
-   ' ========================================   
-   ' RemoveTitle()
-   ' SetLabelSizes()
-   
-   ' ========================================   
-   ' Not Checked yet
-   ' ========================================   
-
-
 End Sub

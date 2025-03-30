@@ -684,55 +684,33 @@ End Sub
 ' Range
 ' ========================================
 Sub _SetXRange()
-    Dim xMin As String
-    Dim xMax As String
+    Dim xMin As String, xMax As String
     Dim xAxis As Object
     
     xMin = _ReadCell(GRAPH_PARAMS_COL, X_MIN_ROW)
     xMax = _ReadCell(GRAPH_PARAMS_COL, X_MAX_ROW)
-
-
-   
-    ' ' Get the X axis object directly
-    ' Set xAxis = ActiveDocument.CurrentPageItem.GraphPages(0).Graphs(0).Axes(HORIZONTAL)
     
-    ' ' Set the min and max values
-    ' xAxis.SetAttribute(SAA_FROMVAL, xMin)
-    ' xAxis.SetAttribute(SAA_TOVAL, xMax)
+    ' Get the X axis object directly
+    Set xAxis = ActiveDocument.CurrentPageItem.GraphPages(0).Graphs(0).Axes(HORIZONTAL)
+    
     ' Set the min and max values
-
-    ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_AXIS).NameObject.SetObjectCurrent
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_SELECTDIM, AXIS_X)
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_OPTIONS, 10)    
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTRSTRING, SAA_FROMVAL, xMin)
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTRSTRING, SAA_TOVAL, xMax)    
-
+    xAxis.SetAttribute(SAA_FROMVAL, xMin)
+    xAxis.SetAttribute(SAA_TOVAL, xMax)
 End Sub
 
 Sub _SetYRange()
-    Dim yMin As String
-    Dim yMax As String
+    Dim yMin As String, yMax As String
     Dim yAxis As Object
     
     yMin = _ReadCell(GRAPH_PARAMS_COL, Y_MIN_ROW)
     yMax = _ReadCell(GRAPH_PARAMS_COL, Y_MAX_ROW)
     
-    ' ' Get the Y axis object directly
-    ' Set yAxis = ActiveDocument.CurrentPageItem.GraphPages(0).Graphs(0).Axes(VERTICAL)
+    ' Get the Y axis object directly
+    Set yAxis = ActiveDocument.CurrentPageItem.GraphPages(0).Graphs(0).Axes(VERTICAL)
     
-    ' ' ' Set the min and max values
-    ' ' yAxis.SetAttribute(SAA_FROMVAL, yMin)
-    ' ' yAxis.SetAttribute(SAA_TOVAL, yMax)
-    ' yAxis.SetCurrentObjectAttribute(GPM_SETAXISATTRSTRING, SAA_FROMVAL, yMin)
-    ' yAxis.SetCurrentObjectAttribute(GPM_SETAXISATTRSTRING, SAA_TOVAL, yMax)
-
-
-    ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_AXIS).NameObject.SetObjectCurrent
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_SELECTDIM, AXIS_Y)
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_OPTIONS, 10)
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTRSTRING, SAA_FROMVAL, yMin)
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTRSTRING, SAA_TOVAL, yMax)    
-    
+    ' Set the min and max values
+    yAxis.SetAttribute(SAA_FROMVAL, yMin)
+    yAxis.SetAttribute(SAA_TOVAL, yMax)
 End Sub
 
 
@@ -883,9 +861,9 @@ Sub Main()
    SetFigureSize()
    SetScales()
    SetLabels()
+   SetRanges() ' Before calling this, we need to set as constant instead of data range
    SetTicks()   
    SetTickSizes()
-   SetRanges()
    
    ' ========================================   
    ' Not Working
@@ -896,6 +874,6 @@ Sub Main()
    ' ========================================   
    ' Not Checked yet
    ' ========================================   
-
+   
 
 End Sub
