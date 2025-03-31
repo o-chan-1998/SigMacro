@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-30 18:28:19 (ywatanabe)"
+# Timestamp: "2025-03-31 19:29:04 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/data/_gen_graph_wizard_params.py
 # ----------------------------------------
 import os
@@ -27,12 +27,12 @@ def gen_graph_wizard_params_bar():
         "plot_columns_per_plot": "ColumnsPerPlot",
         "plot_plot_columns_count_array": "PlotColumnCountArray",
         "plot_data_source": "Worksheet Columns",
-        "plot_polarunits": "None",
+        "plot_polarunits": "NONE_STR",
         "plot_anguleunits": "Degrees",
         "plot_min_angle_row": 0,
         "plot_max_angle_row": 360,
-        "plot_unknown1": "None",
-        "plot_group_style": "None",
+        "plot_unknown1": "NONE_STR",
+        "plot_group_style": "NONE_STR",
         "plot_use_automatic_legends": True,
     }
 
@@ -44,12 +44,12 @@ def gen_graph_wizard_params_barh():
         "plot_columns_per_plot": "ColumnsPerPlot",
         "plot_plot_columns_count_array": "PlotColumnCountArray",
         "plot_data_source": "Worksheet Columns",
-        "plot_polarunits": "None",
+        "plot_polarunits": "NONE_STR",
         "plot_anguleunits": "Degrees",
         "plot_min_angle_row": 0,
         "plot_max_angle_row": 360,
-        "plot_unknown1": np.nan,
-        "plot_group_style": "None",
+        "plot_unknown1": "NONE_STR",
+        "plot_group_style": "NONE_STR",
         "plot_use_automatic_legends": True,
     }
 
@@ -65,8 +65,8 @@ def gen_graph_wizard_params_area():
         "plot_anguleunits": "Degrees",
         "plot_min_angle_row": 0,
         "plot_max_angle_row": 360,
-        "plot_unknown1": np.nan,
-        "plot_group_style": "None",
+        "plot_unknown1": "NONE_STR",
+        "plot_group_style": "Standard Deviation",
         "plot_use_automatic_legends": True,
     }
 
@@ -82,8 +82,8 @@ def gen_graph_wizard_params_box():
         "plot_anguleunits": "Degrees",
         "plot_min_angle_row": 0,
         "plot_max_angle_row": 360,
-        "plot_unknown1": np.nan,
-        "plot_group_style": "None",
+        "plot_unknown1": "NONE_STR",
+        "plot_group_style": "NONE_STR",
         "plot_use_automatic_legends": True,
     }
 
@@ -99,8 +99,8 @@ def gen_graph_wizard_params_boxh():
         "plot_anguleunits": "Degrees",
         "plot_min_angle_row": 0,
         "plot_max_angle_row": 360,
-        "plot_unknown1": np.nan,
-        "plot_group_style": "None",
+        "plot_unknown1": "NONE_STR",
+        "plot_group_style": "NONE_STR",
         "plot_use_automatic_legends": True,
     }
 
@@ -112,12 +112,12 @@ def gen_graph_wizard_params_line():
         "plot_columns_per_plot": "ColumnsPerPlot",
         "plot_plot_columns_count_array": "PlotColumnCountArray",
         "plot_data_source": "Worksheet Columns",
-        "plot_polarunits": "None",
+        "plot_polarunits": "NONE_STR",
         "plot_anguleunits": "Degrees",
         "plot_min_angle_row": 0,
         "plot_max_angle_row": 360,
-        "plot_unknown1": np.nan,
-        "plot_group_style": "None",
+        "plot_unknown1": "NONE_STR",
+        "plot_group_style": "NONE_STR",
         "plot_use_automatic_legends": True,
     }
 
@@ -129,12 +129,12 @@ def gen_graph_wizard_params_filled_line():
         "plot_columns_per_plot": "ColumnsPerPlot",
         "plot_plot_columns_count_array": "PlotColumnCountArray",
         "plot_data_source": "Worksheet Columns",
-        "plot_polarunits": "None",
+        "plot_polarunits": "NONE_STR",
         "plot_anguleunits": "Degrees",
         "plot_min_angle_row": 0,
         "plot_max_angle_row": 360,
-        "plot_unknown1": np.nan,
-        "plot_group_style": "None",
+        "plot_unknown1": "NONE_STR",
+        "plot_group_style": "NONE_STR",
         "plot_use_automatic_legends": True,
     }
 
@@ -150,8 +150,8 @@ def gen_graph_wizard_params_scatter():
         "plot_anguleunits": "Degrees",
         "plot_min_angle_row": 0,
         "plot_max_angle_row": 360,
-        "plot_unknown1": np.nan,
-        "plot_group_style": "None",
+        "plot_unknown1": "NONE_STR",
+        "plot_group_style": "NONE_STR",
         "plot_use_automatic_legends": True,
     }
 
@@ -167,7 +167,7 @@ def gen_graph_wizard_params_polar():
         "plot_anguleunits": "Degrees",
         "plot_min_angle_row": 0,
         "plot_max_angle_row": 360,
-        "plot_unknown1": np.nan,
+        "plot_unknown1": "NONE_STR",
         "plot_group_style": "Standard Deviation",
         "plot_use_automatic_legends": True,
     }

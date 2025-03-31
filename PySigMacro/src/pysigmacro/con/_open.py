@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-26 19:30:29 (ywatanabe)"
+# Timestamp: "2025-03-31 14:02:58 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/con/_open.py
 # ----------------------------------------
 import os
@@ -63,7 +63,6 @@ def open(lpath=None, close_others=False, visible=True): # , print_env_vars=True
             for sp_bin in [sp_bin_wsl, sp_bin_win]:
                 for path in [lpath_win, lpath_wsl]:
                     try:
-                        # print(sp_bin, path)
                         if os.path.exists(path):
                             subprocess.Popen([sp_bin, path])
                             break

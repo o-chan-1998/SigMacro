@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-30 20:06:21 (ywatanabe)"
+# Timestamp: "2025-03-31 19:55:42 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/data/_create_demo_csv.py
 # ----------------------------------------
 import os
@@ -46,10 +46,17 @@ def create_demo_csv(plot_type, save=False):
     # Concatenate
     df = create_padded_df(df_graph_wizard_params, df_visual_params, df_data)
 
+    # # Replace NONE_STR to "None"
+    # df = df.replace("NONE_STR", "None")
+
     if save:
         # Saving
         sdir = os.path.join(__DIR__, "templates")
         spath = to_win(os.path.join(sdir, f"{plot_type}.csv"))
+
+        if os.path.exists(spath):
+            os.remove(spath)
+
         df.to_csv(spath, index=False)
         print(f"Saved to: {spath}")
 

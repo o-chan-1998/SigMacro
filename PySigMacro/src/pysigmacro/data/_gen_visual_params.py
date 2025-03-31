@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-30 18:39:40 (ywatanabe)"
+# Timestamp: "2025-03-31 20:17:14 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/data/_gen_visual_params.py
 # ----------------------------------------
 import os
@@ -19,29 +19,33 @@ import pandas as pd
 # ------------------------------
 PARAMS_FOR_BAR = {
     "xscale": "category",
-    "xmax": np.nan,
-    "xticks": [np.nan],
+    "xmax": "NONE_STR",
+    "xticks": ["NONE_STR"],
 }
 
 PARAMS_FOR_BARH = {
     "yscale": "category",
-    "ymax": np.nan,
-    "yticks": [np.nan],
+    "ymax": "NONE_STR",
+    "yticks": ["NONE_STR"],
 }
 
 PARAMS_FOR_AREA = {
+    "ymax": 1.65,
+    "yticks": [0, 0.5, 1, 1.5]
 }
 
 PARAMS_FOR_BOX = {
     "xscale": "category",
-    "xmax": np.nan,
-    "xticks": [np.nan],
+    "xmax": "NONE_STR",
+    "xticks": ["NONE_STR"],
+    "ymax": 77,
+    "yticks": [0, 30, 60],
 }
 
 PARAMS_FOR_BOXH = {
     "yscale": "category",
-    "ymax": np.nan,
-    "yticks": [np.nan],
+    "ymax": "NONE_STR",
+    "yticks": ["NONE_STR"],
 }
 
 PARAMS_FOR_LINE = {
@@ -58,8 +62,8 @@ PARAMS_FOR_SCATTER = {
 
 PARAMS_FOR_VIOLIN = {
     "xscale": "category",
-    "xmax": np.nan,
-    "xticks": [np.nan],
+    "xmax": "NONE_STR",
+    "xticks": ["NONE_STR"],
 }
 
 def gen_visual_params(plot_type, n_cols=8, **kwargs):
@@ -98,7 +102,7 @@ def gen_visual_params(plot_type, n_cols=8, **kwargs):
     # Preserve additional columns for future expansion
     n_cols_preserve = n_cols - params_df.shape[1]
     for ii in range(n_cols_preserve):
-        params_df[f"preserved {ii}"] = np.nan
+        params_df[f"preserved {ii}"] = "NONE_STR"
 
     return params_df
 

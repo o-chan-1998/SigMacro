@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-26 19:50:32 (ywatanabe)"
+# Timestamp: "2025-03-31 20:00:58 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/data/_import_data.py
 # ----------------------------------------
 import os
@@ -50,11 +50,15 @@ def import_data(worksheet_item, df=None, csv=None, left=0, top=0):
 
     # Header
     for ii, header in enumerate(df.columns):
-        datatable_obj.ColumnTitle(ii, header)
+        datatable_obj.ColumnTitle(ii, str(header)) # This does not work
 
-    # Data
-    data_list = df.T.values.tolist()
-    datatable_obj.PutData(data_list, left, top)
+    for ii, column_name in enumerate(df.columns):
+        col = df[column_name]
+        # Remove NaN for data
+        # if not ii <= 3:
+        col = col.replace("NONE_STR", "None")
+        col = col[~col.isna()]
+        datatable_obj.PutData(col.tolist(), left+ii, top)
 
     return datatable_obj
 
