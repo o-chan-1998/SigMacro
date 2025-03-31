@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-26 19:28:24 (ywatanabe)"
+# Timestamp: "2025-03-30 10:33:41 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/path/_copy.py
 # ----------------------------------------
 import os
@@ -57,8 +57,9 @@ def copy_template(plot_type, tgt_dir, src_dir=None):
     if not src_dir:
         src_dir = os.getenv(
             "SIGMACRO_TEMPLATES_DIR",
-            r"C:\Users\wyusu\Documents\SigMacro\SigMacro\Templates",
+            os.path.join("../data/templates")
         )
+        # r"C:\Users\wyusu\Documents\SigMacro\SigMacro\Templates"
     src_path = os.path.join(src_dir, f"{plot_type}.JNB")
     tgt_path = add_timestamp(os.path.join(tgt_dir, f"{plot_type}.JNB"))
     copy(src_path, tgt_path)

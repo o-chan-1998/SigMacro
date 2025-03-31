@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-24 19:42:51 (ywatanabe)"
+# Timestamp: "2025-03-31 15:06:29 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/com/_NotebookItemsWrapper.py
 # ----------------------------------------
 import os
@@ -22,16 +22,21 @@ class NotebookItemsWrapper(BaseCOMWrapper):
 
     def clean(self):
         """Clean notebook items with default naming pattern (e.g., Section 1, Section 2, ...)"""
-        pattern = re.compile(r"^Section\s*\d+$")
-        # Need to iterate in reverse because closing affects the collection indices
-        for ii in range(self._com_object.Count - 1, -1, -1):
-        # for ii in range(self._com_object.Count):
-            print(ii, self._com_object[ii].Name)
-            if pattern.match(self._com_object[ii].Name):
-                try:
-                    self._com_object[ii].Close(False)
-                except IndexError as e:
-                    print(f"Could not close notebook item {self._com_object[ii].Name}: {e}")
+        patterns = [
+            re.compile(r"^Section\s+\d+$"), # Matches "Section 1", "Section 2", etc.
+            re.compile(r"^Graph\s+Page\s+\d+$"), # Matches "Graph Page 1", "Graph Page 2", etc.
+            re.compile(r"^Data\s+\d+$"), # Matches "Data 1", "Data 2", etc.
+            # Add other default patterns if needed
+        ]
+        for pattern in patterns:
+            # Need to iterate in reverse because closing affects the collection indices
+            for ii in range(self._com_object.Count - 1, -1, -1):
+                # print(ii, self._com_object[ii].Name)
+                if pattern.match(self._com_object[ii].Name):
+                    try:
+                        self._com_object[ii].Close(False)
+                    except IndexError as e:
+                        print(f"Could not close notebook item {self._com_object[ii].Name}: {e}")
 
     def add_worksheet(self, name=None):
         """Add a new worksheet to the notebook"""

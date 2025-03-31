@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-03-26 20:07:12
+!-- Timestamp: 2025-03-30 10:47:25
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/README.md
 !-- --- -->
@@ -26,20 +26,13 @@ python.exe -m pip install -e .
 
 ## (Optional) Environmental Variable
 
-<!-- ``` ps1
- !-- $env:VARIABLE_NAME = "variable_value" # # Set an environment variable in PowerShell
- !-- echo $env:VARIABLE_NAME # To verify it was set correctly
- !-- import os
- !-- os.getenv("VARIABLE_NAME")
- !-- ``` -->
-
 ``` ps1
 $env:SIGMACRO_JNB_PATH = "C:\Users\wyusu\Documents\SigMacro\SigMacro.JNB"
-$env:SIGMACRO_TEMPLATES_DIR = "C:\Users\wyusu\Documents\SigMacro\SigMacro\Templates"
+$env:SIGMACRO_TEMPLATES_DIR = "C:\Users\wyusu\Documents\SigMacro\Templates"
 $env:SIGMAPLOT_BIN_PATH_WIN = "C:\Program Files (x86)\SigmaPlot\SPW16\Spw.exe"
 # $env:SIGMAPLOT_BIN_PATH_WSL = "/mnt/c/Program Files (x86)/SigmaPlot/SPW16/Spw.exe" # Optional
 ```
-<!-- # $env:SIGMACRO_ARGS_PATH = r"C:\Users\wyusu\Documents\SigMacro\SigMacro\Templates\.args.txt" # Optional -->
+
 ## (Optional) Work on WSL
 
 ``` bash
