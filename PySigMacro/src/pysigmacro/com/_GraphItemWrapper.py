@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-04-01 19:38:34 (ywatanabe)"
+# Timestamp: "2025-04-01 19:40:41 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/com/_GraphItemWrapper.py
 # ----------------------------------------
 import os
@@ -20,70 +20,20 @@ class GraphItemWrapper(BaseCOMWrapper):
 
     __classname__ = "GraphItemWrapper"
 
-    def _export_as_base(
-        self, image_format, path=None, crop=False, keep_orig=True
-    ):
-        image_format = image_format.upper()
-        assert image_format in [
-            "JPG",
-            "BMP",
-            "GIF",
-        ], f"Unsupported image format: {image_format}. Supported formats are JPG, BMP, and GIF."
-        ext = f".{image_format.lower()}"
-        if path is None:
-            path = os.path.splitext(self.path)[0] + ext
-        # Export to BMP
-        self._com_object.Export(path, image_format)
-        # Crop if requested
-        if crop:
-            from ..image import crop_images
-
-            crop_images([path], keep_orig=keep_orig)
-        return path
-
-
     def export_as_gif(self, path=None, crop=False, keep_orig=True):
-        return self._export_as_base("GIF", path=path, crop=crop, keep_orig=keep_orig)
+        return self._export_as_base(
+            "GIF", path=path, crop=crop, keep_orig=keep_orig
+        )
 
     def export_as_jpg(self, path=None, crop=False, keep_orig=True):
-        return self._export_as_base("JPG", path=path, crop=crop, keep_orig=keep_orig)
+        return self._export_as_base(
+            "JPG", path=path, crop=crop, keep_orig=keep_orig
+        )
 
     def export_as_bmp(self, path=None, crop=False, keep_orig=True):
-        return self._export_as_base("BMP", path=path, crop=crop, keep_orig=keep_orig)
-
-    # def export_as_jpg(self, path=None, crop=False):
-    #     """Export graph item as JPG, with optional cropping"""
-
-    #     if path is None:
-    #         path = os.path.splitext(self.path)[0] + ".jpg"
-
-    #     # Export to JPG
-    #     self._com_object.Export(path, "JPG")
-
-    #     # Crop if requested
-    #     if crop:
-    #         from ..image import crop_images
-
-    #         crop_images([path])
-
-    #     return path
-
-    # def export_as_bmp(self, path=None, crop=False, keep_orig=True):
-    #     """Export graph item as BMP, with optional cropping"""
-
-    #     if path is None:
-    #         path = os.path.splitext(self.path)[0] + ".bmp"
-
-    #     # Export to BMP
-    #     self._com_object.Export(path, "BMP")
-
-    #     # Crop if requested
-    #     if crop:
-    #         from ..image import crop_images
-
-    #         crop_images([path], keep_orig=keep_orig)
-
-    #     return path
+        return self._export_as_base(
+            "BMP", path=path, crop=crop, keep_orig=keep_orig
+        )
 
     def export_as_tif(self, path=None, crop=True, keep_orig=True):
         """
@@ -110,21 +60,26 @@ class GraphItemWrapper(BaseCOMWrapper):
 
         return tiff_path_out
 
-    # def export_as_gif(self, path=None, crop=False, keep_orig=True):
-    #     """Export graph item as GIF, with optional cropping"""
+    def _export_as_base(
+        self, image_format, path=None, crop=False, keep_orig=True
+    ):
+        image_format = image_format.upper()
+        assert image_format in [
+            "JPG",
+            "BMP",
+            "GIF",
+        ], f"Unsupported image format: {image_format}. Supported formats are JPG, BMP, and GIF."
+        ext = f".{image_format.lower()}"
+        if path is None:
+            path = os.path.splitext(self.path)[0] + ext
+        # Export to BMP
+        self._com_object.Export(path, image_format)
+        # Crop if requested
+        if crop:
+            from ..image import crop_images
 
-    #     if path is None:
-    #         path = os.path.splitext(self.path)[0] + ".gif"
-
-    #     # Export to GIF
-    #     self._com_object.Export(path, "GIF")
-
-    #     # Crop if requested
-    #     if crop:
-    #         from ..image import crop_images
-
-    #         crop_images([path], keep_orig=keep_orig)
-    #     return path
+            crop_images([path], keep_orig=keep_orig)
+        return path
 
     def rename_xy_labels(self, xlabel, ylabel):
         from ..utils._run_macro import run_macro
