@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-04-01 19:14:52 (ywatanabe)"
+# Timestamp: "2025-04-01 19:45:28 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/examples/demo.py
 # ----------------------------------------
 import os
@@ -27,8 +27,8 @@ for plot_type in psm.const.PLOT_TYPES:
     if plot_type in UNABAILABLE_PLOT_TYPES:
         continue
 
-    if plot_type != "box":
-        continue
+    # if plot_type != "box":
+    #     continue
 
     # if plot_type != "violin":
     #     continue

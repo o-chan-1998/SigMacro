@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-04-01 19:41:27
+!-- Timestamp: 2025-04-01 19:42:15
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/win/documents/SigMacro/README.md
 !-- --- -->
@@ -11,18 +11,18 @@ A package for automating SigmaPlot routines.
 ![SigMacro Demo](./docs/demo.gif)
 
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 10px;">
-    <img src="./templates/line_cropped.gif" alt="Line Plot" width="150" />
-    <img src="./templates/filled_line_cropped.gif" alt="Filled Line Plot" width="150" />
-    <img src="./templates/area_cropped.gif" alt="Area Plot" width="150" />
-    <img src="./templates/scatter_cropped.gif" alt="Scatter Plot" width="150" />
-    <img src="./templates/bar_cropped.gif" alt="Bar Plot" width="150" />
-    <img src="./templates/bar_h_cropped.gif" alt="Horizontal Bar Plot" width="150" />
-    <img src="./templates/box_cropped.gif" alt="Box Plot" width="150" />
-    <img src="./templates/box_h_cropped.gif" alt="Horizontal Box Plot" width="150" />
-    <img src="./templates/violin_cropped.gif" alt="Violin Plot" width="150" />
-    <img src="./templates/contour_cropped.gif" alt="Contour Plot" width="150" />
-    <img src="./templates/polar_cropped.gif" alt="Polar Plot" width="150" />
-    <img src="./templates/confusion_matrix_cropped.gif" alt="Confusion Matrix" width="150" />
+    <img src="./templates/jnb/line_cropped.gif" alt="Line Plot" width="150" />
+    <img src="./templates/jnb/filled_line_cropped.gif" alt="Filled Line Plot" width="150" />
+    <img src="./templates/jnb/area_cropped.gif" alt="Area Plot" width="150" />
+    <img src="./templates/jnb/scatter_cropped.gif" alt="Scatter Plot" width="150" />
+    <img src="./templates/jnb/bar_cropped.gif" alt="Bar Plot" width="150" />
+    <img src="./templates/jnb/bar_h_cropped.gif" alt="Horizontal Bar Plot" width="150" />
+    <img src="./templates/jnb/box_cropped.gif" alt="Box Plot" width="150" />
+    <img src="./templates/jnb/box_h_cropped.gif" alt="Horizontal Box Plot" width="150" />
+    <img src="./templates/jnb/violin_cropped.gif" alt="Violin Plot" width="150" />
+    <img src="./templates/jnb/contour_cropped.gif" alt="Contour Plot" width="150" />
+    <img src="./templates/jnb/polar_cropped.gif" alt="Polar Plot" width="150" />
+    <img src="./templates/jnb/confusion_matrix_cropped.gif" alt="Confusion Matrix" width="150" />
 </div>
 
 ## Prerequisite
