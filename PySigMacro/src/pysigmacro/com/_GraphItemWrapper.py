@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-26 18:29:53 (ywatanabe)"
+# Timestamp: "2025-04-01 17:39:59 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/com/_GraphItemWrapper.py
 # ----------------------------------------
 import os
@@ -12,6 +12,7 @@ __DIR__ = os.path.dirname(__FILE__)
 
 from ..const import *
 from ._BaseCOMWrapper import BaseCOMWrapper
+from ..utils._remove import remove
 
 
 class GraphItemWrapper(BaseCOMWrapper):
@@ -33,69 +34,43 @@ class GraphItemWrapper(BaseCOMWrapper):
             crop_images([path])
         return path
 
-    def export_as_bmp(self, path=None, crop=False):
+    def export_as_bmp(self, path=None, crop=False, keep_orig=True):
         """Export graph item as BMP, with optional cropping"""
         # Use self.path as default if path is not provided
         if path is None:
             path = os.path.splitext(self.path)[0] + ".bmp"
         # Export to BMP
         self._com_object.Export(path, "BMP")
+
         # Crop if requested
         if crop:
             from ..image import crop_images
+            crop_images([path], keep_orig=keep_orig)
 
-            crop_images([path])
         return path
 
-    def export_as_tif(self, path=None, crop=True, convert_from_bmp=True):
+    def export_as_tif(self, path=None, crop=True, keep_orig=True):
         """
         Export graph item as TIF, with optional cropping
         If convert_from_bmp is True, will first export as BMP then convert to TIFF
         (useful when direct TIFF export doesn't work properly)
         """
-        # Use self.path as default if path is not provided
+        from ..image import convert_bmp_to_tiff
+
+        # JNB to BMP
         if path is None:
             try:
                 path = os.path.splitext(self.path)[0] + ".tif"
             except AttributeError:
                 raise ValueError("No path provided and self.path is not set")
+        bmp_path = os.path.splitext(path)[0] + ".bmp"
+        self.export_as_bmp(bmp_path, crop=crop, keep_orig=keep_orig)
 
-        if convert_from_bmp:
-            # Create temporary BMP path
-            bmp_path = os.path.splitext(path)[0] + ".bmp"
-            # Export to BMP first
-            self.export_as_bmp(bmp_path, crop=crop)
-            # Convert to TIFF
-            from ..image import convert_bmp_to_tiff
+        # BMP to TIFF
+        actual_bmp_path = bmp_path if not crop else bmp_path.replace(".bmp", "_cropped.bmp")
+        tiff_path = convert_bmp_to_tiff(actual_bmp_path, keep_orig=keep_orig)
 
-            tiff_path = convert_bmp_to_tiff(
-                bmp_path
-                if not crop
-                else bmp_path.replace(".bmp", "_cropped.bmp")
-            )
-            # Delete temporary BMP if it was not cropped
-            if not crop:
-                try:
-                    os.remove(bmp_path)
-                except:
-                    pass
-            return tiff_path
-        else:
-            # Direct TIFF export
-            try:
-                self._com_object.Export(path, "TIF")
-                # Crop if requested
-                if crop:
-                    from ..image import crop_images
-
-                    crop_images([path])
-                return path
-            except Exception as e:
-                print(f"Direct TIFF export failed: {e}")
-                print("Attempting BMP conversion method...")
-                return self.export_as_tif(
-                    path, crop=crop, convert_from_bmp=True
-                )
+        return tiff_path
 
     def rename_xy_labels(self, xlabel, ylabel):
         from ..utils._run_macro import run_macro
