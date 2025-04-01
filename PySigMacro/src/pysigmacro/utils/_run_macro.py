@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-26 19:07:14 (ywatanabe)"
+# Timestamp: "2025-04-01 09:48:36 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/utils/_run_macro.py
 # ----------------------------------------
 import os
@@ -11,9 +11,10 @@ __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
 from ._args import to_args
-from ..con._open import open as ps_con_open
 
 def run_macro(tgt_obj, macroname, **kwargs):
+    from ..con._open import open as ps_con_open
+
     # Specify Macro
     to_args(**kwargs)
     macro_PATH = os.getenv("SIGMACRO_JNB_PATH", rf"C:\Users\{os.getlogin()}\Documents\SigMacro\SigMacro.JNB")

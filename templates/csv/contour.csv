@@ -1,0 +1,14 @@
+graph wizard parameter,value,visual parameter,value,xticks,yticks,preserved 0,preserved 1,preserved 2,preserved 3
+plot_type,Contour,xlabel,X-Axis Label,auto,auto,NONE_STR,NONE_STR,NONE_STR,NONE_STR
+plot_style_type,NONE_STR,xmm,40,,,NONE_STR,NONE_STR,NONE_STR,NONE_STR
+plot_data_type,NONE_STR,xscale,category,,,NONE_STR,NONE_STR,NONE_STR,NONE_STR
+plot_columns_per_plot,NONE_STR,xmin,NONE_STR,,,NONE_STR,NONE_STR,NONE_STR,NONE_STR
+plot_plot_columns_count_array,NONE_STR,xmax,NONE_STR,,,NONE_STR,NONE_STR,NONE_STR,NONE_STR
+plot_data_source,NONE_STR,ylabel,Y-Axis Label,,,NONE_STR,NONE_STR,NONE_STR,NONE_STR
+plot_polarunits,NONE_STR,ymm,28.0,,,NONE_STR,NONE_STR,NONE_STR,NONE_STR
+plot_anguleunits,NONE_STR,yscale,category,,,NONE_STR,NONE_STR,NONE_STR,NONE_STR
+plot_min_angle_row,NONE_STR,ymin,9,,,NONE_STR,NONE_STR,NONE_STR,NONE_STR
+plot_max_angle_row,NONE_STR,ymax,5,,,NONE_STR,NONE_STR,NONE_STR,NONE_STR
+plot_unknown1,NONE_STR,,,,,,,,
+plot_group_style,NONE_STR,,,,,,,,
+plot_use_automatic_legends,True,,,,,,,,

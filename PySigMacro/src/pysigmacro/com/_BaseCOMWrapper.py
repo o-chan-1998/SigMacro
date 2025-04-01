@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-25 04:33:38 (ywatanabe)"
+# Timestamp: "2025-04-01 13:49:36 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/com/_BaseCOMWrapper.py
 # ----------------------------------------
 import os
@@ -392,13 +392,14 @@ class BaseCOMWrapper:
             print(f"Error getting active document: {e}")
             return None
 
-    def activate(self):
+    def activate(self, visible=False):
         """Activate this object (make it visible and current)"""
         try:
-            # First try to make the application visible
-            if "Application" in self._access_path or self._access_path == "":
-                if hasattr(self._com_object, "Visible"):
-                    self._com_object.Visible = True
+            if visible:
+                # First try to make the application visible
+                if "Application" in self._access_path or self._access_path == "":
+                    if hasattr(self._com_object, "Visible"):
+                        self._com_object.Visible = True
 
             # Try different activation methods
             if hasattr(self._com_object, "Activate"):

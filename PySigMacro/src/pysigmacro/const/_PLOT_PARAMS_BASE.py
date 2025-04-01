@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-29 21:28:26 (ywatanabe)"
+# Timestamp: "2025-03-31 23:30:19 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/const/_PLOT_PARAMS_BASE.py
 # ----------------------------------------
 import os
