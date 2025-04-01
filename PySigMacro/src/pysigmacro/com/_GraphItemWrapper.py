@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-04-01 19:40:41 (ywatanabe)"
+# Timestamp: "2025-04-01 20:26:24 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/com/_GraphItemWrapper.py
 # ----------------------------------------
 import os
@@ -20,17 +20,17 @@ class GraphItemWrapper(BaseCOMWrapper):
 
     __classname__ = "GraphItemWrapper"
 
-    def export_as_gif(self, path=None, crop=False, keep_orig=True):
+    def export_as_gif(self, path=None, crop=True, keep_orig=True):
         return self._export_as_base(
             "GIF", path=path, crop=crop, keep_orig=keep_orig
         )
 
-    def export_as_jpg(self, path=None, crop=False, keep_orig=True):
+    def export_as_jpg(self, path=None, crop=True, keep_orig=True):
         return self._export_as_base(
             "JPG", path=path, crop=crop, keep_orig=keep_orig
         )
 
-    def export_as_bmp(self, path=None, crop=False, keep_orig=True):
+    def export_as_bmp(self, path=None, crop=True, keep_orig=True):
         return self._export_as_base(
             "BMP", path=path, crop=crop, keep_orig=keep_orig
         )
@@ -61,7 +61,7 @@ class GraphItemWrapper(BaseCOMWrapper):
         return tiff_path_out
 
     def _export_as_base(
-        self, image_format, path=None, crop=False, keep_orig=True
+        self, image_format, path=None, crop=True, keep_orig=True
     ):
         image_format = image_format.upper()
         assert image_format in [

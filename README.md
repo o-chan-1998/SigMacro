@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-04-01 19:42:15
+!-- Timestamp: 2025-04-01 20:25:36
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/win/documents/SigMacro/README.md
 !-- --- -->
