@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-04-01 20:25:36
+!-- Timestamp: 2025-04-01 20:39:06
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/win/documents/SigMacro/README.md
 !-- --- -->
@@ -16,9 +16,9 @@ A package for automating SigmaPlot routines.
     <img src="./templates/jnb/area_cropped.gif" alt="Area Plot" width="150" />
     <img src="./templates/jnb/scatter_cropped.gif" alt="Scatter Plot" width="150" />
     <img src="./templates/jnb/bar_cropped.gif" alt="Bar Plot" width="150" />
-    <img src="./templates/jnb/bar_h_cropped.gif" alt="Horizontal Bar Plot" width="150" />
+    <img src="./templates/jnb/barh_cropped.gif" alt="Horizontal Bar Plot" width="150" />
     <img src="./templates/jnb/box_cropped.gif" alt="Box Plot" width="150" />
-    <img src="./templates/jnb/box_h_cropped.gif" alt="Horizontal Box Plot" width="150" />
+    <img src="./templates/jnb/boxh_cropped.gif" alt="Horizontal Box Plot" width="150" />
     <img src="./templates/jnb/violin_cropped.gif" alt="Violin Plot" width="150" />
     <img src="./templates/jnb/contour_cropped.gif" alt="Contour Plot" width="150" />
     <img src="./templates/jnb/polar_cropped.gif" alt="Polar Plot" width="150" />
