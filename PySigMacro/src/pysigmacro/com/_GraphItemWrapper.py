@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-04-01 17:39:59 (ywatanabe)"
+# Timestamp: "2025-04-01 19:38:34 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/com/_GraphItemWrapper.py
 # ----------------------------------------
 import os
@@ -20,34 +20,70 @@ class GraphItemWrapper(BaseCOMWrapper):
 
     __classname__ = "GraphItemWrapper"
 
-    def export_as_jpg(self, path=None, crop=False):
-        """Export graph item as JPG, with optional cropping"""
-        # Use self.path as default if path is not provided
+    def _export_as_base(
+        self, image_format, path=None, crop=False, keep_orig=True
+    ):
+        image_format = image_format.upper()
+        assert image_format in [
+            "JPG",
+            "BMP",
+            "GIF",
+        ], f"Unsupported image format: {image_format}. Supported formats are JPG, BMP, and GIF."
+        ext = f".{image_format.lower()}"
         if path is None:
-            path = os.path.splitext(self.path)[0] + ".jpg"
-        # Export to JPG
-        self._com_object.Export(path, "JPG")
+            path = os.path.splitext(self.path)[0] + ext
+        # Export to BMP
+        self._com_object.Export(path, image_format)
         # Crop if requested
         if crop:
             from ..image import crop_images
 
-            crop_images([path])
+            crop_images([path], keep_orig=keep_orig)
         return path
+
+
+    def export_as_gif(self, path=None, crop=False, keep_orig=True):
+        return self._export_as_base("GIF", path=path, crop=crop, keep_orig=keep_orig)
+
+    def export_as_jpg(self, path=None, crop=False, keep_orig=True):
+        return self._export_as_base("JPG", path=path, crop=crop, keep_orig=keep_orig)
 
     def export_as_bmp(self, path=None, crop=False, keep_orig=True):
-        """Export graph item as BMP, with optional cropping"""
-        # Use self.path as default if path is not provided
-        if path is None:
-            path = os.path.splitext(self.path)[0] + ".bmp"
-        # Export to BMP
-        self._com_object.Export(path, "BMP")
+        return self._export_as_base("BMP", path=path, crop=crop, keep_orig=keep_orig)
 
-        # Crop if requested
-        if crop:
-            from ..image import crop_images
-            crop_images([path], keep_orig=keep_orig)
+    # def export_as_jpg(self, path=None, crop=False):
+    #     """Export graph item as JPG, with optional cropping"""
 
-        return path
+    #     if path is None:
+    #         path = os.path.splitext(self.path)[0] + ".jpg"
+
+    #     # Export to JPG
+    #     self._com_object.Export(path, "JPG")
+
+    #     # Crop if requested
+    #     if crop:
+    #         from ..image import crop_images
+
+    #         crop_images([path])
+
+    #     return path
+
+    # def export_as_bmp(self, path=None, crop=False, keep_orig=True):
+    #     """Export graph item as BMP, with optional cropping"""
+
+    #     if path is None:
+    #         path = os.path.splitext(self.path)[0] + ".bmp"
+
+    #     # Export to BMP
+    #     self._com_object.Export(path, "BMP")
+
+    #     # Crop if requested
+    #     if crop:
+    #         from ..image import crop_images
+
+    #         crop_images([path], keep_orig=keep_orig)
+
+    #     return path
 
     def export_as_tif(self, path=None, crop=True, keep_orig=True):
         """
@@ -57,25 +93,42 @@ class GraphItemWrapper(BaseCOMWrapper):
         """
         from ..image import convert_bmp_to_tiff
 
-        # JNB to BMP
         if path is None:
-            try:
-                path = os.path.splitext(self.path)[0] + ".tif"
-            except AttributeError:
-                raise ValueError("No path provided and self.path is not set")
-        bmp_path = os.path.splitext(path)[0] + ".bmp"
-        self.export_as_bmp(bmp_path, crop=crop, keep_orig=keep_orig)
+            path_tiff = os.path.splitext(self.path)[0] + ".tif"
+
+        # JNB to BMP
+        path_bmp = os.path.splitext(path_tiff)[0] + ".bmp"
+        self.export_as_bmp(path_bmp, crop=crop, keep_orig=keep_orig)
 
         # BMP to TIFF
-        actual_bmp_path = bmp_path if not crop else bmp_path.replace(".bmp", "_cropped.bmp")
-        tiff_path = convert_bmp_to_tiff(actual_bmp_path, keep_orig=keep_orig)
+        actual_path_bmp = (
+            path_bmp if not crop else path_bmp.replace(".bmp", "_cropped.bmp")
+        )
+        tiff_path_out = convert_bmp_to_tiff(
+            actual_path_bmp, keep_orig=keep_orig
+        )
 
-        return tiff_path
+        return tiff_path_out
+
+    # def export_as_gif(self, path=None, crop=False, keep_orig=True):
+    #     """Export graph item as GIF, with optional cropping"""
+
+    #     if path is None:
+    #         path = os.path.splitext(self.path)[0] + ".gif"
+
+    #     # Export to GIF
+    #     self._com_object.Export(path, "GIF")
+
+    #     # Crop if requested
+    #     if crop:
+    #         from ..image import crop_images
+
+    #         crop_images([path], keep_orig=keep_orig)
+    #     return path
 
     def rename_xy_labels(self, xlabel, ylabel):
         from ..utils._run_macro import run_macro
-        run_macro(
-            self, "RenameXYLabels_macro", xlabel=xlabel, ylabel=ylabel
-        )
+
+        run_macro(self, "RenameXYLabels_macro", xlabel=xlabel, ylabel=ylabel)
 
 # EOF

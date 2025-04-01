@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-04-01 19:04:14 (ywatanabe)"
+# Timestamp: "2025-04-01 19:27:33 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/demo/_update_visual_params_with_nice_ticks.py
 # ----------------------------------------
 import os
@@ -55,6 +55,9 @@ def _calculate_x_nice_ticks(
         # Get numeric data
         x_values = _extract_numeric_values(x_values, x_values.columns)
 
+        if np.isnan(x_values).all().all():
+            return ["NONE_STR"], "NONE_STR", "NONE_STR"
+
         # Calculate min/max and padded ranges
         x_min = np.nanmin(x_values.values)
         x_max = np.nanmax(x_values.values)
@@ -74,10 +77,7 @@ def _calculate_x_nice_ticks(
         return x_nice_ticks, x_padded_min, x_padded_max
 
     except Exception as e:
-        x_padded_min = "NONE_STR"
-        x_padded_max = "NONE_STR"
-        x_nice_ticks = ["NONE_STR"]
-        return x_nice_ticks, x_padded_min, x_padded_max
+        return ["NONE_STR"], "NONE_STR", "NONE_STR"
 
 
 def _calculate_y_nice_ticks(
@@ -94,6 +94,9 @@ def _calculate_y_nice_ticks(
 
         # Get numeric data
         y_values = _extract_numeric_values(y_values, y_values.columns)
+
+        if np.isnan(y_values).all().all():
+            return ["NONE_STR"], "NONE_STR", "NONE_STR"
 
         # Calculate min/max and padded ranges
         y_min = np.nanmin(y_values.values)
@@ -116,10 +119,7 @@ def _calculate_y_nice_ticks(
 
     except Exception as e:
         print(f"Warning: Error calculating y-axis nice ticks: {e}")
-        y_padded_min = "NONE_STR"
-        y_padded_max = "NONE_STR"
-        y_nice_ticks = ["NONE_STR"]
-        return y_nice_ticks, y_padded_min, y_padded_max
+        return ["NONE_STR"], "NONE_STR", "NONE_STR"
 
 
 def _update_xticks(df_visual_params, x_nice_ticks, x_padded_min, x_padded_max):
