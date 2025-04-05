@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-04-05 05:54:35 (ywatanabe)"
+# Timestamp: "2025-04-01 19:27:33 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/demo/_update_visual_params_with_nice_ticks.py
 # ----------------------------------------
 import os
@@ -25,20 +25,19 @@ def prefer_int(float_or_int_value):
         return float(float_or_int_value)
 
 
-def _extract_numeric_values(df, possible_numeric_columns):
+def _extract_numeric_values(df, axis_columns):
     """Extract numeric values from dataframe columns"""
     numeric_data = []
-    for i_col, col in enumerate(df.columns):
+    for col in axis_columns:
         try:
-            if col in possible_numeric_columns:
-                numeric_data.append(pd.to_numeric(df.iloc[:, i_col], errors="coerce"))
+            numeric_data.append(pd.to_numeric(df[col], errors="coerce"))
         except:
             pass
 
     if len(numeric_data) > 0:
         return pd.concat(numeric_data, axis=1)
     else:
-        raise ValueError("Numeric data not found")
+        return pd.DataFrame([0, 1])
 
 
 def _calculate_x_nice_ticks(
@@ -46,9 +45,15 @@ def _calculate_x_nice_ticks(
 ):
     """Update x-axis ticks in visual parameters"""
     try:
+        # Extract x values
+        x_columns = [
+            n_elems_in_chunk * i
+            for i in range(df_data.shape[1] // n_elems_in_chunk)
+        ]
+        x_values = df_data.iloc[:, x_columns]
+
         # Get numeric data
-        possible_numeric_columns = ["x", "xerr", "x_lower", "x_upper", "theta"]
-        x_values = _extract_numeric_values(df_data, possible_numeric_columns)
+        x_values = _extract_numeric_values(x_values, x_values.columns)
 
         if np.isnan(x_values).all().all():
             return ["NONE_STR"], "NONE_STR", "NONE_STR"
@@ -57,14 +62,15 @@ def _calculate_x_nice_ticks(
         x_min = np.nanmin(x_values.values)
         x_max = np.nanmax(x_values.values)
 
+        # Handle case where min equals max
+        if x_min == x_max:
+            x_min -= 0.5 if x_min != 0 else 1.0
+            x_max += 0.5 if x_max != 0 else 1.0
+
         x_length = x_max - x_min
         x_pad = x_length * pad_perc / 100.0
         x_padded_min = x_min - x_pad
         x_padded_max = x_max + x_pad
-
-        # 0 is not padded
-        if x_min == 0:
-            x_padded_min = 0
 
         # Calculate nice ticks
         x_nice_ticks = calculate_nice_ticks(x_padded_min, x_padded_max)
@@ -79,10 +85,15 @@ def _calculate_y_nice_ticks(
 ):
     """Update y-axis ticks in visual parameters"""
     try:
-        possible_numeric_columns = ["y", "yerr", "y_lower", "y_upper", "r"]
+        # Extract y values
+        y_columns = [
+            (n_elems_in_chunk // 2) + n_elems_in_chunk * i
+            for i in range(df_data.shape[1] // n_elems_in_chunk)
+        ]
+        y_values = df_data.iloc[:, y_columns]
 
         # Get numeric data
-        y_values = _extract_numeric_values(df_data, possible_numeric_columns)
+        y_values = _extract_numeric_values(y_values, y_values.columns)
 
         if np.isnan(y_values).all().all():
             return ["NONE_STR"], "NONE_STR", "NONE_STR"
@@ -91,14 +102,15 @@ def _calculate_y_nice_ticks(
         y_min = np.nanmin(y_values.values)
         y_max = np.nanmax(y_values.values)
 
+        # Handle case where min equals max
+        if y_min == y_max:
+            y_min -= 0.5 if y_min != 0 else 1.0
+            y_max += 0.5 if y_max != 0 else 1.0
+
         y_length = y_max - y_min
         y_pad = y_length * pad_perc / 100.0
         y_padded_min = y_min - y_pad
         y_padded_max = y_max + y_pad
-
-        # 0 is not padded
-        if y_min == 0:
-            y_padded_min = 0
 
         # Calculate nice ticks
         y_nice_ticks = calculate_nice_ticks(y_padded_min, y_padded_max)

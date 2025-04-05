@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-04-01 15:57:17 (ywatanabe)"
+# Timestamp: "2025-04-05 06:05:42 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/demo/_gen_data.py
 # ----------------------------------------
 import os
@@ -14,474 +14,425 @@ import numpy as np
 
 from ..const import BGRA, COLORS
 from ..data._create_padded_df import create_padded_df
+from ..data._create_graph_wizard_params import create_graph_wizard_params
+from scipy import stats
+
+import pandas as pd
 
 # Main
 # ------------------------------
 
+def gen_data(plot_types):
 
-def gen_data(plot_type, n_plots=len(COLORS)):
-    gen_data_func = {
-        # Multiple versions
-        "scatter": _gen_data_scatter,
-        "line": _gen_data_line,
-        "area": _gen_data_area,
-        "bar": _gen_data_bar,
-        "barh": _gen_data_barh,
-        "box": _gen_data_box,
-        "boxh": _gen_data_boxh,
-        "violin": _gen_data_violin,
-        "polar": _gen_data_polar,
-        # Special
-        "filled_line": _gen_data_filled_line,
-        "contour": _gen_data_contour,
-        "conf_mat": _gen_data_conf_mat,
-    }[plot_type]
-    return gen_data_func(n_plots)
+    chunks_df = pd.DataFrame()
+    for i_plot, plot_type in enumerate(plot_types):
+        try:
+            gen_single_data_func = {
+                "scatter": _gen_single_data_scatter,
+                "line": _gen_single_data_line,
+                "lineh": _gen_single_data_lineh,
+                "bar": _gen_single_data_bar,
+                "barh": _gen_single_data_barh,
+                "area": _gen_single_data_area,
+                "box": _gen_single_data_box,
+                "boxh": _gen_single_data_boxh,
+                "polar": _gen_single_data_polar,
+                "violin": _gen_single_data_violin,
+                "violinh": _gen_single_data_violinh,
+                "conf_mat": _gen_single_data_conf_mat,
+                "filled_line": _gen_single_data_filled_line,
+                "contour": _gen_single_data_contour,
+            }[plot_type]
+            single_plot_dict = gen_single_data_func(i_plot)
+            single_plot_df = create_padded_df(single_plot_dict)
+            gw_df = create_graph_wizard_params(plot_type)
+            gw_df.columns = [f"{col} {i_plot}" for col in gw_df.columns]
+            single_chunk = create_padded_df(gw_df, single_plot_df)
+            chunks_df = create_padded_df(chunks_df, single_chunk)
+        except Exception as e:
+            print(plot_type)
+            print(e)
 
+    return chunks_df
 
-# Core
-# ------------------------------
 
 # Special
 # ------------------------------
+def _gen_single_data_filled_line(ii, alpha=0.5):
+    plot_type = "filled_line"
+    # Label
+    label = f"{plot_type} {ii}"
+    # Random Seed
+    np.random.seed(ii * 555)
+    # X
+    x = np.linspace(0, 10, 20) + ii
+    # Y
+    y = np.exp(-((x - 5 * (ii % 3)) ** 2) / 10)
+    y_lower = y - np.random.normal(0, 0.05 * (ii + 1), size=len(x))
+    y_upper = y + np.random.normal(0, 0.05 * (ii + 1), size=len(x))
+
+    # Color
+    bgra = BGRA[COLORS[ii % len(COLORS)]]
+    bgra[-1] = alpha
+    return dict(
+        label=label,
+        x=x,
+        y_lower=y_lower,
+        y=y,
+        y_upper=y_upper,
+        bgra=bgra,
+    )
 
 
-def _gen_data_filled_line(*args, **kwargs):
-    pass
+def _gen_single_data_filled_lineh(ii):
+    plot_type = "filled_lineh"
+    # Label
+    label = f"{plot_type} {ii}"
+
+    vv = _gen_single_data_filled_line(ii)
+
+    # Color
+    bgra = BGRA[COLORS[ii % len(COLORS)]]
+
+    return dict(
+        label=label,
+        y=vv["x"],
+        x_lower=vv["y_lower"],
+        x=vv["y"],
+        x_upper=vv["y_upper"],
+        bgra=bgra,
+    )
 
 
-def _gen_data_contour(*args, **kwargs):
-    pass
+def _gen_single_data_contour(ii):
+    plot_type = "contour"
+    # Label
+    label = f"{plot_type} {ii}"
+    # Random Seed
+    np.random.seed(ii * 999)
+
+    # Create grid data
+    x = np.linspace(-5, 5, 50)
+    y = np.linspace(-5, 5, 50)
+    X, Y = np.meshgrid(x, y)
+
+    # Create Z values (peaks with noise)
+    sigma_x = 1.0 + 0.2 * ii
+    sigma_y = 1.0 + 0.1 * ii
+
+    # Create multiple peaks
+    peaks = [
+        (3, 3, 1 + 0.5 * ii, sigma_x, sigma_y),  # x, y, height, sigma_x, sigma_y
+        (-2, 2, 0.8 + 0.3 * ii, sigma_x * 0.8, sigma_y * 1.2),
+        (0, -3, 0.9 + 0.4 * ii, sigma_x * 1.2, sigma_y * 0.8),
+        (-3, -2, 0.7 + 0.2 * ii, sigma_x * 0.9, sigma_y * 0.9),
+    ]
+
+    Z = np.zeros_like(X)
+    for x0, y0, height, sx, sy in peaks:
+        Z += height * np.exp(
+            -((X - x0) ** 2 / (2 * sx**2) + (Y - y0) ** 2 / (2 * sy**2))
+        )
+
+    # Add noise
+    noise_level = 0.05 * (ii + 1)
+    Z += np.random.normal(0, noise_level, Z.shape)
+
+    # Convert to xyz format
+    x_flat = X.flatten()
+    y_flat = Y.flatten()
+    z_flat = Z.flatten()
+
+    return dict(
+        label=label,
+        x=x_flat,
+        y=y_flat,
+        z=z_flat,
+    )
 
 
-def _gen_data_conf_mat(*args, **kwargs):
-    pass
+def _gen_single_data_conf_mat(ii, n_classes=4):
+    plot_type = "conf_mat"
+    # Label
+    label = f"{plot_type} {ii}"
 
+    # Generate class names based on n_classes
+    class_names = [f"Class {chr(65+i)}" for i in range(n_classes)]
 
-# Multiple versions
-# ------------------------------
+    # Random seed for reproducibility
+    np.random.seed(ii * 777)
 
+    # Generate random confusion matrix
+    conf_matrix = np.random.randint(8000, 23000, size=(n_classes, n_classes))
 
-def _gen_data_scatter(n_plots=len(COLORS)):
-    return _gen_multiple_data_base("scatter", n_plots=n_plots)
+    # Make diagonal values higher (better accuracy)
+    for i in range(n_classes):
+        conf_matrix[i, i] = np.random.randint(15000, 25000)
 
+    # Convert to x, y, z format for SigmaPlot
+    x_coords = []
+    y_coords = []
+    z_values = []
 
-def _gen_data_bar(n_plots=len(COLORS)):
-    return _gen_multiple_data_base("bar", n_plots=n_plots)
+    for i in range(n_classes):
+        for j in range(n_classes):
+            x_coords.append(i)  # Row (true label)
+            y_coords.append(j)  # Column (predicted label)
+            z_values.append(conf_matrix[i, j])  # Count/value
 
-
-def _gen_data_barh(n_plots=len(COLORS)):
-    return _gen_multiple_data_base("barh", n_plots=n_plots)
-
-
-def _gen_data_line(n_plots=len(COLORS)):
-    return _gen_multiple_data_base("line", n_plots=n_plots)
-
-
-def _gen_data_area(n_plots=len(COLORS)):
-    return _gen_multiple_data_base("area", n_plots=n_plots)
-
-
-def _gen_data_box(n_plots=len(COLORS)):
-    return _gen_multiple_data_base("box", n_plots=n_plots)
-
-
-def _gen_data_boxh(n_plots=len(COLORS)):
-    return _gen_multiple_data_base("boxh", n_plots=n_plots)
-
-
-def _gen_data_polar(n_plots=len(COLORS)):
-    return _gen_multiple_data_base("polar", n_plots=n_plots)
-
-
-def _gen_data_violin(n_plots=len(COLORS)):
-    return _gen_multiple_data_base("violin", n_plots=n_plots)
+    return dict(
+        label=label,
+        x=x_coords,
+        y=y_coords,
+        z=z_values,
+        class_names=class_names,
+    )
 
 
 # Single
 # ------------------------------
-
-
 def _gen_single_data_bar(ii):
+    plot_type = "bar"
+    # Label
+    label = f"{plot_type} {ii}"
     # Random Seed
     np.random.seed(ii * 333)
-
     # X
     x = f"X {ii}"
-    xerr = None
-
     # Y
     y = 1.0 * (ii + 1) + np.random.normal(0, 0.3 * (ii + 1))
     yerr = 0.1 * (ii + 1)
-
-    return _gen_single_data_base_wrapper(
-        ii=ii,
+    return dict(
+        label=label,
         x=x,
-        xerr=xerr,
         y=y,
         yerr=yerr,
+        bgra=BGRA[COLORS[ii % len(COLORS)]],
     )
 
 
 def _gen_single_data_barh(ii):
+    plot_type = "barh"
+    # Label
+    label = f"{plot_type} {ii}"
     # Random Seed
     np.random.seed(ii * 444)
-
-    # X
-    x = 1.0 * (ii + 1) + np.random.normal(0, 0.3 * (ii + 1))
-    xerr = 0.1 * (ii + 1)
-
-    # Y
-    y = f"Y {ii}"
-    yerr = None
-
-    return _gen_single_data_base_wrapper(
-        ii=ii,
-        x=x,
-        xerr=xerr,
-        y=y,
-        yerr=yerr,
+    vv = _gen_single_data_bar(ii)
+    return dict(
+        label=label,
+        x=vv["y"],
+        xerr=vv["yerr"],
+        y=vv["x"],
+        bgra=BGRA[COLORS[ii % len(COLORS)]],
     )
 
 
 def _gen_single_data_area(ii, alpha=0.5):
+    plot_type = "area"
+    # Label
+    label = f"{plot_type} {ii}"
     # Random Seed
     np.random.seed(ii * 555)
-
     # X
     x = np.linspace(0, 10, 20) + ii
-    xerr = None
-
     # Y
     y = np.exp(-((x - 5 * (ii % 3)) ** 2) / 10)
-    y_lower = y - np.random.normal(0, 0.05 * (ii + 1), size=len(x))
-    y_upper = y
-    yerr = None
-
-
+    y += np.random.normal(0, 0.05 * (ii + 1), size=len(x))
+    # y_lower = y - np.random.normal(0, 0.05 * (ii + 1), size=len(x))
+    # y_upper = y + np.random.normal(0, 0.05 * (ii + 1), size=len(x))
+    # Color
     bgra = BGRA[COLORS[ii % len(COLORS)]]
     bgra[-1] = alpha
-
-    return _gen_single_data_base_wrapper(
-        ii=ii,
+    return dict(
+        label=label,
         x=x,
-        xerr=xerr,
         y=y,
-        yerr=yerr,
-        y_lower_value=y_lower,
-        y_upper_value=y_upper,
+        bgra=bgra,
     )
 
 
 def _gen_single_data_box(ii):
+    plot_type = "box"
+    # Label
+    label = f"{plot_type} {ii}"
     # Random Seed
     np.random.seed(ii * 666)
-
     # X
     x = f"Category {ii}"
-    xerr = None
-
     # Y
-    base_data = np.random.normal(5 * (ii + 1), 1 + ii * 0.2, 30)
-    outliers = np.random.normal(5 * (ii + 1) + 3 * ((-1) ** ii), 0.5, 2)
-    y = np.concatenate([base_data, outliers])
-    yerr = None
-
-    return _gen_single_data_base_wrapper(
-        ii=ii,
+    # Generate data from uniform distribution to emphasize box plot visualization
+    low = 3 * (ii + 1)
+    high = 8 * (ii + 1)
+    base_data = np.random.uniform(low, high, 30)
+    # Add a few outliers outside the uniform range
+    outliers_low = np.random.uniform(low - 2, low - 1, 1)
+    outliers_high = np.random.uniform(high + 1, high + 2, 1)
+    y = np.concatenate([base_data, outliers_low, outliers_high])
+    return dict(
+        label=label,
         x=x,
-        xerr=xerr,
         y=y,
-        yerr=yerr,
+        bgra=BGRA[COLORS[ii % len(COLORS)]],
     )
 
 
 def _gen_single_data_boxh(ii):
-    # Random Seed
-    np.random.seed(ii * 777)
-
-    # X
-    base_data = np.random.normal(5 * (ii + 1), 1 + ii * 0.2, 30)
-    outliers = np.random.normal(5 * (ii + 1) + 3 * ((-1) ** ii), 0.5, 2)
-    x = np.concatenate([base_data, outliers])
-    xerr = None
-
-    # Y
-    y = f"Category {ii}"
-    yerr = None
-
-    return _gen_single_data_base_wrapper(
-        ii=ii,
-        x=x,
-        xerr=xerr,
-        y=y,
-        yerr=yerr,
+    plot_type = "boxh"
+    # Label
+    label = f"{plot_type} {ii}"
+    vv = _gen_single_data_box(ii)
+    return dict(
+        label=label,
+        y=vv["x"],
+        x=vv["y"],
+        bgra=BGRA[COLORS[ii % len(COLORS)]],
     )
 
 
 def _gen_single_data_line(ii):
+    plot_type = "line"
+    # Label
+    label = f"{plot_type} {ii}"
     # Random Seed
     np.random.seed(ii * 888)
-
     # X
     x = np.linspace(0, 10, 20)
-    xerr = None
-
     # Y
     y = np.sin(x + ii * 0.5) * (ii + 1)
     y += np.random.normal(0, 0.1 * (ii + 1), size=len(x))
     yerr = 0.2 * np.ones_like(x) * (1 + 0.1 * ii)
-
-    return _gen_single_data_base_wrapper(
-        ii=ii,
+    return dict(
+        label=label,
         x=x,
-        xerr=xerr,
         y=y,
         yerr=yerr,
+        bgra=BGRA[COLORS[ii % len(COLORS)]],
+    )
+
+
+def _gen_single_data_lineh(ii):
+    plot_type = "lineh"
+    # Label
+    label = f"{plot_type} {ii}"
+    vv = _gen_single_data_line(ii)
+    return dict(
+        label=label,
+        y=vv["x"],
+        x=vv["y"],
+        xerr=vv["yerr"],
+        bgra=BGRA[COLORS[ii % len(COLORS)]],
     )
 
 
 def _gen_single_data_polar(ii):
+    plot_type = "polar"
+    # Label
+    label = f"{plot_type} {ii}"
     # Random Seed
     np.random.seed(ii * 123)
-
     # X
     theta = np.linspace(0, 2 * np.pi, 30)
-    x_degree = theta / (2 * np.pi) * 360
-    xerr = None
-
+    degree = theta / (2 * np.pi) * 360
     # Y
     r = 0.5 + ii + 0.5 * np.sin(theta * (ii + 1))
     r_fluctuation = np.random.normal(0, 0.1 * (ii + 1), size=len(theta))
-    y = r + r_fluctuation
-    yerr = None
-
-    return _gen_single_data_base_wrapper(
-        ii=ii,
-        x=x_degree,
-        xerr=xerr,
-        y=y,
-        yerr=yerr,
+    r = r + r_fluctuation
+    return dict(
+        label=label,
+        theta=theta,
+        r=r,
+        bgra=BGRA[COLORS[ii % len(COLORS)]],
     )
 
 
 def _gen_single_data_scatter(ii):
+    plot_type = "scatter"
+    # Label
+    label = f"{plot_type} {ii}"
+    # Random Seed
     np.random.seed(ii * 789)
-
     n_points = 30 + ii * 5
-
     # X
     center_x = 5 * (ii % 3)
     x = np.random.normal(center_x, 1 + 0.2 * ii, n_points)
-    xerr = None
-
     # Y
     center_y = 5 * (ii // 3)
     y = np.random.normal(center_y, 1, n_points) + ii * 0.1 * x
-    yerr = None
-
-    return _gen_single_data_base_wrapper(
-        ii=ii,
+    return dict(
+        label=label,
         x=x,
-        xerr=xerr,
         y=y,
-        yerr=yerr,
+        bgra=BGRA[COLORS[ii % len(COLORS)]],
     )
 
 
 def _gen_single_data_violin(ii):
-    # Violin plot data - create multimodal distributions
-    np.random.seed(ii * 42)
-    # Create base position
-    x = f"Category {ii}"
-    # Create multimodal distribution for interesting violins
-    # Mix two or three normal distributions
-    if ii % 3 == 0:
-        # Bimodal
-        dist1 = np.random.normal(ii * 2, 0.5, 15)
-        dist2 = np.random.normal(ii * 2 + 3, 0.5, 15)
-        y = np.concatenate([dist1, dist2])
-    elif ii % 3 == 1:
-        # Trimodal
-        dist1 = np.random.normal(ii * 1.5, 0.4, 10)
-        dist2 = np.random.normal(ii * 1.5 + 2, 0.3, 15)
-        dist3 = np.random.normal(ii * 1.5 + 4, 0.5, 10)
-        y = np.concatenate([dist1, dist2, dist3])
-    else:
-        # Skewed
-        dist1 = np.random.normal(ii * 2, 0.8, 20)
-        dist2 = np.random.normal(ii * 2 + 2, 0.3, 10)
-        y = np.concatenate([dist1, dist2])
-    # No point in having xerr for violin plots
-    xerr = None
-    yerr = None
-    # Can provide quartile information for box plots within violins
-    y_lower = np.percentile(y, 25)
-    y_upper = np.percentile(y, 75)
-
-    return _gen_single_data_base_wrapper(
-        ii=ii,
-        x=x,
-        xerr=xerr,
-        y=y,
-        yerr=yerr,
-        y_lower_value=y_lower,
-        y_upper_value=y_upper,
-    )
-
-
-# Base
-# ------------------------------
-
-
-def _gen_multiple_data_base(plot_type, n_plots=len(COLORS)):
-    gen_single_data_func = {
-        "scatter": _gen_single_data_scatter,
-        "line": _gen_single_data_line,
-        "bar": _gen_single_data_bar,
-        "barh": _gen_single_data_barh,
-        "area": _gen_single_data_area,
-        "box": _gen_single_data_box,
-        "boxh": _gen_single_data_boxh,
-        "polar": _gen_single_data_polar,
-        "violin": _gen_single_data_violin,
-    }[plot_type]
-    out_dict = {}
-    for ii in range(n_plots):
-        out_dict.update(gen_single_data_func(ii))
-
-    # To df
-    out_df = create_padded_df(out_dict)
-    return out_df
-
-
-def _gen_single_data_base(
-    ii=None,
-    x_label=None,
-    x_value=None,
-    xerr_label=None,
-    xerr_value=None,
-    y_label=None,
-    y_value=None,
-    yerr_label=None,
-    yerr_value=None,
-    bgra_label=None,
-    bgra_value=None,
-    x_lower_label=None,
-    x_lower_value=None,
-    x_upper_label=None,
-    x_upper_value=None,
-    y_lower_label=None,
-    y_lower_value=None,
-    y_upper_label=None,
-    y_upper_value=None,
-):
-    ii_space = f" {ii}" if ii is not None else f""
-
+    plot_type = "violin"
+    # Label
+    label = f"{plot_type} {ii}"
+    # Random Seed
+    np.random.seed(ii * 666)
+    # Y (original sample points)
+    # Generate data from uniform distribution to emphasize box plot visualization
+    low = 3 * (ii + 1)
+    high = 8 * (ii + 1)
+    base_data = np.random.uniform(low, high, 30)
+    # Add a few outliers outside the uniform range
+    outliers_low = np.random.uniform(low - 2, low - 1, 1)
+    outliers_high = np.random.uniform(high + 1, high + 2, 1)
+    y = np.concatenate([base_data, outliers_low, outliers_high])
     # X
-    x_label = x_label if x_label is not None else f"X{ii_space}"
-    x_value = x_value if x_value is not None else np.nan
-    xerr_label = xerr_label if xerr_label is not None else f"X Err.{ii_space}"
-    xerr_value = xerr_value if xerr_value is not None else np.nan
-    x_lower_label = (
-        x_lower_label if x_lower_label is not None else f"X Lower{ii_space}"
-    )
-    x_lower_value = x_lower_value if x_lower_value is not None else np.nan
-    x_upper_label = (
-        x_upper_label if x_upper_label is not None else f"X Upper{ii_space}"
-    )
-    x_upper_value = x_upper_value if x_upper_value is not None else np.nan
-
-    # Y
-    y_label = y_label if y_label is not None else f"Y{ii_space}"
-    y_value = y_value if y_value is not None else np.nan
-    yerr_label = yerr_label if yerr_label is not None else f"Y Err.{ii_space}"
-    yerr_value = yerr_value if yerr_value is not None else np.nan
-    bgra_label = bgra_label if bgra_label is not None else f"BGRA{ii_space}"
-    y_lower_label = (
-        y_lower_label if y_lower_label is not None else f"Y Lower{ii_space}"
-    )
-    y_lower_value = y_lower_value if y_lower_value is not None else np.nan
-    y_upper_label = (
-        y_upper_label if y_upper_label is not None else f"Y Upper{ii_space}"
-    )
-    y_upper_value = y_upper_value if y_upper_value is not None else np.nan
-
-    if bgra_value is None:
-        if ii is not None:
-            bgra_value = BGRA[COLORS[ii % len(COLORS)]]
-        else:
-            bgra_value = BGRA[COLORS["black"]]
-
-    return {
-        x_label: x_value,
-        xerr_label: xerr_value,
-        x_lower_label: x_lower_value,
-        x_upper_label: x_upper_value,
-        y_label: y_value,
-        yerr_label: yerr_value,
-        y_lower_label: y_lower_value,
-        y_upper_label: y_upper_value,
-        bgra_label: bgra_value,
-    }
-
-
-def _gen_single_data_base_wrapper(
-    ii=None,
-    x=None,
-    xerr=None,
-    x_lower_value=None,
-    x_upper_value=None,
-    y=None,
-    yerr=None,
-    y_lower_value=None,
-    y_upper_value=None,
-    bgra=None,
-):
-    return _gen_single_data_base(
-        ii=ii,
-        x_value=x,
-        xerr_value=xerr,
-        x_lower_value=x_lower_value,
-        x_upper_value=x_upper_value,
-        y_value=y,
-        yerr_value=yerr,
-        y_lower_value=y_lower_value,
-        y_upper_value=y_upper_value,
-        bgra_value=bgra,
+    x = f"Category {ii}"
+    # Calculate kernel density estimate for violin edges
+    a = np.sort(y)
+    sigma = np.std(a)
+    m = len(a)
+    # Compute Inter Quartile Range for bandwidth
+    q1 = np.percentile(a, 25)
+    q3 = np.percentile(a, 75)
+    iqr = q3 - q1
+    # Compute bandwidth (Silverman's rule of thumb)
+    scaled_iqr = iqr / 1.34
+    min_val = min(sigma, scaled_iqr) if scaled_iqr > 0 else sigma
+    bandwidth = 0.9 * min_val / (m**0.2)
+    # Define range for kernel density
+    z_start = np.min(a) - 3.5 * bandwidth
+    z_end = np.max(a) + 3.5 * bandwidth
+    n = 256
+    # Compute kernel density values
+    z_values = np.linspace(z_start, z_end, n)
+    kde = stats.gaussian_kde(a, bw_method=bandwidth / sigma)
+    density = kde(z_values) * bandwidth
+    # Scale density to match desired width (0.4 = typical box plot width)
+    width_factor = 0.4
+    max_density = np.max(density) if len(density) > 0 else 0.1
+    scaled_density = density * (width_factor / max_density)
+    # Create x_lower and x_upper arrays for violin edges
+    position = ii + 1
+    x_lower = position - scaled_density
+    x_upper = position + scaled_density
+    return dict(
+        label=label,
+        x_lower=x_lower,
+        x=position,
+        x_upper=x_upper,
+        y=z_values,
+        bgra=BGRA[COLORS[ii % len(COLORS)]],
     )
 
 
-# def _gen_single_data_filled_line(ii):
-#     # Random Seed
-#     np.random.seed(ii * 42)
-
-#     # X
-#     x = np.linspace(0, 10, 20) + ii
-#     xerr = None
-
-#     # Y
-#     y = np.sin(x + ii * 0.5) * (ii + 1)
-#     yerr = None
-#     y_lower = (
-#         y
-#         - 0.5 * (ii + 1)
-#         + np.random.normal(0, 0.3, size=len(x)) * (ii + 1) * 0.2
-#     )
-#     y_upper = (
-#         y
-#         + 0.5 * (ii + 1)
-#         + np.random.normal(0, 0.4, size=len(x)) * (ii + 1) * 0.3
-#     )
-
-#     return _gen_single_data_base_wrapper(
-#         ii=ii,
-#         x=x,
-#         xerr=xerr,
-#         y=y,
-#         yerr=yerr,
-#         y_lower_value=y_lower,
-#         y_upper_value=y_upper,
-#     )
+def _gen_single_data_violinh(ii):
+    plot_type = "violinh"
+    # Label
+    label = f"{plot_type} {ii}"
+    vv = _gen_single_data_violin(ii)
+    return dict(
+        label=label,
+        y_lower=vv["x_lower"],
+        y=vv["x"],
+        y_upper=vv["x_upper"],
+        x=vv["y"],
+        bgra=BGRA[COLORS[ii % len(COLORS)]],
+    )
 
 # EOF

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-04-01 20:26:24 (ywatanabe)"
+# Timestamp: "2025-04-05 06:01:06 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/com/_GraphItemWrapper.py
 # ----------------------------------------
 import os
@@ -45,6 +45,8 @@ class GraphItemWrapper(BaseCOMWrapper):
 
         if path is None:
             path_tiff = os.path.splitext(self.path)[0] + ".tif"
+        else:
+            path_tiff = path
 
         # JNB to BMP
         path_bmp = os.path.splitext(path_tiff)[0] + ".bmp"
