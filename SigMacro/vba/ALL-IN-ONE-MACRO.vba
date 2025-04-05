@@ -157,15 +157,17 @@ Function _FindChunkEndCol(iPlot As Long) As Long
     Const DEBUG_MODE As Boolean = False
     Dim startCol As Long, nextStartCol As Long
     Dim maxCol As Long
+    
     startCol = _FindChunkStartCol(iPlot)
     If startCol = -1 Then
         _FindChunkEndCol = -1
         Exit Function
     End If
+    
     nextStartCol = _FindChunkStartCol(iPlot + 1)
     If nextStartCol = -1 Then
         maxCol = _GetMaxCol()
-        _FindChunkEndCol = maxCol
+        _FindChunkEndCol = maxCol - 1
     Else
         _FindChunkEndCol = nextStartCol - 1
     End If
@@ -197,6 +199,10 @@ Sub Plot()
         
         endCol = _FindChunkEndCol(iPlot)
         DebugMsg(DEBUG_MODE, "Plot " & iPlot & " columns: " & startCol & " to " & endCol)
+        If iPlot = MAX_NUM_PLOTS - 1 Then
+           DebugMsg(True, "Plot " & iPlot & " columns: " & startCol & " to " & endCol)
+        End If
+           
         ' Read GW parameters for this plot
         Dim plotType As String, plotStyle As String, dataType As String
         Dim dataSource As String, polarUnits As String, angleUnits As String
@@ -275,7 +281,7 @@ End Sub
 Function _IsSpecialPlotType(plotType As String) As Boolean
     Const DEBUG_MODE As Boolean = False
     ' Check if plot type is one of the special types
-    _IsSpecialPlotType = Not (plotType = "Confusion Matrix" Or plotType = "Filled Line" Or plotType = "Contour")
+    _IsSpecialPlotType = (plotType = "Confusion Matrix" Or plotType = "Filled Line" Or plotType = "Contour")
 End Function
 
 Function _GetColumnMapping(startCol As Long, endCol As Long) As Variant
