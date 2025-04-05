@@ -1,9 +1,13 @@
 Option Explicit
 
+Const MAX_NUM_PLOTS As Long = 13
+
 ' ========================================
 ' General Constants
 ' ========================================
-Const DEBUG_MODE As Boolean = False
+' Const DEBUG_MODE As Boolean = True
+' Const DEBUG_MODE As Boolean = False
+Const GLOBAL_DEBUG_MODE As Boolean = False
 Const WORKSHEET_NAME As String = "worksheet"
 Const GRAPH_NAME As String = "graph"
 
@@ -34,49 +38,38 @@ Const LABEL_PTS_07 As Long = 97
 Const LABEL_PTS_08 As Long = 111
 
 ' Line Thickness
-Const POLAR_LINE_THICKNESS As Double = 0.008 * 1000  ' Convert inches to internal units (1000 = 1 inch)
+Const POLAR_LINE_THICKNESS As Double = 0.008 * 1000
 
-' ========================================
-' Axis Scale Types
-' ========================================
-Const SAA_TYPE_LINEAR = 1
-Const SAA_TYPE_COMMON = 2
-Const SAA_TYPE_LOG = 3
-Const SAA_TYPE_PROBABILITY = 4
-Const SAA_TYPE_PROBIT = 5
-Const SAA_TYPE_LOGIT = 6
-Const SAA_TYPE_CATEGORY = 7
-Const SAA_TYPE_DATETIME = 8
-
-' ========================================
-' Worksheet Layout Constants
-' ========================================
-
-' For Plot Wizard
-' ----------------------------------------
-' Columns
-Const _PLOT_TYPE_EXPLANATION_COL As Long = 0
-Const PLOT_TYPE_COL As Long = 1
 ' Rows
-Const PLOT_TYPE_ROW As Long = 0
-Const PLOT_STYLE_ROW As Long = 1
-Const PLOT_DATA_TYPE_ROW As Long = 2
-Const _PLOT_COLUMNS_PER_PLOT_ROW As Long = 3
-Const _PLOT_PLOT_COLUMNS_COUNT_ARRAY_ROW As Long = 4
-Const PLOT_DATA_SOURCE_ROW As Long = 5
-Const PLOT_POLARUNITS_ROW As Long = 6
-Const PLOT_ANGLEUNITS_ROW As Long = 7
-Const PLOT_MIN_ANGLE_ROW As Long = 8
-Const PLOT_MAX_ANGLE_ROW As Long = 9
-Const PLOT_UNKONWN1_ROW As Long = 10
-Const PLOT_GROUP_STYLE_ROW As Long = 11
-Const PLOT_USE_AUTOMATIC_LEGENDS_ROW As Long = 12
+Const LABEL_ROW As Long = -1
 
-' Graph Parameters
+' ========================================
+' Graph Wizard-related constants
+' ========================================
+Const GW_PLOT_TYPE_ROW As Long = 0
+Const GW_PLOT_STYLE_ROW As Long = 1
+Const GW_DATA_TYPE_ROW As Long = 2
+Const _GW_COLUMNS_PER_GW_ROW As Long = 3
+Const _GW_GW_COLUMNS_COUNT_ARRAY_ROW As Long = 4
+Const GW_DATA_SOURCE_ROW As Long = 5
+Const GW_POLARUNITS_ROW As Long = 6
+Const GW_ANGLEUNITS_ROW As Long = 7
+Const GW_MIN_ANGLE_ROW As Long = 8
+Const GW_MAX_ANGLE_ROW As Long = 9
+Const GW_UNKONWN1_ROW As Long = 10
+Const GW_GROUP_STYLE_ROW As Long = 11
+Const GW_USE_AUTOMATIC_LEGENDS_ROW As Long = 12
+
+' ========================================
+' Entire Graph
+' ========================================
 ' ----------------------------------------
 ' Columns
-Const _GRAPH_PARAMS_EXPLANATION_COL As Long = 2
-Const GRAPH_PARAMS_COL As Long = 3
+Const _GRAPH_PARAMS_EXPLANATION_COL As Long = 0
+Const GRAPH_PARAMS_COL As Long = 1
+Const X_TICKS_COL As Long = 2
+Const Y_TICKS_COL As Long = 3
+
 ' Rows
 Const X_LABEL_ROW As Long = 0
 Const X_LABEL_ROTATION_ROW As Long = 1
@@ -84,7 +77,6 @@ Const X_MM_ROW As Long = 2
 Const X_SCALE_TYPE_ROW As Long = 3
 Const X_MIN_ROW As Long = 4
 Const X_MAX_ROW As Long = 5
-
 Const Y_LABEL_ROW As Long = 6
 Const Y_LABEL_ROTATION_ROW As Long = 7
 Const Y_MM_ROW As Long = 8
@@ -92,41 +84,32 @@ Const Y_SCALE_TYPE_ROW As Long = 9
 Const Y_MIN_ROW As Long = 10
 Const Y_MAX_ROW As Long = 11
 
-' Ticks (Not handled by macros but embedded in JNB file)
-' ----------------------------------------
-Const X_TICKS_COL As Long = 4
-Const Y_TICKS_COL As Long = 5
 
 ' Data Columns
 ' ----------------------------------------
 ' General
-Const DATA_START_COL As Long = 10
-Const DATA_CHUNK_SIZE As Long = 9
-Const DATA_MAX_NUM_PLOTS As Long = 13
-' In-chunk indices
-Const DATA_ID_X AS LONG = 0
-Const DATA_ID_X_ERR AS LONG = 1
-Const DATA_ID_X_UPPER AS LONG = 2
-Const DATA_ID_X_LOWER AS LONG = 3
-Const DATA_ID_Y AS LONG = 4
-Const DATA_ID_Y_ERR AS LONG = 5
-Const DATA_ID_Y_UPPER AS LONG = 6
-Const DATA_ID_Y_LOWER AS LONG = 7
-Const DATA_ID_RGBA AS LONG = 8
+Const GW_START_COL_NAME_BASE As String = "gw_param_keys "
+Const GW_START_COL As Long = -1 ' Default
+Const GW_ID_PARAM_KEYS As Long = 0
+Const GW_ID_PARAM_VALUES As Long = 1
+Const GW_ID_LABEL As Long = 2
+Const GW_ID_RGBA As Long = -1
+' Colors
+Const RGB_BLACK As Long = &H00000000
 
 ' ========================================
 ' Helper
 ' ========================================
-Sub DebugMsg(msg As String)
-  If DEBUG_MODE Then
-    MsgBox msg, vbInformation, "Debug Info"
-  End If
+Sub DebugMsg(DEBUG_MODE As Boolean, msg As String)
+    If GLOBAL_DEBUG_MODE Or DEBUG_MODE Then
+        MsgBox msg, vbInformation, "Debug Info"
+    End If
 End Sub
 
-Sub DebugType(item)
-  If DEBUG_MODE Then
-    MsgBox "Type: " & TypeName(item)
-  End If
+Sub DebugType(DEBUG_MODE As Boolean, item)
+    If GLOBAL_DEBUG_MODE Or DEBUG_MODE Then
+       MsgBox "Type: " & TypeName(item)
+    End If
 End Sub
 
 Function _ReadCell(columnIndex As Long, rowIndex As Long) As Variant
@@ -137,211 +120,262 @@ Function _ReadCell(columnIndex As Long, rowIndex As Long) As Variant
     _ReadCell = cellValue(0, 0)
 End Function
 
-Private Function ConvMmToInch(ByVal dValMm As Double) As Double
-    ConvMmToInch = dValMm / 0.0254
+' ========================================
+' Finder
+' ========================================
+Function _GetMaxCol() As Long
+    Const DEBUG_MODE As Boolean = False
+    Dim maxCol As Long, maxRow As Long, dataTable As Object
+    Set dataTable = ActiveDocument.NotebookItems(WORKSHEET_NAME).DataTable
+    DataTable.GetMaxUsedSize(maxCol, maxRow)
+    _GetMaxCol = maxCol
 End Function
 
-Private Function ConvPtToInch(ByVal dValPt As Double) As Double
-    ConvPtToInch = dValPt * (1000 / 72)
+Function _FindColIdx(columnName As String) As Long
+    Const DEBUG_MODE As Boolean = False
+    Dim maxCol As Long, ColIndex As Long, ColName As String, ii As Long
+    maxCol = _GetMaxCol()
+    ColIndex = -1
+    For ii = 0 To maxCol
+        ColName = _ReadCell(ii, LABEL_ROW)
+        If LCase(ColName) = LCase(columnName) Then
+            ColIndex = ii
+            Exit For
+        End If
+    Next ii
+    _FindColIdx = ColIndex
+End Function
+
+Function _FindChunkStartCol(iPlot As Long) As Long
+    Const DEBUG_MODE As Boolean = False
+    Dim colName As String
+    colName = GW_START_COL_NAME_BASE & iPlot
+    _FindChunkStartCol = _FindColIdx(colName)
+End Function
+
+Function _FindChunkEndCol(iPlot As Long) As Long
+    Const DEBUG_MODE As Boolean = False
+    Dim startCol As Long, nextStartCol As Long
+    Dim maxCol As Long
+    startCol = _FindChunkStartCol(iPlot)
+    If startCol = -1 Then
+        _FindChunkEndCol = -1
+        Exit Function
+    End If
+    nextStartCol = _FindChunkStartCol(iPlot + 1)
+    If nextStartCol = -1 Then
+        maxCol = _GetMaxCol()
+        _FindChunkEndCol = maxCol
+    Else
+        _FindChunkEndCol = nextStartCol - 1
+    End If
 End Function
 
 ' ========================================
 ' Plot
 ' ========================================
 Sub Plot()
+    Const DEBUG_MODE As Boolean = False
     ' Open the worksheet
     ActiveDocument.NotebookItems(WORKSHEET_NAME).Open
-
-    ' Get plot configuration
-    Dim plotType As String
-    Dim plotStyle As String
-    Dim dataType As String
-    Dim _columnsPerPlot As Variant
-    Dim _plotColumnsCountArray As Variant
-    Dim dataSource As String
-    Dim polarUnits As String
-    Dim angleUnits As String
-    Dim minAngle As Double
-    Dim maxAngle As Double
-    Dim _unknown1 As Variant
-    Dim groupStyle As String
-    Dim useAutomaticLegends As Boolean
-
-    plotType = _ReadCell(PLOT_TYPE_COL, PLOT_TYPE_ROW)
-    plotStyle = _ReadCell(PLOT_TYPE_COL, PLOT_STYLE_ROW)
-    dataType = _ReadCell(PLOT_TYPE_COL, PLOT_DATA_TYPE_ROW)
-    _columnsPerPlot = _ReadCell(PLOT_TYPE_COL, _PLOT_COLUMNS_PER_PLOT_ROW)
-    _plotColumnsCountArray = _ReadCell(PLOT_TYPE_COL, _PLOT_PLOT_COLUMNS_COUNT_ARRAY_ROW)
-    dataSource = _ReadCell(PLOT_TYPE_COL, PLOT_DATA_SOURCE_ROW)
-    polarUnits = _ReadCell(PLOT_TYPE_COL, PLOT_POLARUNITS_ROW)
-    angleUnits = _ReadCell(PLOT_TYPE_COL, PLOT_ANGLEUNITS_ROW)
-    minAngle = _ReadCell(PLOT_TYPE_COL, PLOT_MIN_ANGLE_ROW)
-    maxAngle = _ReadCell(PLOT_TYPE_COL, PLOT_MAX_ANGLE_ROW)
-    _unknown1 = _ReadCell(PLOT_TYPE_COL, PLOT_UNKONWN1_ROW)
-    groupStyle = _ReadCell(PLOT_TYPE_COL, PLOT_GROUP_STYLE_ROW)
-    useAutomaticLegends = _ReadCell(PLOT_TYPE_COL, PLOT_USE_AUTOMATIC_LEGENDS_ROW)
-
-    DebugMsg "Graph Wizard Parameters: " _
-             & plotType & " | " _
-             & plotStyle & " | " _
-             & dataType & " | " _
-             & _columnsPerPlot & " | " _
-             & _plotColumnsCountArray & " | " _
-             & dataSource & " | " _
-             & polarUnits & " | " _
-             & angleUnits & " | " _
-             & minAngle & " | " _
-             & maxAngle & " | " _
-             & _unknown1 & " | " _
-             & groupStyle & " | " _
-             & useAutomaticLegends
-
-    ' Build column arrays dynamically based on constants
+    ' Loop through all plot types
     Dim iPlot As Long
-    Dim currentColumn As Long
     Dim graphAlreadyExists As Boolean
     graphAlreadyExists = _CheckGraphExists()
-    currentColumn = DATA_START_COL
+    
+    For iPlot = 0 To MAX_NUM_PLOTS - 1
+       
+        ' Find the start and end columns for this plot type
+        Dim startCol As Long, endCol As Long
+        startCol = _FindChunkStartCol(iPlot)
+        
+        ' If no more plot chunks found, exit loop
+        If startCol = -1 Then
+            DebugMsg(DEBUG_MODE, "No plot chunks found") ' Parameter requires an expression. 'msg'
+            Exit For
+        End If
+        
+        endCol = _FindChunkEndCol(iPlot)
+        DebugMsg(DEBUG_MODE, "Plot " & iPlot & " columns: " & startCol & " to " & endCol)
+        ' Read GW parameters for this plot
+        Dim plotType As String, plotStyle As String, dataType As String
+        Dim dataSource As String, polarUnits As String, angleUnits As String
+        Dim minAngle As Double, maxAngle As Double, groupStyle As String
+        Dim useAutomaticLegends As Boolean, unknown1 As Variant
+        ' Read parameters from the param_keys and param_values columns
+        Dim valuesCol As Long
+        valuesCol = startCol + 1
+        
+        ' Get type and style based on plot index
+        plotType = _ReadCell(valuesCol, GW_PLOT_TYPE_ROW)
+        plotStyle = _ReadCell(valuesCol, GW_PLOT_STYLE_ROW)
+        dataType = _ReadCell(valuesCol, GW_DATA_TYPE_ROW)
+        dataSource = _ReadCell(valuesCol, GW_DATA_SOURCE_ROW)
+        polarUnits = _ReadCell(valuesCol, GW_POLARUNITS_ROW)
+        angleUnits = _ReadCell(valuesCol, GW_ANGLEUNITS_ROW)
+        minAngle = CDbl(_ReadCell(valuesCol, GW_MIN_ANGLE_ROW))
+        maxAngle = CDbl(_ReadCell(valuesCol, GW_MAX_ANGLE_ROW))
+        unknown1 = _ReadCell(valuesCol, GW_UNKONWN1_ROW)
+        groupStyle = _ReadCell(valuesCol, GW_GROUP_STYLE_ROW)
+        useAutomaticLegends = CBool(_ReadCell(valuesCol, GW_USE_AUTOMATIC_LEGENDS_ROW))
 
-    For iPlot = 0 To DATA_MAX_NUM_PLOTS - 1
-        DebugMsg "iPlot: " & iPlot
+        DebugMsg(DEBUG_MODE, "Plot type: " & plotType)
+        DebugType(DEBUG_MODE, plotType)
+        ' Area Plot, String
 
-        ' Get column mapping and count for current plot type
+        DebugMsg(DEBUG_MODE, "Style: " & plotStyle)
+        DebugType(DEBUG_MODE, plotStyle)
+        ' Simple Area, String
+
+        DebugMsg(DEBUG_MODE, "Data type: " & dataType)
+        DebugType(DEBUG_MODE, dataType)
+        ' XY Pair, String
+
+        DebugMsg(DEBUG_MODE, "Source: " & dataSource)
+        DebugType(DEBUG_MODE, dataSource)
+        ' Worksheet Columns, String
+
+        DebugMsg(DEBUG_MODE, "Polar units: " & polarUnits)
+        DebugType(DEBUG_MODE, polarUnits)
+        ' Standard Deviation, String
+
+        DebugMsg(DEBUG_MODE, "Angle units: " & angleUnits)
+        DebugType(DEBUG_MODE, angleUnits)
+        ' Degrees, String
+
+        DebugMsg(DEBUG_MODE, "Min angle: " & minAngle)
+        DebugType(DEBUG_MODE, minAngle)
+        ' 0, Double
+
+        DebugMsg(DEBUG_MODE, "Max angle: " & maxAngle)
+        DebugType(DEBUG_MODE, maxAngle)
+        ' 360, Double
+
+        DebugMsg(DEBUG_MODE, "Unknown1: " & unknown1)
+        DebugType(DEBUG_MODE, unknown1)
+        ' None, String
+
+        DebugMsg(DEBUG_MODE, "Group style: " & groupStyle)
+        DebugType(DEBUG_MODE, groupStyle)
+        ' Standard Deviation, String
+
+        DebugMsg(DEBUG_MODE, "Use automatic legends: " & useAutomaticLegends)
+        DebugType(DEBUG_MODE, useAutomaticLegends)
+        ' True, Boolean
+
+        ' Build column mapping based on the plot type
         Dim ColumnsPerPlot() As Variant
-        ColumnsPerPlot = _GetColumnMapping(plotType, plotStyle, currentColumn)
-
+        ColumnsPerPlot = _GetColumnMapping(startCol, endCol)
+        
+        ' Get the column count array
         Dim PlotColumnCountArray() As Variant
-        PlotColumnCountArray = _GetPlotCountColumnArray(plotType)
-
-        ' Increment currentColumn
-        currentColumn = currentColumn + DATA_CHUNK_SIZE
-        DebugMsg "currentColumn: " & currentColumn
-
-        ' Create the plot if not exists
+        PlotColumnCountArray = _GetPlotCountColumnArray(startCol, endCol)
+        
+        ' Create the plot
         If Not graphAlreadyExists And iPlot = 0 Then
-           DebugMsg "creatingNewGraph..."
-
-           ' First plot with no existing graph - create the graph
-           ActiveDocument.CurrentPageItem.CreateWizardGraph(plotType, _
-                                                            plotStyle, _
-                                                            dataType, _
-                                                            ColumnsPerPlot, _
-                                                            PlotColumnCountArray, _
-                                                            dataSource, _
-                                                            polarUnits, _
-                                                            angleUnits, _
-                                                            minAngle, _
-                                                            maxAngle, _
-                                                            , _
-                                                            groupStyle, _
-                                                            useAutomaticLegends)
-
-           DebugMsg "New graph created?"
-           graphAlreadyExists = True
+            ' If Not graphAlreadyExists Then           
+            DebugMsg(DEBUG_MODE, "Creating new graph...")
+            ' First plot with no existing graph - create the graph
+            ActiveDocument.CurrentPageItem.CreateWizardGraph(plotType, _
+                                                           plotStyle, _
+                                                           dataType, _
+                                                           ColumnsPerPlot, _
+                                                           PlotColumnCountArray, _
+                                                           dataSource, _
+                                                           polarUnits, _
+                                                           angleUnits, _
+                                                           minAngle, _
+                                                           maxAngle, _
+                                                           , _
+                                                           groupStyle, _
+                                                           useAutomaticLegends)
+            DebugMsg(DEBUG_MODE, "New graph created")
+            graphAlreadyExists = True
         Else
-           ' If graph exists, add plot
-            ActiveDocument.NotebookItems(GRAPH_NAME).Open
-            ActiveDocument.CurrentPageItem.AddWizardPlot(plotType, _
-                                                         plotStyle, _
-                                                         dataType, _
-                                                         ColumnsPerPlot, _
-                                                         PlotColumnCountArray, _
-                                                         dataSource, _
-                                                         polarUnits, _
-                                                         angleUnits, _
-                                                         minAngle, _
-                                                         maxAngle, _
-                                                         , _
-                                                         groupStyle, _
-                                                         useAutomaticLegends)
+            ' If graph exists and this isn't a special plot type (contour/confusion matrix)
+            If Not _IsSpecialPlotType(iPlot) Then
+                ActiveDocument.NotebookItems(GRAPH_NAME).Open
+                ActiveDocument.CurrentPageItem.AddWizardPlot(plotType, _
+                                                          plotStyle, _
+                                                          dataType, _
+                                                          ColumnsPerPlot, _
+                                                          PlotColumnCountArray, _
+                                                          dataSource, _
+                                                          polarUnits, _
+                                                          angleUnits, _
+                                                          minAngle, _
+                                                          maxAngle, _
+                                                          , _
+                                                          groupStyle, _
+                                                          useAutomaticLegends)
+                DebugMsg(DEBUG_MODE, "Plot added to existing graph")
+            End If
         End If
     Next iPlot
-
-    ' Open the graph and select the plot
+    ' Open the graph
     ActiveDocument.NotebookItems(GRAPH_NAME).Open
 End Sub
 
-Function _GetColumnMapping(plotType As String, plotStyle As String, currentColumn As Long) As Variant
+Function _IsSpecialPlotType(plotIndex As Long) As Boolean
+    Const DEBUG_MODE As Boolean = False
+    _IsSpecialPlotType = (plotIndex = 11 Or plotIndex = 12 Or plotIndex = 10)
+End Function
+
+Function _GetColumnMapping(startCol As Long, endCol As Long) As Variant
+    Const DEBUG_MODE As Boolean = False
     Dim mapping()
-    Select Case plotType
-        Case "Vertical Bar Chart"
-            ReDim mapping(2, 2)
-            mapping(0, 0) = currentColumn + DATA_ID_X
-            mapping(0, 1) = currentColumn + DATA_ID_Y
-            mapping(0, 2) = currentColumn + DATA_ID_Y_ERR
-        Case "Horizontal Bar Chart"
-            ReDim mapping(2, 2)
-            mapping(0, 0) = currentColumn + DATA_ID_Y
-            mapping(0, 1) = currentColumn + DATA_ID_X
-            mapping(0, 2) = currentColumn + DATA_ID_X_ERR
-        Case "Line Plot", "Scatter Plot", "Filled Line Plot"
-            ReDim mapping(2, 2)
-            mapping(0, 0) = currentColumn + DATA_ID_X
-            mapping(0, 1) = currentColumn + DATA_ID_Y
-            mapping(0, 2) = currentColumn + DATA_ID_Y_ERR
-        Case "Area Plot"
-            ReDim mapping(2, 1)
-            mapping(0, 0) = currentColumn + DATA_ID_X
-            mapping(0, 1) = currentColumn + DATA_ID_Y
-        Case "Box Plot", "Violin Plot"
-            ReDim mapping(2, 1)
-            If plotStyle = "Vertical Box Plot" Or plotType = "Violin Plot" Then
-                mapping(0, 0) = currentColumn + DATA_ID_X
-                mapping(0, 1) = currentColumn + DATA_ID_Y
-            ElseIf plotStyle = "Horizontal Box Plot" Then
-                mapping(0, 0) = currentColumn + DATA_ID_Y
-                mapping(0, 1) = currentColumn + DATA_ID_X
-            End If
-        Case "Polar Plot"
-            ReDim mapping(2, 1)
-            mapping(0, 0) = currentColumn + DATA_ID_X
-            mapping(0, 1) = currentColumn + DATA_ID_Y
-        ' Original; Fixme
-        Case "Contour Plot"
-            ReDim mapping(2, 1)
-            mapping(0, 0) = currentColumn + DATA_ID_X
-            mapping(0, 1) = currentColumn + DATA_ID_Y
-        ' Original; Fixme
-        Case "Confustion Matrix Plot"
-            ReDim mapping(2, 1)
-            mapping(0, 0) = currentColumn + DATA_ID_X
-            mapping(0, 1) = currentColumn + DATA_ID_Y
-        Case Else
-            ReDim mapping(2, 2)
-            mapping(0, 0) = currentColumn + DATA_ID_X
-            mapping(0, 1) = currentColumn + DATA_ID_Y
-            mapping(0, 2) = currentColumn + DATA_ID_Y_ERR
-    End Select
+    Dim nColumns As Long
+    Dim iCol As Long
+
+    Const offset As Long = 3
+    
+    nColumns = (endCol - startCol + 1) - 4
+    ReDim mapping(2, nColumns)
+    
+    For iCol = 0 To nColumns
+        mapping(0, iCol) = startCol + offset + iCol
+    Next iCol
     ' Fill in the row ranges for all columns
-    Dim i As Integer, j As Integer
+    Dim i As Integer
     For i = 0 To UBound(mapping, 2)
         mapping(1, i) = 0
         mapping(2, i) = 31999999
     Next i
-
     _GetColumnMapping = mapping
 End Function
 
-' Get column count based on plot type
-Function _GetPlotCountColumnArray(plotType As String) As Variant
+' Calculate the color column index
+Function _CalculateColorColumnForPlot(iPlot As Long) As Long
+    Const DEBUG_MODE As Boolean = False
+    Dim endCol As Long
+    endCol = _FindChunkEndCol(iPlot)
+    _CalculateColorColumnForPlot = endCol
+End Function
+
+
+Function _GetPlotCountColumnArray(startCol As Long, endCol As Long) As Variant
+    Const DEBUG_MODE As Boolean = False
+
     Dim countArray()
     ReDim countArray(0)
-    Select Case plotType
-        Case "Vertical Bar Chart", "Horizontal Bar Chart", "Line Plot", "Scatter Plot", "Filled Line Plot"
-            countArray(0) = 3
-        Case "Area Plot"
-            countArray(0) = 2
-        Case "Box Plot", "Horizontal Box Plot", "Violin Plot", "Polar Plot"
-            countArray(0) = 2
-        Case "Confusion Matrix Plot"
-            countArray(0) = 2
-        Case Else
-            countArray(0) = 3
-    End Select
+    
+    Dim colCount As Long
+    colCount = (endCol - startCol + 1) - 4
+    ' -3 means: gw_params_keys, gw_params_value, label, and bgra
+
+    DebugMsg(DEBUG_MODE, "_GetPlotCountColumnArray called")
+    DebugMsg(DEBUG_MODE, "startCol: " & startCol) ' 8
+    DebugMsg(DEBUG_MODE, "endCol: " & endCol) ' 13
+    DebugMsg(DEBUG_MODE, "colCount: " & colCount) ' 2
+    
+    ReDim countArray(0)
+    countArray(0) = colCount
+    
     _GetPlotCountColumnArray = countArray
 End Function
 
 Function _CheckGraphExists() As Boolean
+    Const DEBUG_MODE As Boolean = False
     On Error Resume Next
     Dim graphObj As Object
     Set graphObj = ActiveDocument.NotebookItems(GRAPH_NAME)
@@ -354,51 +388,57 @@ Function _CheckGraphExists() As Boolean
             Exit Function
         End If
     End If
-    ' DebugMsg "No graph found"
+    ' DebugMsg(DEBUG_MODE, "No graph found")
     _CheckGraphExists = False
 End Function
 
 ' ========================================
 ' Removers
 ' ========================================
-Function RemoveExistingGraphs() As Boolean
+Sub RemoveExistingGraphs()
+    Const DEBUG_MODE As Boolean = False   
     On Error Resume Next
     ActiveDocument.NotebookItems(GRAPH_NAME).Open
     ActiveDocument.CurrentItem.SelectAll
     ActiveDocument.CurrentItem.Clear
-End Function
+End Sub
 
 Sub RemoveLegend()
-   ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_GRAPH).NameObject.SetObjectCurrent
-   ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETGRAPHATTR, SGA_AUTOLEGENDSHOW, HIDE_LEGEND)
+    Const DEBUG_MODE As Boolean = False   
+    ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_GRAPH).NameObject.SetObjectCurrent
+    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETGRAPHATTR, SGA_AUTOLEGENDSHOW, HIDE_LEGEND)
 End Sub
 
 Sub RemoveTopSpine()
+    Const DEBUG_MODE As Boolean = False   
     ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_SELECTDIM, AXIS_X)
     ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_SUB2OPTIONS, TICK_THICKNESS_INVISIBLE)
 End Sub
 
 Sub RemoveRightSpine()
+    Const DEBUG_MODE As Boolean = False   
     ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_SELECTDIM, AXIS_Y)
     ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_SUB2OPTIONS, TICK_THICKNESS_INVISIBLE)
 End Sub
 
 Sub RemoveTitle()
-   ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_GRAPH).SetObjectCurrent
-   ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETGRAPHATTR, SGA_SHOWNAME, 0)
+    Const DEBUG_MODE As Boolean = False   
+    ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_GRAPH).SetObjectCurrent
+    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETGRAPHATTR, SGA_SHOWNAME, 0)
 End Sub
 
 ' ========================================
 ' Color Setters
 ' ========================================
 Function _SelectPlotObject(plotIndex As Long) As Object
+    Const DEBUG_MODE As Boolean = False
     On Error Resume Next
     Set _SelectPlotObject = ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_GRAPH).Plots(plotIndex)
     If Not _SelectPlotObject Is Nothing Then
         On Error Resume Next
         _SelectPlotObject.SetObjectCurrent
         If Err.Number <> 0 Then
-            DebugMsg "Error setting plot " & plotIndex & " as current: " & Err.Description
+            DebugMsg(DEBUG_MODE, "Error setting plot " & plotIndex & " as current: " & Err.Description)
             Err.Clear
         End If
     Else
@@ -408,7 +448,9 @@ Function _SelectPlotObject(plotIndex As Long) As Object
 End Function
 
 Function _DetectPlotType() As String
+    Const DEBUG_MODE As Boolean = False
     On Error GoTo ErrorHandler
+    
     Dim ObjectType As Variant
     Dim object_type As Variant
     object_type = ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_GRAPH).Plots(0).GetAttribute(SLA_TYPE, ObjectType)
@@ -416,7 +458,7 @@ Function _DetectPlotType() As String
         _DetectPlotType = "Error: Failed to get object type."
         Exit Function
     End If
-
+    
     ' Mapping
     Select Case object_type
         Case SLA_TYPE_SCATTER, SLA_TYPE_MINVAL, SLA_TYPE_POLARXY, SLA_TYPE_3DBAR, SLA_TYPE_TERNARYSCATTER
@@ -440,44 +482,45 @@ Function _DetectPlotType() As String
         Case Else
             _DetectPlotType = "UNKNOWN OBJECT TYPE: " & object_type
     End Select
-
-    ' DebugMsg "Type Detected: " & _DetectPlotType
+    DebugMsg(DEBUG_MODE, "Type Detected: " & _DetectPlotType)
     Exit Function
 ErrorHandler:
     _DetectPlotType = "An error has occurred: " & Err.Description
 End Function
 
 Sub _SelectGraphObject(plotIndex As Long)
+    Const DEBUG_MODE As Boolean = False
     On Error Resume Next
-
     Dim plotObj As Object
     Set plotObj = ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_GRAPH).Plots(plotIndex)
     If Not plotObj Is Nothing Then
         plotObj.SetObjectCurrent
         If Err.Number <> 0 Then
-            ' DebugMsg "Error in _SelectGraphObject: " & Err.Description
+            ' DebugMsg(DEBUG_MODE, "Error in _SelectGraphObject: " & Err.Description
             Err.Clear
         End If
     Else
-        DebugMsg "Plot object not found in _SelectGraphObject for index " & plotIndex
+        DebugMsg(DEBUG_MODE, "Plot object not found in _SelectGraphObject for index " & plotIndex)
     End If
 End Sub
 
 Sub _ChangeColorLine(RGB_VAL As Long, plotIndex As Long)
+    Const DEBUG_MODE As Boolean = False
     ' SEA = Set Line Attribute
-    ' DebugMsg "_ChangeColorLine called"
+    ' DebugMsg(DEBUG_MODE, "_ChangeColorLine called"
     _SelectGraphObject plotIndex
     With ActiveDocument.CurrentPageItem
-       .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SEA_COLOR, RGB_VAL)
-       .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SEA_COLORCOL, -2)
-       .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SOA_COLOR, RGB_VAL)
-       ' .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SEA_COLORREPEAT, 2)
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SEA_COLOR, RGB_VAL)
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SEA_COLORCOL, -2)
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SOA_COLOR, RGB_VAL)
+        ' .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SEA_COLORREPEAT, 2)
     End With
 End Sub
 
 Sub _ChangeColorSymbol(RGB_VAL As Long, ALPHA_VAL As Long, plotIndex As Long)
+    Const DEBUG_MODE As Boolean = False
     ' SSA = Set Symbol Attribute
-    ' DebugMsg "_ChangeColorSymbol called"
+    ' DebugMsg(DEBUG_MODE, "_ChangeColorSymbol called"
     _SelectGraphObject plotIndex
     With ActiveDocument.CurrentPageItem
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_EDGECOLOR, RGB_VAL)
@@ -489,9 +532,11 @@ Sub _ChangeColorSymbol(RGB_VAL As Long, ALPHA_VAL As Long, plotIndex As Long)
 End Sub
 
 Sub _ChangeColorSolid(RGB_VAL As Long, plotIndex As Long)
+    Const DEBUG_MODE As Boolean = False
+
     ' SDA = Set Solid Attribute
     ' Solids include graph planes, bars, and drawn solids objects
-    ' DebugMsg "_ChangeColorSolid called"
+    ' DebugMsg(DEBUG_MODE, "_ChangeColorSolid called"
     _SelectGraphObject plotIndex
     With ActiveDocument.CurrentPageItem
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_COLOR, RGB_VAL)
@@ -502,8 +547,10 @@ Sub _ChangeColorSolid(RGB_VAL As Long, plotIndex As Long)
 End Sub
 
 Sub _ChangeColorEdgeBlack(plotIndex As Long)
+    Const DEBUG_MODE As Boolean = False
+
     ' SDA = Set Solid Attribute
-    ' DebugMsg "_ChangeColorEdgeBlack called"
+    ' DebugMsg(DEBUG_MODE, "_ChangeColorEdgeBlack called"
     _SelectGraphObject plotIndex
     With ActiveDocument.CurrentPageItem
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_EDGECOLOR, RGB_BLACK)
@@ -511,9 +558,10 @@ Sub _ChangeColorEdgeBlack(plotIndex As Long)
 End Sub
 
 Sub _ChangeColorErrorBar(RGB_VAL As Long, plotIndex As Long)
+    Const DEBUG_MODE As Boolean = False
     ' SLA = Set Line Attributes
     _SelectGraphObject plotIndex
-    ' DebugMsg "_ChangeColorErrorBar called"
+    ' DebugMsg(DEBUG_MODE, "_ChangeColorErrorBar called"
     With ActiveDocument.CurrentPageItem
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_ERRCOLOR, RGB_VAL)
         ' .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_ERRCOLORREPEAT, 2)
@@ -521,9 +569,10 @@ Sub _ChangeColorErrorBar(RGB_VAL As Long, plotIndex As Long)
 End Sub
 
 Sub _ChangeColorBox(RGB_VAL As Long, plotIndex As Long)
+    Const DEBUG_MODE As Boolean = False
     ' SDA = Set Solid Attribute
     ' Solids include graph planes, bars, and drawn solids objects
-    ' DebugMsg "_ChangeColorBox called"
+    ' DebugMsg(DEBUG_MODE, "_ChangeColorBox called"
     _SelectGraphObject plotIndex
     With ActiveDocument.CurrentPageItem
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_COLOR, RGB_VAL)
@@ -532,36 +581,32 @@ Sub _ChangeColorBox(RGB_VAL As Long, plotIndex As Long)
     End With
 End Sub
 
-Function _CalculateColorColumnForPlot(plotIndex As Long) As Long
-    _CalculateColorColumnForPlot = DATA_START_COL + (plotIndex * DATA_CHUNK_SIZE) + DATA_ID_RGBA
-End Function
-
 Function _GetRGBFromColumn(columnIndex As Long) As Long
-    ' DebugMsg "_GetRGBFromColumn called for plot " & columnIndex
-   Dim rValue As Variant, gValue As Variant, bValue As Variant
-
+    Const DEBUG_MODE As Boolean = False
+    ' DebugMsg(DEBUG_MODE, "_GetRGBFromColumn called for plot " & columnIndex
+    Dim rValue As Variant, gValue As Variant, bValue As Variant
     ' Read RGB values from worksheet (R, G, B values are assumed to be in adjacent columns)
     bValue = _ReadCell(columnIndex, 0)
     gValue = _ReadCell(columnIndex, 1)
     rValue = _ReadCell(columnIndex, 2)
-
     ' Convert to integers and create RGB color
     Dim r As Integer, g As Integer, b As Integer
     b = CInt(bValue)
     g = CInt(gValue)
     r = CInt(rValue)
-
     ' Standard RGB (VBA default)
     _GetRGBFromColumn = RGB(r, g, b)
 End Function
 
 Function _GetAlphaFromColumn(columnIndex As Long) As Long
-   Dim alphaValue As Variant
-   alphaValue = _ReadCell(columnIndex, 3)
-   _GetAlphaFromColumn = alphaValue
+    Const DEBUG_MODE As Boolean = False
+    Dim alphaValue As Variant
+    alphaValue = _ReadCell(columnIndex, 3)
+    _GetAlphaFromColumn = alphaValue
 End Function
 
 Sub SetColors()
+    Const DEBUG_MODE As Boolean = False   
     On Error GoTo ErrorHandler
     Dim plotCount As Long
     Dim iPlot As Long
@@ -571,119 +616,119 @@ Sub SetColors()
     Dim graphItem As Object
     Dim plotObj As Object
     Dim DetectedPlotType As String
-
     ' Find the type of the object
     DetectedPlotType = _DetectPlotType()
-
     ' Get the graph page
     Set graphItem = ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_GRAPH)
     If graphItem Is Nothing Then
-        DebugMsg "Error: Graph object not found"
+        DebugMsg(DEBUG_MODE, "Error: Graph object not found")
         Exit Sub
     End If
-
     ' Get the number of plots
     plotCount = graphItem.Plots.Count
-
     ' Loop through all plots
     For iPlot = 0 To plotCount - 1
         colorColumn = _CalculateColorColumnForPlot(iPlot)
         RGB_VAL = _GetRGBFromColumn(colorColumn)
         ALPHA_VAL = _GetAlphaFromColumn(colorColumn)
-
         ' Apply color based on plot type
         Select Case DetectedPlotType
             Case "LINE/SCATTER"
                 _ChangeColorLine RGB_VAL, iPlot
                 _ChangeColorSymbol RGB_VAL, ALPHA_VAL, iPlot
                 _ChangeColorSolid RGB_VAL, iPlot
+                _ChangeColorErrorBar RGB_VAL, iPlot
             Case "3DSCATTER"
                 _ChangeColorLine RGB_VAL, iPlot
                 _ChangeColorSymbol RGB_VAL, ALPHA_VAL, iPlot
             Case "BAR", "STACKED"
-               _ChangeColorSolid RGB_VAL, iPlot
-               _ChangeColorEdgeBlack iPlot
+                _ChangeColorSolid RGB_VAL, iPlot
+                _ChangeColorEdgeBlack iPlot
             Case "BOX"
-               _ChangeColorBox RGB_VAL, iPlot
+                _ChangeColorBox RGB_VAL, iPlot
             Case "POLAR"
                 _ChangeColorLine RGB_VAL, iPlot
             Case Else
-                DebugMsg "Unknown plot type detected: " & DetectedPlotType
+                DebugMsg(DEBUG_MODE, "Unknown plot type detected: " & DetectedPlotType)
         End Select
     Next iPlot
     Exit Sub
 ErrorHandler:
-    DebugMsg "Error in Main: " & Err.Description
+    DebugMsg(DEBUG_MODE, "Error in Main: " & Err.Description)
 End Sub
 
 ' ========================================
 ' Figure Size
 ' ========================================
 Function _cvtMmToInternalUnit(mm As Long)
-   _cvtMmToInternalUnit = mm*30
+    Const DEBUG_MODE As Boolean = False
+    _cvtMmToInternalUnit = mm*30
 End Function
 
 Sub SetFigureSize()
-   On Error Resume Next
-   ' Width
-   Dim xLength_mm As Double
-   Dim xLength_sp As Double
-   xLength_mm = _ReadCell(GRAPH_PARAMS_COL, X_MM_ROW)
-   xLength_sp = _cvtMmToInternalUnit(xLength_mm)
-
-   ' Height
-   Dim yLength_mm As Double
-   Dim yLength_sp As Double
-   yLength_mm = _ReadCell(GRAPH_PARAMS_COL, Y_MM_ROW)
-   yLength_sp = _cvtMmToInternalUnit(yLength_mm)
-
-   With ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_GRAPH)
-      .Width = xLength_sp
-      .Height = yLength_sp
-   End With
+    Const DEBUG_MODE As Boolean = False   
+    On Error Resume Next
+    ' Width
+    Dim xLength_mm As Double
+    Dim xLength_sp As Double
+    xLength_mm = _ReadCell(GRAPH_PARAMS_COL, X_MM_ROW)
+    xLength_sp = _cvtMmToInternalUnit(xLength_mm)
+    ' Height
+    Dim yLength_mm As Double
+    Dim yLength_sp As Double
+    yLength_mm = _ReadCell(GRAPH_PARAMS_COL, Y_MM_ROW)
+    yLength_sp = _cvtMmToInternalUnit(yLength_mm)
+    With ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_GRAPH)
+        .Width = xLength_sp
+        .Height = yLength_sp
+    End With
 End Sub
-
 ' ========================================
 ' Label Size
 ' ========================================
 Sub _SetXLabelSize()
+    Const DEBUG_MODE As Boolean = False
     ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_AXIS).NameObject.SetObjectCurrent
     ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_SELECTDIM, AXIS_X)
     ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETOBJECTATTR, STA_SIZE, LABEL_PTS_08)
 End Sub
 
 Sub _SetYLabelSize()
+    Const DEBUG_MODE As Boolean = False
     ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_AXIS).NameObject.SetObjectCurrent
     ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_SELECTDIM, AXIS_Y)
     ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETOBJECTATTR, STA_SIZE, LABEL_PTS_08)
 End Sub
 
 Sub SetXYLabelSizes()
-   _SetXLabelSize()
-   _SetYLabelSize()
+    Const DEBUG_MODE As Boolean = False   
+    _SetXLabelSize()
+    _SetYLabelSize()
 End Sub
-
 
 ' ========================================
 ' Label Text
 ' ========================================
 Function _SetXLabel()
-	Dim xLabel As Variant
-	xLabel = _ReadCell(GRAPH_PARAMS_COL, X_LABEL_ROW)
+    Const DEBUG_MODE As Boolean = False
+    Dim xLabel As Variant
+    xLabel = _ReadCell(GRAPH_PARAMS_COL, X_LABEL_ROW)
     ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_SELECTDIM, AXIS_X)
     ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_AXIS).NameObject.SetObjectCurrent
     ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_RTFNAME, xLabel)
 End Function
 
 Function _SetYLabel()
-	Dim yLabel As Variant
-	yLabel = _ReadCell(GRAPH_PARAMS_COL, Y_LABEL_ROW)
+    Const DEBUG_MODE As Boolean = False
+    Dim yLabel As Variant
+    yLabel = _ReadCell(GRAPH_PARAMS_COL, Y_LABEL_ROW)
     ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_SELECTDIM, AXIS_Y)
     ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_AXIS).NameObject.SetObjectCurrent
     ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_RTFNAME, yLabel)
 End Function
 
 Sub SetXYLabels()
+    Const DEBUG_MODE As Boolean = False   
     _SetXLabel()
     _SetYLabel()
 End Sub
@@ -692,75 +737,67 @@ End Sub
 ' Range
 ' ========================================
 Sub _SetXRange()
+    Const DEBUG_MODE As Boolean = False
     Dim xMin As String
     Dim xMax As String
     Dim xScaleType As Variant
     Dim xAxis As Object
     Const USE_CONSTANT_VALUE As Integer = 10
-
     ' Get the scale type
     xScaleType = _ReadCell(GRAPH_PARAMS_COL, X_SCALE_TYPE_ROW)
-
     ' Skip range setting for category or datetime axes
     If LCase(CStr(xScaleType)) = "category" Or LCase(CStr(xScaleType)) = "7" Or _
        LCase(CStr(xScaleType)) = "datetime" Or LCase(CStr(xScaleType)) = "date" Or _
        LCase(CStr(xScaleType)) = "time" Or LCase(CStr(xScaleType)) = "8" Then
         Exit Sub
     End If
-
     xMin = _ReadCell(GRAPH_PARAMS_COL, X_MIN_ROW)
     xMax = _ReadCell(GRAPH_PARAMS_COL, X_MAX_ROW)
-
     ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_AXIS).NameObject.SetObjectCurrent
     ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_SELECTDIM, AXIS_X)
     ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_OPTIONS, USE_CONSTANT_VALUE)
     ' ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTRSTRING, SAA_FROMVAL, xMin)
     ' ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTRSTRING, SAA_TOVAL, xMax)
     If xMin <> "None" Then
-       ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTRSTRING, SAA_FROMVAL, xMin)
-       ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_OPTIONS, 42991617)
-       ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_OPTIONS, 20972546)
+        ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTRSTRING, SAA_FROMVAL, xMin)
+        ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_OPTIONS, 42991617)
+        ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_OPTIONS, 20972546)
     End If
-
     If xMax <> "None" Then
         ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTRSTRING, SAA_TOVAL, xMax)
     End If
 End Sub
 
 Sub _SetYRange()
+    Const DEBUG_MODE As Boolean = False
     Dim yMin As String
     Dim yMax As String
     Dim yScaleType As Variant
     Dim yAxis As Object
     Const USE_CONSTANT_VALUE As Integer = 10
-
     ' Get the scale type
     yScaleType = _ReadCell(GRAPH_PARAMS_COL, Y_SCALE_TYPE_ROW)
-
     ' Skip range setting for category or datetime axes
     If LCase(CStr(yScaleType)) = "category" Or LCase(CStr(yScaleType)) = "7" Or _
        LCase(CStr(yScaleType)) = "datetime" Or LCase(CStr(yScaleType)) = "date" Or _
        LCase(CStr(yScaleType)) = "time" Or LCase(CStr(yScaleType)) = "8" Then
         Exit Sub
     End If
-
     yMin = _ReadCell(GRAPH_PARAMS_COL, Y_MIN_ROW)
     yMax = _ReadCell(GRAPH_PARAMS_COL, Y_MAX_ROW)
-
     ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_AXIS).NameObject.SetObjectCurrent
     ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_SELECTDIM, AXIS_Y)
     ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_OPTIONS, USE_CONSTANT_VALUE)
-
     If yMin <> "None" Then
         ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTRSTRING, SAA_FROMVAL, yMin)
     End If
-
     If yMax <> "None" Then
         ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTRSTRING, SAA_TOVAL, yMax)
     End If
 End Sub
 
 Sub SetRanges()
+    Const DEBUG_MODE As Boolean = False   
     _SetXRange()
     _SetYRange()
 End Sub
@@ -769,77 +806,88 @@ End Sub
 ' Scales
 ' ========================================
 Function _SetAxisType(axisIndex As Long, scaleType As Long)
-   Dim axis As Object
-   ' Get the axis object directly
-   Set axis = ActiveDocument.CurrentPageItem.GraphPages(0).Graphs(0).Axes(axisIndex)
-   ' Set scale type
-   axis.SetAttribute(SAA_TYPE, scaleType)
+    Dim axis As Object
+    ' Get the axis object directly
+    Set axis = ActiveDocument.CurrentPageItem.GraphPages(0).Graphs(0).Axes(axisIndex)
+    ' Set scale type
+    axis.SetAttribute(SAA_TYPE, scaleType)
 End Function
 
 Function _GetScaleType(cellValue As Variant) As Long
-   Dim scaleType As Long
-   ' Convert string or number to appropriate scale type constant
-   Select Case CStr(LCase(cellValue))
-      Case "linear", "1"
-         scaleType = SAA_TYPE_LINEAR
-      Case "common", "common log", "2"
-         scaleType = SAA_TYPE_COMMON
-      Case "log", "natural log", "3"
-         scaleType = SAA_TYPE_LOG
-      Case "probability", "4"
-         scaleType = SAA_TYPE_PROBABILITY
-      Case "probit", "5"
-         scaleType = SAA_TYPE_PROBIT
-      Case "logit", "6"
-         scaleType = SAA_TYPE_LOGIT
-      Case "category", "7"
-         scaleType = SAA_TYPE_CATEGORY
-      Case "datetime", "date", "time", "8"
-         scaleType = SAA_TYPE_DATETIME
-      Case Else
-        ' Default to linear if unrecognized
-        scaleType = SAA_TYPE_LINEAR
-   End Select
-   _GetScaleType = scaleType
+    Const DEBUG_MODE As Boolean = False
+    Const SAA_TYPE_LINEAR = 1
+    Const SAA_TYPE_COMMON = 2
+    Const SAA_TYPE_LOG = 3
+    Const SAA_TYPE_PROBABILITY = 4
+    Const SAA_TYPE_PROBIT = 5
+    Const SAA_TYPE_LOGIT = 6
+    Const SAA_TYPE_CATEGORY = 7
+    Const SAA_TYPE_DATETIME = 8
+    Dim scaleType As Long
+    ' Convert string or number to appropriate scale type constant
+    Select Case CStr(LCase(cellValue))
+        Case "linear", "1"
+            scaleType = SAA_TYPE_LINEAR
+        Case "common", "common log", "2"
+            scaleType = SAA_TYPE_COMMON
+        Case "log", "natural log", "3"
+            scaleType = SAA_TYPE_LOG
+        Case "probability", "4"
+            scaleType = SAA_TYPE_PROBABILITY
+        Case "probit", "5"
+            scaleType = SAA_TYPE_PROBIT
+        Case "logit", "6"
+            scaleType = SAA_TYPE_LOGIT
+        Case "category", "7"
+            scaleType = SAA_TYPE_CATEGORY
+        Case "datetime", "date", "time", "8"
+            scaleType = SAA_TYPE_DATETIME
+        Case Else
+            ' Default to linear if unrecognized
+            scaleType = SAA_TYPE_LINEAR
+    End Select
+    _GetScaleType = scaleType
 End Function
 
 Sub _SetXScale()
-   On Error Resume Next
-   Dim xScaleData As Variant
-   Dim xScaleType As Long
-   ' Read scale types from worksheet
-   xScaleData = _ReadCell(GRAPH_PARAMS_COL, X_SCALE_TYPE_ROW)
-   ' Convert to scale type constants
-   xScaleType = _GetScaleType(xScaleData)
-   ' Set X axis scale type
-   _SetAxisType HORIZONTAL, xScaleType
-
-On Error GoTo 0
+    Const DEBUG_MODE As Boolean = False
+    On Error Resume Next
+    Dim xScaleData As Variant
+    Dim xScaleType As Long
+    ' Read scale types from worksheet
+    xScaleData = _ReadCell(GRAPH_PARAMS_COL, X_SCALE_TYPE_ROW)
+    ' Convert to scale type constants
+    xScaleType = _GetScaleType(xScaleData)
+    ' Set X axis scale type
+    _SetAxisType HORIZONTAL, xScaleType
+    On Error GoTo 0
 End Sub
 
 Sub _SetYScale()
-   On Error Resume Next
-   Dim yScaleData As Variant
-   Dim yScaleType As Long
-   ' Read scale types from worksheet
-   yScaleData = _ReadCell(GRAPH_PARAMS_COL, Y_SCALE_TYPE_ROW)
-   ' Convert to scale type constants
-   yScaleType = _GetScaleType(yScaleData)
-   ' Set X axis scale type
-   _SetAxisType VERTICAL, yScaleType
-
-On Error GoTo 0
+    Const DEBUG_MODE As Boolean = False
+    On Error Resume Next
+    Dim yScaleData As Variant
+    Dim yScaleType As Long
+    ' Read scale types from worksheet
+    yScaleData = _ReadCell(GRAPH_PARAMS_COL, Y_SCALE_TYPE_ROW)
+    ' Convert to scale type constants
+    yScaleType = _GetScaleType(yScaleData)
+    ' Set X axis scale type
+    _SetAxisType VERTICAL, yScaleType
+    On Error GoTo 0
 End Sub
 
 Sub SetScales()
-   _SetXScale()
-   _SetYScale()
+    Const DEBUG_MODE As Boolean = False   
+    _SetXScale()
+    _SetYScale()
 End Sub
 
 ' ========================================
 ' Ticks
 ' ========================================
 Sub _SetXTicks()
+    Const DEBUG_MODE As Boolean = False
     Dim xTicksData As Variant
     xTicksData = _ReadCell(X_TICKS_COL, 0)
     If Not xTicksData = "None" Then
@@ -851,6 +899,7 @@ Sub _SetXTicks()
 End Sub
 
 Sub _SetYTicks()
+    Const DEBUG_MODE As Boolean = False
     Dim yTicksData As Variant
     yTicksData = _ReadCell(Y_TICKS_COL, 0)
     If Not yTicksData = "None" Then
@@ -862,14 +911,16 @@ Sub _SetYTicks()
 End Sub
 
 Sub SetTicks()
-   _SetXTicks()
-   _SetYTicks()
+    Const DEBUG_MODE As Boolean = False   
+    _SetXTicks()
+    _SetYTicks()
 End Sub
 
 ' ========================================
 ' Tick Sizes
 ' ========================================
 Sub _SetXTickSizes()
+    Const DEBUG_MODE As Boolean = False
     ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_AXIS).NameObject.SetObjectCurrent
     ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_SELECTDIM, AXIS_X)
     ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_SELECTLINE, AXIS_X)
@@ -881,6 +932,7 @@ Sub _SetXTickSizes()
 End Sub
 
 Sub _SetYTickSizes()
+    Const DEBUG_MODE As Boolean = False
     ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_AXIS).NameObject.SetObjectCurrent
     ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_SELECTDIM, AXIS_Y)
     ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_SELECTLINE, AXIS_Y)
@@ -892,32 +944,13 @@ Sub _SetYTickSizes()
 End Sub
 
 Sub SetTickSizes()
-   _SetXTickSizes()
-   _SetYTickSizes()
+    Const DEBUG_MODE As Boolean = False   
+    _SetXTickSizes()
+    _SetYTickSizes()
 End Sub
 
-' ' ========================================
-' ' Tick Label Sizes
-' ' ========================================
-' Sub _SetXTickLabelSizes()
-'     ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_AXIS).NameObject.SetObjectCurrent
-'     ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_SELECTDIM, AXIS_X)
-'     ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, STA_SIZE, LABEL_PTS_07)
-' End Sub
-
-' Sub _SetYTickLabelSizes()
-'     ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_AXIS).NameObject.SetObjectCurrent
-'     ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_SELECTDIM, AXIS_Y)
-'     ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, STA_SIZE, LABEL_PTS_07)
-' End Sub
-
-' Sub SetTickLabelSizes()
-'    _SetXTickLabelSizes()
-'    _SetYTickLabelSizes()
-' End Sub
-
 Sub SetXYLabelSizesAndTickLabelSizes()
-
+    Const DEBUG_MODE As Boolean = False   
     Dim oGraph As Object
     Dim oAxisX As Object
     Dim oAxisY As Object
@@ -925,7 +958,7 @@ Sub SetXYLabelSizesAndTickLabelSizes()
     Dim oTextY As Object
     Dim oTextXTick As Object
     Dim oTextYTick As Object
-
+    
     Set oGraph = ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_GRAPH)
     Set oAxisX = oGraph.Axes(HORIZONTAL)
     Set oAxisY = oGraph.Axes(VERTICAL)
@@ -933,39 +966,33 @@ Sub SetXYLabelSizesAndTickLabelSizes()
     Set oTextY = oAxisY.AxisTitles(0)
     Set oTextXTick = oAxisX.TickLabelAttributes(MAJOR_TICK_INDEX)
     Set oTextYTick = oAxisY.TickLabelAttributes(MAJOR_TICK_INDEX)
-
+    
     oTextX.SetAttribute(STA_SELECT, -65536)
     oTextY.SetAttribute(STA_SELECT, -65536)
     oTextX.SetAttribute(STA_SIZE, LABEL_PTS_08)
     oTextY.SetAttribute(STA_SIZE, LABEL_PTS_08)
-
     oTextXTick.SetAttribute(STA_SIZE, LABEL_PTS_07)
     oTextYTick.SetAttribute(STA_SIZE, LABEL_PTS_07)
-
 End Sub
 
 Sub SetLineWidth()
+    Const DEBUG_MODE As Boolean = False
     Dim plotCount As Long
     Dim iPlot As Long
     Dim graphItem As Object
     Dim detectedPlotType As String
-
     detectedPlotType = _DetectPlotType()
-    
     ' Get the graph page
     Set graphItem = ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_GRAPH)
     If graphItem Is Nothing Then
-        DebugMsg "Error: Graph object not found in SetLineWidth"
+        DebugMsg(DEBUG_MODE, "Error: Graph object not found in SetLineWidth")
         Exit Sub
     End If
-    
     ' Get the number of plots
     plotCount = graphItem.Plots.Count
-    
     ' Loop through all plots and set line width
     For iPlot = 0 To plotCount - 1
         _SelectGraphObject iPlot
-        
         ' For polar plots, set the specific line width
         If detectedPlotType = "POLAR" Then
             ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SEA_THICKNESS, POLAR_LINE_THICKNESS)
@@ -974,6 +1001,7 @@ Sub SetLineWidth()
 End Sub
 
 Sub SetTickLabelRotation()
+    Const DEBUG_MODE As Boolean = False   
     Dim xRotation As Long
     Dim yRotation As Long
     Dim oGraph As Object
@@ -981,78 +1009,75 @@ Sub SetTickLabelRotation()
     Dim oAxisY As Object
     Dim oTextXTick As Object
     Dim oTextYTick As Object
-    
     ' Default rotations (0 degrees)
     xRotation = 0
     yRotation = 0
-    
     ' Try to read rotation values from worksheet if available
     On Error Resume Next
     ' Assuming rotation values might be stored in cells next to the axis properties
     xRotation = CLng(_ReadCell(GRAPH_PARAMS_COL, X_LABEL_ROTATION_ROW)) * 10
     yRotation = CLng(_ReadCell(GRAPH_PARAMS_COL, Y_LABEL_ROTATION_ROW)) * 10
     On Error GoTo 0
-    
     ' Set the tick label rotation
     Set oGraph = ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_GRAPH)
     Set oAxisX = oGraph.Axes(HORIZONTAL)
     Set oAxisY = oGraph.Axes(VERTICAL)
     Set oTextXTick = oAxisX.TickLabelAttributes(MAJOR_TICK_INDEX)
     Set oTextYTick = oAxisY.TickLabelAttributes(MAJOR_TICK_INDEX)
-    
     ' Apply rotation values
     oTextXTick.SetAttribute(STA_ORIENTATION, xRotation)
     oTextYTick.SetAttribute(STA_ORIENTATION, yRotation)
 End Sub
 
-
 ' ========================================
 ' Main
 ' ========================================
 Sub Main()
-   ' ========================================
-   ' Working
-   ' ========================================
+    Const DEBUG_MODE As Boolean = False   
 
-   ' Remove any existing graphs
-   RemoveExistingGraphs()
-
-   ' Data Plotting
-   Plot()
-
-   ' Removers
-   RemoveLegend()
-   RemoveTopSpine()
-   RemoveRightSpine()
-   RemoveTitle()
-
-   ' Color
-   SetColors()
-
-   ' Axes
-   SetScales()
-   SetRanges()
-
-   ' Size
-   SetFigureSize()
-
-   ' Ticks
-   SetTicks()
-   SetTickSizes()
-   ' SetTickLabelSizes() ' Only X
-
-   ' Labels
-   SetXYLabels()
-   SetXYLabelSizes()
-
-   ' Ticks and Labels
-   SetXYLabelSizesAndTickLabelSizes()
-   ' Tick label rotation
-   SetTickLabelRotation()
-   
-   ' Line Width
-   SetLineWidth()
-
-   ActiveDocument.NotebookItems(GRAPH_NAME).Open
+    ' Make sure graph is active
+    ActiveDocument.NotebookItems(GRAPH_NAME).Open
+    
+    ' Remove any existing graphs
+    RemoveExistingGraphs()
+    
+    ' Data Plotting
+    Plot()
+    
+    ' Removers
+    RemoveLegend()
+    RemoveTopSpine()
+    RemoveRightSpine()
+    RemoveTitle()
+    
+    ' Color
+    SetColors()
+    
+    ' Axes
+    SetScales()
+    SetRanges()
+    
+    ' Size
+    SetFigureSize()
+    
+    ' Ticks
+    SetTicks()
+    SetTickSizes()
+    
+    ' Labels
+    SetXYLabels()
+    SetXYLabelSizes()
+    
+    ' Ticks and Labels
+    SetXYLabelSizesAndTickLabelSizes()
+    
+    ' Tick label rotation
+    SetTickLabelRotation()
+    
+    ' Line Width
+    SetLineWidth()
+    
+    ' Activate the graph page
+    ActiveDocument.NotebookItems(GRAPH_NAME).Open
 
 End Sub

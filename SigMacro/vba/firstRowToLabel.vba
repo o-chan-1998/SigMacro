@@ -81,18 +81,10 @@ End Sub
 
 
 Sub DeleteFirstRow()
-    'Get the current number of columns
-    Dim colCount As Long
-    colCount = ActiveDocument.CurrentDataItem.DataTable.ColumnCount
-    
-    'Only delete cells that actually exist
-    If colCount > 0 Then
-        ActiveDocument.CurrentDataItem.DeleteCells(0, 0, colCount - 1, 0, DeleteUp)
-        ActiveDocument.CurrentDataItem.Open
-        ActiveDocument.CurrentDataItem.Open
-    End If
+    ActiveDocument.CurrentDataItem.DeleteCells(0, 0, 31999, 0, DeleteUp)
+    ActiveDocument.CurrentDataItem.Open
+    ActiveDocument.CurrentDataItem.Open
 End Sub
-
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' Main

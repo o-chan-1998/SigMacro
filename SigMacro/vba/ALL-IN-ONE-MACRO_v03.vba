@@ -5,6 +5,7 @@ Option Explicit
 Const DEBUG_MODE As Boolean = False
 Const WORKSHEET_NAME As String = "worksheet"
 Const GRAPH_NAME As String = "graph"
+
 ' ========================================
 ' Axis Constants
 ' ========================================
@@ -13,6 +14,7 @@ Const AXIS_Y As Long = 2
 Const HORIZONTAL As Long = 0
 Const VERTICAL As Long = 1
 Const MAJOR_TICK_INDEX As Long = 2
+
 ' ========================================
 ' Visual Settings
 ' ========================================
@@ -29,31 +31,75 @@ Const LABEL_PTS_07 As Long = 97
 Const LABEL_PTS_08 As Long = 111
 ' Line Thickness
 Const POLAR_LINE_THICKNESS As Double = 0.008 * 1000  ' Convert inches to internal units (1000 = 1 inch)
-' ========================================
-' Axis Scale Types
-' ========================================
-Const SAA_TYPE_LINEAR = 1
-Const SAA_TYPE_COMMON = 2
-Const SAA_TYPE_LOG = 3
-Const SAA_TYPE_PROBABILITY = 4
-Const SAA_TYPE_PROBIT = 5
-Const SAA_TYPE_LOGIT = 6
-Const SAA_TYPE_CATEGORY = 7
-Const SAA_TYPE_DATETIME = 8
+
+' ----------------------------------------
+' Now, example formats of plotting data changed as follows. Note that indices are changeable and not all plot types will be included in a notebook (jnb file). Also, one type of plot may appear multiple times in a notebook (e.g., multiple line plots):
+' Area Plot
+'gw_param_keys 0', 'gw_param_values 0', 'label', 'x', 'y', 'bgra',
+' Vertical Bar Plot
+'gw_param_keys 1', 'gw_param_values 1', 'label', 'x', 'y', 'yerr', 'bgra',
+' Horizontal Bar Plot
+'gw_param_keys 2', 'gw_param_values 2', 'label', 'x', 'xerr', 'y', 'bgra',
+' Vertical Box Plot
+'gw_param_keys 3', 'gw_param_values 3', 'label', 'x', 'y', 'bgra',
+' Horizontal Box Plot
+'gw_param_keys 4', 'gw_param_values 4', 'label', 'y', 'x', 'bgra',
+' Line Plot
+'gw_param_keys 5', 'gw_param_values 5', 'label', 'x', 'y', 'yerr', 'bgra',
+' Polar Plot
+'gw_param_keys 6', 'gw_param_values 6', 'label', 'theta', 'r', 'bgra',
+' Scatter Plot
+'gw_param_keys 7', 'gw_param_values 7', 'label', 'x', 'y', 'bgra',
+' Vertical Violin Plot
+'gw_param_keys 8', 'gw_param_values 8', 'label', 'x_lower', 'x', 'x_upper', 'y', 'bgra',
+' Horizontal Violin Plot
+'gw_param_keys 9', 'gw_param_values 9', 'label', 'y_lower', 'y', 'y_upper', 'x', 'bgra',
+' Filled Line Plot
+'gw_param_keys 10', 'gw_param_values 10', 'label', 'x', 'y_lower', 'y', 'y_upper', 'bgra',
+' Contour Plot
+'gw_param_keys 11', 'gw_param_values 11', 'label', 'x', 'y', 'z',
+' Confusion Matrix Plot
+'gw_param_keys 12', 'gw_param_values 12', 'label', 'x', 'y', 'z', 'class_names'],
+' ----------------------------------------
+
+' ----------------------------------------
+' Thus, we should revise this SigmaPlot macro script to perform:
+' 1. Find start and end of a chunk of iPlot
+' 2. Read the Graph Wizard Params
+' 3. Determine the plot type
+' 4. Get the data for plotting for the chunk
+' 5. (Create graph if not exists and) add the plot
+' ----------------------------------------
+
+' ----------------------------------------
+' Additionally, we need to check the type of data are consistent
+' category, linear, Log, ...
+' ----------------------------------------
+
+' ----------------------------------------
+' Also, we need to assume
+' One contour occupies one figure (and so that one JNB file)
+' This is the same for confusion matrix and filled line
+' ----------------------------------------
+
+
 ' Rows
-Const PLOT_TYPE_ROW As Long = 0
-Const PLOT_STYLE_ROW As Long = 1
-Const PLOT_DATA_TYPE_ROW As Long = 2
-Const _PLOT_COLUMNS_PER_PLOT_ROW As Long = 3
-Const _PLOT_PLOT_COLUMNS_COUNT_ARRAY_ROW As Long = 4
-Const PLOT_DATA_SOURCE_ROW As Long = 5
-Const PLOT_POLARUNITS_ROW As Long = 6
-Const PLOT_ANGLEUNITS_ROW As Long = 7
-Const PLOT_MIN_ANGLE_ROW As Long = 8
-Const PLOT_MAX_ANGLE_ROW As Long = 9
-Const PLOT_UNKONWN1_ROW As Long = 10
-Const PLOT_GROUP_STYLE_ROW As Long = 11
-Const PLOT_USE_AUTOMATIC_LEGENDS_ROW As Long = 12
+Const LABEL_ROW As Long = -1
+' Graph Wizard-related
+Const GW_PLOT_TYPE_ROW As Long = 0
+Const GW_PLOT_STYLE_ROW As Long = 1
+Const GW_DATA_TYPE_ROW As Long = 2
+Const _GW_COLUMNS_PER_GW_ROW As Long = 3
+Const _GW_GW_COLUMNS_COUNT_ARRAY_ROW As Long = 4
+Const GW_DATA_SOURCE_ROW As Long = 5
+Const GW_POLARUNITS_ROW As Long = 6
+Const GW_ANGLEUNITS_ROW As Long = 7
+Const GW_MIN_ANGLE_ROW As Long = 8
+Const GW_MAX_ANGLE_ROW As Long = 9
+Const GW_UNKONWN1_ROW As Long = 10
+Const GW_GROUP_STYLE_ROW As Long = 11
+Const GW_USE_AUTOMATIC_LEGENDS_ROW As Long = 12
+
 ' Graph Parameters
 ' ----------------------------------------
 ' Columns
@@ -79,21 +125,23 @@ Const Y_TICKS_COL As Long = 3
 ' Data Columns
 ' ----------------------------------------
 ' General
-Const DATA_START_COL As Long = 8
-Const DATA_CHUNK_SIZE As Long = 11  ' Updated to match new in-chunk indices
-Const DATA_MAX_NUM_PLOTS As Long = 13
-' In-chunk indices
-Const DATA_ID_GRAPH_WIZARD_PARAMS_EXPLANATION As Long = 0
-Const DATA_ID_GRAPH_WIZARD_PARAMS As Long = 1
-Const DATA_ID_X AS LONG = 2
-Const DATA_ID_X_ERR AS LONG = 3
-Const DATA_ID_X_LOWER AS LONG = 4
-Const DATA_ID_X_UPPER AS LONG = 5
-Const DATA_ID_Y AS LONG = 6
-Const DATA_ID_Y_ERR AS LONG = 7
-Const DATA_ID_Y_LOWER AS LONG = 8
-Const DATA_ID_Y_UPPER AS LONG = 9
-Const DATA_ID_RGBA AS LONG = 10
+Const MAX_NUM_PLOTS As Long = 13
+Const GW_START_COL_NAME_BASE As String = "gw_param_keys "
+Const GW_START_COL As Long = -1 ' Will be found
+' Const GW_ID_LABEL_EXPLANATION As Long = 0
+' Const GW_ID_GW_PARAMS_COL As Long = 1
+
+Const GW_ID_RGBA As Long = -1  ' This will be calculated dynamically in _CalculateColorColumnForPlot
+
+' Add missing constants for column indexes within each chunk
+Const GW_ID_PARAM_KEYS As Long = 0
+Const GW_ID_PARAM_VALUES As Long = 1
+Const GW_ID_LABEL As Long = 2
+
+' Colors
+Const RGB_BLACK As Long = &H00000000
+
+
 ' ========================================
 ' Helper
 ' ========================================
@@ -102,11 +150,13 @@ Sub DebugMsg(msg As String)
         MsgBox msg, vbInformation, "Debug Info"
     End If
 End Sub
+
 Sub DebugType(item)
     If DEBUG_MODE Then
         MsgBox "Type: " & TypeName(item)
     End If
 End Sub
+
 Function _ReadCell(columnIndex As Long, rowIndex As Long) As Variant
     Dim dataTable As Object
     Dim cellValue As Variant
@@ -114,192 +164,334 @@ Function _ReadCell(columnIndex As Long, rowIndex As Long) As Variant
     cellValue = dataTable.GetData(columnIndex, rowIndex, columnIndex, rowIndex)
     _ReadCell = cellValue(0, 0)
 End Function
+
 Private Function ConvMmToInch(ByVal dValMm As Double) As Double
     ConvMmToInch = dValMm / 0.0254
 End Function
+
 Private Function ConvPtToInch(ByVal dValPt As Double) As Double
     ConvPtToInch = dValPt * (1000 / 72)
 End Function
+
+' ========================================
+' Finder
+' ========================================
+Function _GetMaxCol() As Long
+    Dim maxCol As Long, maxRow As Long, dataTable As Object
+    Set dataTable = ActiveDocument.NotebookItems(WORKSHEET_NAME).DataTable
+    DataTable.GetMaxUsedSize(maxCol, maxRow)
+    _GetMaxCol = maxCol
+End Function
+
+Function _FindColIdx(columnName As String) As Long
+    Dim maxCol As Long, ColIndex As Long, ColName As String, ii As Long
+    maxCol = _GetMaxCol()
+    ColIndex = -1
+    For ii = 0 To maxCol
+        ColName = _ReadCell(ii, LABEL_ROW)
+        If LCase(ColName) = LCase(columnName) Then
+            ColIndex = ii
+            Exit For
+        End If
+    Next ii
+    _FindColIdx = ColIndex
+End Function
+
+Function _FindChunkStartCol(iPlot As Long) As Long
+    Dim colName As String
+    colName = GW_START_COL_NAME_BASE & iPlot
+    _FindChunkStartCol = _FindColIdx(colName)
+End Function
+
+Function _FindChunkEndCol(iPlot As Long) As Long
+    Dim startCol As Long, nextStartCol As Long
+    Dim maxCol As Long
+    
+    startCol = _FindChunkStartCol(iPlot)
+    
+    If startCol = -1 Then
+        _FindChunkEndCol = -1
+        Exit Function
+    End If
+    
+    nextStartCol = _FindChunkStartCol(iPlot + 1)
+    
+    If nextStartCol = -1 Then
+        maxCol = _GetMaxCol()
+        _FindChunkEndCol = maxCol
+    Else
+        _FindChunkEndCol = nextStartCol - 1
+    End If
+End Function
+
 ' ========================================
 ' Plot
 ' ========================================
+' Revise Plot function to handle different plot types
 Sub Plot()
-    ' Open the worksheet
-    ActiveDocument.NotebookItems(WORKSHEET_NAME).Open
-    ' Get plot configuration
-    Dim plotType As String
-    Dim plotStyle As String
-    Dim dataType As String
-    Dim _columnsPerPlot As Variant
-    Dim _plotColumnsCountArray As Variant
-    Dim dataSource As String
-    Dim polarUnits As String
-    Dim angleUnits As String
-    Dim minAngle As Double
-    Dim maxAngle As Double
-    Dim _unknown1 As Variant
-    Dim groupStyle As String
-    Dim useAutomaticLegends As Boolean
-    plotType = _ReadCell(0, PLOT_TYPE_ROW)
-    plotStyle = _ReadCell(0, PLOT_STYLE_ROW)
-    dataType = _ReadCell(0, PLOT_DATA_TYPE_ROW)
-    _columnsPerPlot = _ReadCell(0, _PLOT_COLUMNS_PER_PLOT_ROW)
-    _plotColumnsCountArray = _ReadCell(0, _PLOT_PLOT_COLUMNS_COUNT_ARRAY_ROW)
-    dataSource = _ReadCell(0, PLOT_DATA_SOURCE_ROW)
-    polarUnits = _ReadCell(0, PLOT_POLARUNITS_ROW)
-    angleUnits = _ReadCell(0, PLOT_ANGLEUNITS_ROW)
-    minAngle = _ReadCell(0, PLOT_MIN_ANGLE_ROW)
-    maxAngle = _ReadCell(0, PLOT_MAX_ANGLE_ROW)
-    _unknown1 = _ReadCell(0, PLOT_UNKONWN1_ROW)
-    groupStyle = _ReadCell(0, PLOT_GROUP_STYLE_ROW)
-    useAutomaticLegends = _ReadCell(0, PLOT_USE_AUTOMATIC_LEGENDS_ROW)
-    DebugMsg "Graph Wizard Parameters: " _
-    & plotType & " | " _
-    & plotStyle & " | " _
-    & dataType & " | " _
-    & _columnsPerPlot & " | " _
-    & _plotColumnsCountArray & " | " _
-    & dataSource & " | " _
-    & polarUnits & " | " _
-    & angleUnits & " | " _
-    & minAngle & " | " _
-    & maxAngle & " | " _
-    & _unknown1 & " | " _
-    & groupStyle & " | " _
-    & useAutomaticLegends
-    ' Build column arrays dynamically based on constants
-    Dim iPlot As Long
-    Dim currentColumn As Long
-    Dim graphAlreadyExists As Boolean
-    graphAlreadyExists = _CheckGraphExists()
-    currentColumn = DATA_START_COL
-    For iPlot = 0 To DATA_MAX_NUM_PLOTS - 1
-        DebugMsg "iPlot: " & iPlot
-        ' Get column mapping and count for current plot type
-        Dim ColumnsPerPlot() As Variant
-        ColumnsPerPlot = _GetColumnMapping(plotType, plotStyle, currentColumn)
-        Dim PlotColumnCountArray() As Variant
-        PlotColumnCountArray = _GetPlotCountColumnArray(plotType)
-        ' Increment currentColumn
-        currentColumn = currentColumn + DATA_CHUNK_SIZE
-        DebugMsg "currentColumn: " & currentColumn
-        ' Create the plot if not exists
-        If Not graphAlreadyExists And iPlot = 0 Then
-            DebugMsg "creatingNewGraph..."
-            ' First plot with no existing graph - create the graph
-            ActiveDocument.CurrentPageItem.CreateWizardGraph(plotType, _
-                                                         plotStyle, _
-                                                         dataType, _
-                                                         ColumnsPerPlot, _
-                                                         PlotColumnCountArray, _
-                                                         dataSource, _
-                                                         polarUnits, _
-                                                         angleUnits, _
-                                                         minAngle, _
-                                                         maxAngle, _
-                                                         , _
-                                                         groupStyle, _
-                                                         useAutomaticLegends)
-            DebugMsg "New graph created?"
-            graphAlreadyExists = True
-        Else
-            ' If graph exists, add plot
+' Open the worksheet
+ActiveDocument.NotebookItems(WORKSHEET_NAME).Open
+
+' Loop through all plot types
+Dim iPlot As Long
+Dim graphAlreadyExists As Boolean
+graphAlreadyExists = _CheckGraphExists()
+
+For iPlot = 0 To MAX_NUM_PLOTS - 1
+    ' Find the start and end columns for this plot type
+    Dim startCol As Long, endCol As Long
+    startCol = _FindChunkStartCol(iPlot)
+    
+    ' If no more plot chunks found, exit loop
+    If startCol = -1 Then
+        Exit For
+    End If
+    
+    endCol = _FindChunkEndCol(iPlot)
+    DebugMsg "Plot " & iPlot & " columns: " & startCol & " to " & endCol
+    
+    ' Read GW parameters for this plot
+    Dim plotType As String, plotStyle As String, dataType As String
+    Dim dataSource As String, polarUnits As String, angleUnits As String
+    Dim minAngle As Double, maxAngle As Double, groupStyle As String
+    Dim useAutomaticLegends As Boolean, unknown1 As Variant
+    
+    ' Read parameters from the param_keys and param_values columns
+    Dim valuesCol As Long
+    valuesCol = startCol + 1  ' gw_param_values follows gw_param_keys
+    
+    ' Get type and style based on plot index
+    plotType = _ReadCell(valuesCol, GW_PLOT_TYPE_ROW)    
+    plotStyle = _ReadCell(valuesCol, GW_PLOT_STYLE_ROW)
+    dataType = _ReadCell(valuesCol, GW_DATA_TYPE_ROW)
+    dataSource = _ReadCell(valuesCol, GW_DATA_SOURCE_ROW)
+    polarUnits = _ReadCell(valuesCol, GW_POLARUNITS_ROW)
+    angleUnits = _ReadCell(valuesCol, GW_ANGLEUNITS_ROW)
+    minAngle = CDbl(_ReadCell(valuesCol, GW_MIN_ANGLE_ROW))
+    maxAngle = CDbl(_ReadCell(valuesCol, GW_MAX_ANGLE_ROW))
+    unknown1 = _ReadCell(valuesCol, GW_UNKONWN1_ROW)
+    groupStyle = _ReadCell(valuesCol, GW_GROUP_STYLE_ROW)
+    useAutomaticLegends = CBool(_ReadCell(valuesCol, GW_USE_AUTOMATIC_LEGENDS_ROW))
+    
+    DebugMsg "Plot type: " & plotType & ", Style: " & plotStyle
+    
+    ' Build column mapping based on the plot type
+    Dim ColumnsPerPlot() As Variant
+    ColumnsPerPlot = _GetColumnMapping(iPlot, plotType, plotStyle, startCol, endCol)
+    
+    ' Get the column count array
+    Dim PlotColumnCountArray() As Variant
+    PlotColumnCountArray = _GetPlotCountColumnArray(plotType)
+    
+    ' Create the plot
+    If Not graphAlreadyExists And iPlot = 0 Then
+        DebugMsg "Creating new graph..."
+        ' First plot with no existing graph - create the graph
+        ActiveDocument.CurrentPageItem.CreateWizardGraph(plotType, _
+            plotStyle, _
+            dataType, _
+            ColumnsPerPlot, _
+            PlotColumnCountArray, _
+            dataSource, _
+            polarUnits, _
+            angleUnits, _
+            minAngle, _
+            maxAngle, _
+            unknown1, _
+            groupStyle, _
+            useAutomaticLegends)
+        DebugMsg "New graph created"
+        graphAlreadyExists = True
+    Else
+        ' If graph exists and this isn't a special plot type (contour/confusion matrix)
+        If Not _IsSpecialPlotType(iPlot) Then
             ActiveDocument.NotebookItems(GRAPH_NAME).Open
             ActiveDocument.CurrentPageItem.AddWizardPlot(plotType, _
-                                                     plotStyle, _
-                                                     dataType, _
-                                                     ColumnsPerPlot, _
-                                                     PlotColumnCountArray, _
-                                                     dataSource, _
-                                                     polarUnits, _
-                                                     angleUnits, _
-                                                     minAngle, _
-                                                     maxAngle, _
-                                                     , _
-                                                     groupStyle, _
-                                                     useAutomaticLegends)
+                plotStyle, _
+                dataType, _
+                ColumnsPerPlot, _
+                PlotColumnCountArray, _
+                dataSource, _
+                polarUnits, _
+                angleUnits, _
+                minAngle, _
+                maxAngle, _
+                unknown1, _
+                groupStyle, _
+                useAutomaticLegends)
+            DebugMsg "Plot added to existing graph"
         End If
-    Next iPlot
-    ' Open the graph and select the plot
-    ActiveDocument.NotebookItems(GRAPH_NAME).Open
+    End If
+Next iPlot
+
+' Open the graph 
+ActiveDocument.NotebookItems(GRAPH_NAME).Open
 End Sub
-Function _GetColumnMapping(plotType As String, plotStyle As String, currentColumn As Long) As Variant
+
+' Check if this is a special plot type that needs its own graph
+Function _IsSpecialPlotType(plotIndex As Long) As Boolean
+    _IsSpecialPlotType = (plotIndex = 11 Or plotIndex = 12 Or plotIndex = 10)
+End Function
+
+' Get column mapping based on plot type and style
+Function _GetColumnMapping(iPlot As Long, plotType As String, plotStyle As String, startCol As Long, endCol As Long) As Variant
     Dim mapping()
-    Select Case plotType
-        Case "Vertical Bar Chart"
+    Dim offset As Long
+    
+    ' Label is always at offset 2
+    offset = 2
+    
+    Select Case iPlot
+        Case 0  ' Area Plot: label, x, y, bgra
+            ReDim mapping(2, 1)
+            mapping(0, 0) = startCol + offset + 1  ' x
+            mapping(0, 1) = startCol + offset + 2  ' y
+            
+        Case 1  ' Vertical Bar Plot: label, x, y, yerr, bgra
             ReDim mapping(2, 2)
-            mapping(0, 0) = currentColumn + DATA_ID_X
-            mapping(0, 1) = currentColumn + DATA_ID_Y
-            mapping(0, 2) = currentColumn + DATA_ID_Y_ERR
-        Case "Horizontal Bar Chart"
+            mapping(0, 0) = startCol + offset + 1  ' x
+            mapping(0, 1) = startCol + offset + 2  ' y
+            mapping(0, 2) = startCol + offset + 3  ' yerr
+            
+        Case 2  ' Horizontal Bar Plot: label, x, xerr, y, bgra
             ReDim mapping(2, 2)
-            mapping(0, 0) = currentColumn + DATA_ID_Y
-            mapping(0, 1) = currentColumn + DATA_ID_X
-            mapping(0, 2) = currentColumn + DATA_ID_X_ERR
-        Case "Line Plot", "Scatter Plot", "Filled Line Plot"
+            mapping(0, 0) = startCol + offset + 3  ' y
+            mapping(0, 1) = startCol + offset + 1  ' x
+            mapping(0, 2) = startCol + offset + 2  ' xerr
+            
+        Case 3  ' Vertical Box Plot: label, x, y, bgra
+            ReDim mapping(2, 1)
+            mapping(0, 0) = startCol + offset + 1  ' x
+            mapping(0, 1) = startCol + offset + 2  ' y
+            
+        Case 4  ' Horizontal Box Plot: label, y, x, bgra
+            ReDim mapping(2, 1)
+            mapping(0, 0) = startCol + offset + 1  ' y
+            mapping(0, 1) = startCol + offset + 2  ' x
+            
+        Case 5  ' Line Plot: label, x, y, yerr, bgra
             ReDim mapping(2, 2)
-            mapping(0, 0) = currentColumn + DATA_ID_X
-            mapping(0, 1) = currentColumn + DATA_ID_Y
-            mapping(0, 2) = currentColumn + DATA_ID_Y_ERR
-        Case "Area Plot"
+            mapping(0, 0) = startCol + offset + 1  ' x
+            mapping(0, 1) = startCol + offset + 2  ' y
+            mapping(0, 2) = startCol + offset + 3  ' yerr
+            
+        Case 6  ' Polar Plot: label, theta, r, bgra
             ReDim mapping(2, 1)
-            mapping(0, 0) = currentColumn + DATA_ID_X
-            mapping(0, 1) = currentColumn + DATA_ID_Y
-        Case "Box Plot", "Violin Plot"
+            mapping(0, 0) = startCol + offset + 1  ' theta
+            mapping(0, 1) = startCol + offset + 2  ' r
+            
+        Case 7  ' Scatter Plot: label, x, y, bgra
             ReDim mapping(2, 1)
-            If plotStyle = "Vertical Box Plot" Or plotType = "Violin Plot" Then
-                mapping(0, 0) = currentColumn + DATA_ID_X
-                mapping(0, 1) = currentColumn + DATA_ID_Y
-            ElseIf plotStyle = "Horizontal Box Plot" Then
-                mapping(0, 0) = currentColumn + DATA_ID_Y
-                mapping(0, 1) = currentColumn + DATA_ID_X
-            End If
-        Case "Polar Plot"
-            ReDim mapping(2, 1)
-            mapping(0, 0) = currentColumn + DATA_ID_X
-            mapping(0, 1) = currentColumn + DATA_ID_Y
-        ' Original; Fixme
-        Case "Contour Plot"
-            ReDim mapping(2, 1)
-            mapping(0, 0) = currentColumn + DATA_ID_X
-            mapping(0, 1) = currentColumn + DATA_ID_Y
-        ' Original; Fixme
-        Case "Confustion Matrix Plot"
-            ReDim mapping(2, 1)
-            mapping(0, 0) = currentColumn + DATA_ID_X
-            mapping(0, 1) = currentColumn + DATA_ID_Y
+            mapping(0, 0) = startCol + offset + 1  ' x
+            mapping(0, 1) = startCol + offset + 2  ' y
+            
+        Case 8  ' Vertical Violin: label, x_lower, x, x_upper, y, bgra
+            ReDim mapping(2, 3)
+            mapping(0, 0) = startCol + offset + 2  ' x
+            mapping(0, 1) = startCol + offset + 4  ' y
+            mapping(0, 2) = startCol + offset + 1  ' x_lower 
+            mapping(0, 3) = startCol + offset + 3  ' x_upper
+            
+        Case 9  ' Horizontal Violin: label, y_lower, y, y_upper, x, bgra
+            ReDim mapping(2, 3)
+            mapping(0, 0) = startCol + offset + 4  ' x
+            mapping(0, 1) = startCol + offset + 2  ' y
+            mapping(0, 2) = startCol + offset + 1  ' y_lower
+            mapping(0, 3) = startCol + offset + 3  ' y_upper
+            
+        Case 10  ' Filled Line: label, x, y_lower, y, y_upper, bgra
+            ReDim mapping(2, 3)
+            mapping(0, 0) = startCol + offset + 1  ' x
+            mapping(0, 1) = startCol + offset + 3  ' y
+            mapping(0, 2) = startCol + offset + 2  ' y_lower
+            mapping(0, 3) = startCol + offset + 4  ' y_upper
+            
+        Case 11  ' Contour Plot: label, x, y, z
+            ReDim mapping(2, 2)
+            mapping(0, 0) = startCol + offset + 1  ' x
+            mapping(0, 1) = startCol + offset + 2  ' y
+            mapping(0, 2) = startCol + offset + 3  ' z
+            
+        Case 12  ' Confusion Matrix: label, x, y, z, class_names
+            ReDim mapping(2, 3)
+            mapping(0, 0) = startCol + offset + 1  ' x
+            mapping(0, 1) = startCol + offset + 2  ' y
+            mapping(0, 2) = startCol + offset + 3  ' z
+            mapping(0, 3) = startCol + offset + 4  ' class_names
+            
         Case Else
-            ReDim mapping(2, 2)
-            mapping(0, 0) = currentColumn + DATA_ID_X
-            mapping(0, 1) = currentColumn + DATA_ID_Y
-            mapping(0, 2) = currentColumn + DATA_ID_Y_ERR
+            ' Default to a basic XY plot
+            ReDim mapping(2, 1)
+            mapping(0, 0) = startCol + offset + 1
+            mapping(0, 1) = startCol + offset + 2
     End Select
+    
     ' Fill in the row ranges for all columns
-    Dim i As Integer, j As Integer
+    Dim i As Integer
     For i = 0 To UBound(mapping, 2)
         mapping(1, i) = 0
         mapping(2, i) = 31999999
     Next i
+    
     _GetColumnMapping = mapping
 End Function
-' Get column count based on plot type
+
+' Calculate the color column index
+' Fixed _CalculateColorColumnForPlot function to use _FindColIdx for finding bgra column
+
+Function _CalculateColorColumnForPlot(iPlot As Long) As Long
+Dim startCol As Long, endCol As Long
+Dim ii As Long, colName As String
+startCol = _FindChunkStartCol(iPlot)
+If startCol = -1 Then
+_CalculateColorColumnForPlot = -1
+Exit Function
+End If
+endCol = _FindChunkEndCol(iPlot)
+' Look for a column named "bgra" within this chunk
+For ii = startCol To endCol
+colName = _ReadCell(ii, LABEL_ROW)
+If LCase(colName) = "bgra" Then
+_CalculateColorColumnForPlot = ii
+Exit Function
+End If
+Next ii
+' If no "bgra" column found, use the offset method as a fallback
+_CalculateColorColumnForPlot = endCol - 1
+End Function
+
 Function _GetPlotCountColumnArray(plotType As String) As Variant
     Dim countArray()
     ReDim countArray(0)
     Select Case plotType
-        Case "Vertical Bar Chart", "Horizontal Bar Chart", "Line Plot", "Scatter Plot", "Filled Line Plot"
+        Case "Vertical Bar Chart"
             countArray(0) = 3
+        Case "Horizontal Bar Chart"
+            countArray(0) = 3
+        Case "Line Plot" 
+            countArray(0) = 3
+        Case "Scatter Plot"
+            countArray(0) = 2
+        Case "Filled Line Plot"
+            countArray(0) = 4
         Case "Area Plot"
             countArray(0) = 2
-        Case "Box Plot", "Horizontal Box Plot", "Violin Plot", "Polar Plot"
+        Case "Box Plot"
             countArray(0) = 2
-        Case "Confusion Matrix Plot"
+        Case "Violin Plot"
+            countArray(0) = 4
+        Case "Polar Plot"
             countArray(0) = 2
+        Case "Contour Plot"
+            countArray(0) = 3
+        Case "Confusion Matrix"
+            countArray(0) = 4
         Case Else
             countArray(0) = 3
     End Select
     _GetPlotCountColumnArray = countArray
 End Function
+
 Function _CheckGraphExists() As Boolean
     On Error Resume Next
     Dim graphObj As Object
@@ -473,9 +665,7 @@ Sub _ChangeColorBox(RGB_VAL As Long, plotIndex As Long)
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_EDGECOLOR, RGB_BLACK)
     End With
 End Sub
-Function _CalculateColorColumnForPlot(plotIndex As Long) As Long
-    _CalculateColorColumnForPlot = DATA_START_COL + (plotIndex * DATA_CHUNK_SIZE) + DATA_ID_RGBA
-End Function
+
 Function _GetRGBFromColumn(columnIndex As Long) As Long
     ' DebugMsg "_GetRGBFromColumn called for plot " & columnIndex
     Dim rValue As Variant, gValue As Variant, bValue As Variant
@@ -680,6 +870,15 @@ Function _SetAxisType(axisIndex As Long, scaleType As Long)
     axis.SetAttribute(SAA_TYPE, scaleType)
 End Function
 Function _GetScaleType(cellValue As Variant) As Long
+    Const SAA_TYPE_LINEAR = 1
+    Const SAA_TYPE_COMMON = 2
+    Const SAA_TYPE_LOG = 3
+    Const SAA_TYPE_PROBABILITY = 4
+    Const SAA_TYPE_PROBIT = 5
+    Const SAA_TYPE_LOGIT = 6
+    Const SAA_TYPE_CATEGORY = 7
+    Const SAA_TYPE_DATETIME = 8
+
     Dim scaleType As Long
     ' Convert string or number to appropriate scale type constant
     Select Case CStr(LCase(cellValue))
