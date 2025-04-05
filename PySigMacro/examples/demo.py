@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-04-05 06:06:13 (ywatanabe)"
+# Timestamp: "2025-04-06 01:49:54 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/examples/demo.py
 # ----------------------------------------
 import os
@@ -26,8 +26,8 @@ import pysigmacro as psm
 # plot_types = psm.const.PLOT_TYPES
 
 for plot_type in psm.const.PLOT_TYPES:
-    # if plot_type != "scatter":
-    #     continue
+    if plot_type != "scatter":
+        continue
     plot_types = [plot_type for _ in range(13)]
     psm.demo.gen_csv(plot_types, save=True)
     psm.demo.gen_jnb(plot_types)

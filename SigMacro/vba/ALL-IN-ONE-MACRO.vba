@@ -249,7 +249,7 @@ Sub Plot()
             graphAlreadyExists = True
         Else
             ' If graph exists and this isn't a special plot type (contour/confusion matrix)
-            If Not _IsSpecialPlotType(iPlot) Then
+            If Not _IsSpecialPlotType(plotType) Then
                 ActiveDocument.NotebookItems(GRAPH_NAME).Open
                 ActiveDocument.CurrentPageItem.AddWizardPlot(plotType, _
                                                           plotStyle, _
@@ -283,16 +283,16 @@ Function _GetColumnMapping(startCol As Long, endCol As Long) As Variant
     Dim mapping()
 
     ' Data Columns
-    Dim numDataColumns As Long
-    Const headNumNonDataCols As Long = 3
-    Const tailNumNonDataCols As Long = 1
-    numDataColumns = (endCol - startCol + 1) - (headNumNonDataCols + tailNumNonDataCols)
+    Dim nDataCols As Long
+    Const nHeadCols As Long = 3
+    Const nTailCols As Long = 1
+    nDataCols = (endCol - startCol + 1) - (nHeadCols + nTailCols)
     
-    ReDim mapping(2, numDataColumns)
+    ReDim mapping(2, nDataCols)
 
     Dim iCol As Long    
-    For iCol = 0 To numDataColumns
-        mapping(0, iCol) = startCol + onset + iCol
+    For iCol = 0 To nDataCols
+        mapping(0, iCol) = startCol + nHeadCols + iCol
     Next iCol
     
     ' Fill in the row ranges for all columns
@@ -321,18 +321,18 @@ Function _GetPlotCountColumnArray(startCol As Long, endCol As Long) As Variant
     ReDim countArray(0)
 
     ' Data Columns
-    Dim numDataColumns As Long
-    Const headNumNonDataCols As Long = 3 ' gw_params_keys, gw_params_value, label
-    Const tailNumNonDataCols As Long = 1 ' bgra
-    numDataColumns = (endCol - startCol + 1) - (headNumNonDataCols + tailNumNonDataCols)
+    Dim nDataCols As Long
+    Const nHeadCols As Long = 3 ' gw_params_keys, gw_params_value, label
+    Const nTailCols As Long = 1 ' bgra
+    nDataCols = (endCol - startCol + 1) - (nHeadCols + nTailCols)
 
     DebugMsg(DEBUG_MODE, "_GetPlotCountColumnArray called")
     DebugMsg(DEBUG_MODE, "startCol: " & startCol) ' 8
     DebugMsg(DEBUG_MODE, "endCol: " & endCol) ' 13
-    DebugMsg(DEBUG_MODE, "numDataColumns: " & numDataColumns) ' 2
+    DebugMsg(DEBUG_MODE, "nDataCols: " & nDataCols) ' 2
     
     ' ReDim countArray(0)
-    countArray(0) = numDataColumns
+    countArray(0) = nDataCols
     
     _GetPlotCountColumnArray = countArray
 End Function
@@ -469,7 +469,7 @@ End Sub
 
 Sub _ChangeColorLine(RGB_VAL As Long, plotIndex As Long)
     Const DEBUG_MODE As Boolean = False
-    DebugMsg(DEBUG_MODE, "_ChangeColorLine called"
+    DebugMsg(DEBUG_MODE, "_ChangeColorLine called")
     ' SEA = Set Line Attribute
     _SelectGraphObject(plotIndex)
     With ActiveDocument.CurrentPageItem
@@ -482,7 +482,7 @@ End Sub
 
 Sub _ChangeColorSymbol(RGB_VAL As Long, ALPHA_VAL As Long, plotIndex As Long)
     Const DEBUG_MODE As Boolean = False
-    DebugMsg(DEBUG_MODE, "_ChangeColorSymbol called"
+    DebugMsg(DEBUG_MODE, "_ChangeColorSymbol called")
     ' SSA = Set Symbol Attribute
 
     _SelectGraphObject(plotIndex)
@@ -497,7 +497,7 @@ End Sub
 
 Sub _ChangeColorSolid(RGB_VAL As Long, plotIndex As Long)
     Const DEBUG_MODE As Boolean = False
-    DebugMsg(DEBUG_MODE, "_ChangeColorSolid called"    
+    DebugMsg(DEBUG_MODE, "_ChangeColorSolid called"    )
     ' SDA = Set Solid Attribute
     ' Solids include graph planes, bars, and drawn solids objects
 
@@ -513,9 +513,8 @@ End Sub
 
 Sub _ChangeColorEdgeBlack(plotIndex As Long)
     Const DEBUG_MODE As Boolean = False
-
+    DebugMsg(DEBUG_MODE, "_ChangeColorEdgeBlack called")
     ' SDA = Set Solid Attribute
-    ' DebugMsg(DEBUG_MODE, "_ChangeColorEdgeBlack called"
     _SelectGraphObject(plotIndex)
     With ActiveDocument.CurrentPageItem
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_EDGECOLOR, RGB_BLACK)
@@ -524,9 +523,10 @@ End Sub
 
 Sub _ChangeColorErrorBar(RGB_VAL As Long, plotIndex As Long)
     Const DEBUG_MODE As Boolean = False
+    DebugMsg(DEBUG_MODE, "_ChangeColorErrorBar called")
     ' SLA = Set Line Attributes
     _SelectGraphObject(plotIndex)
-    ' DebugMsg(DEBUG_MODE, "_ChangeColorErrorBar called"
+
     With ActiveDocument.CurrentPageItem
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_ERRCOLOR, RGB_VAL)
         ' .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_ERRCOLORREPEAT, 2)
@@ -535,7 +535,7 @@ End Sub
 
 Sub _ChangeColorBox(RGB_VAL As Long, plotIndex As Long)
     Const DEBUG_MODE As Boolean = False
-    DebugMsg(DEBUG_MODE, "_ChangeColorBox called"
+    DebugMsg(DEBUG_MODE, "_ChangeColorBox called")
     ' SDA = Set Solid Attribute
     ' Solids include graph planes, bars, and drawn solids objects
 
@@ -855,7 +855,7 @@ Sub _SetXTicks()
     Const DEBUG_MODE As Boolean = False
     Dim xTicksFirstRow As Variant
     xTicksFirstRow = _ReadCell(X_TICKS_COL, 0)
-    If Not xTicksFirstRow = "None" Or "auto" Then
+    If Not (xTicksFirstRow = "None" Or xTicksFirstRow = "auto") Then
         ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_AXIS).NameObject.SetObjectCurrent
         ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_SELECTDIM, AXIS_X)
         ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SAA_TICCOLUSED, 1)
@@ -867,13 +867,37 @@ Sub _SetYTicks()
     Const DEBUG_MODE As Boolean = False
     Dim yTicksFirstRow As Variant
     yTicksFirstRow = _ReadCell(Y_TICKS_COL, 0)
-    If Not yTicksFirstRow = "None" Or "auto" Then
+    If Not (yTicksFirstRow = "None" Or yTicksFirstRow = "auto") Then
         ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_AXIS).NameObject.SetObjectCurrent
         ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_SELECTDIM, AXIS_Y)
         ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SAA_TICCOLUSED, 1)
         ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SAA_TICCOL, Y_TICKS_COL)
     End If
 End Sub
+
+' Sub _SetXTicks()
+'     Const DEBUG_MODE As Boolean = False
+'     Dim xTicksFirstRow As Variant
+'     xTicksFirstRow = _ReadCell(X_TICKS_COL, 0)
+'     If Not xTicksFirstRow = "None" Or "auto" Then
+'         ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_AXIS).NameObject.SetObjectCurrent
+'         ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_SELECTDIM, AXIS_X)
+'         ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SAA_TICCOLUSED, 1)
+'         ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SAA_TICCOL, X_TICKS_COL)
+'     End If
+' End Sub
+
+' Sub _SetYTicks()
+'     Const DEBUG_MODE As Boolean = False
+'     Dim yTicksFirstRow As Variant
+'     yTicksFirstRow = _ReadCell(Y_TICKS_COL, 0)
+'     If Not yTicksFirstRow = "None" Or "auto" Then
+'         ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_AXIS).NameObject.SetObjectCurrent
+'         ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_SELECTDIM, AXIS_Y)
+'         ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SAA_TICCOLUSED, 1)
+'         ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SAA_TICCOL, Y_TICKS_COL)
+'     End If
+' End Sub
 
 Sub SetTicks()
     Const DEBUG_MODE As Boolean = False   
