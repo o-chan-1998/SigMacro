@@ -199,9 +199,6 @@ Sub Plot()
         
         endCol = _FindChunkEndCol(iPlot)
         DebugMsg(DEBUG_MODE, "Plot " & iPlot & " columns: " & startCol & " to " & endCol)
-        If iPlot = MAX_NUM_PLOTS - 1 Then
-           DebugMsg(True, "Plot " & iPlot & " columns: " & startCol & " to " & endCol)
-        End If
            
         ' Read GW parameters for this plot
         Dim plotType As String, plotStyle As String, dataType As String
