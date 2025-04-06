@@ -11,21 +11,23 @@ A package for automating SigmaPlot routines.
 ![SigMacro Demo](./docs/demo.gif)
 
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 10px;">
-    <img src="./templates/gif/area.gif" alt="Area Plot" width="150" />
-    <img src="./templates/gif/bar.gif" alt="Bar Plot" width="150" />
-    <img src="./templates/gif/barh.gif" alt="Horizontal Bar Plot" width="150" />
-    <img src="./templates/gif/box.gif" alt="Box Plot" width="150" />
-    <img src="./templates/gif/boxh.gif" alt="Horizontal Box Plot" width="150" />
-    <img src="./templates/gif/line.gif" alt="Line Plot" width="150" />
-    <img src="./templates/gif/scatter.gif" alt="Scatter Plot" width="150" />
-    <img src="./templates/gif/polar.gif" alt="Polar Plot" width="150" />
+    <img src="templates/gif/area-area-area-area-area-area-area-area-area-area-area-area-area_cropped.gif" alt="Area Plot" width="150" />
+    <img src="templates/gif/bar-bar-bar-bar-bar-bar-bar-bar-bar-bar-bar-bar-bar_cropped.gif" alt="Bar Plot" width="150" />
+    <img src="templates/gif/barh-barh-barh-barh-barh-barh-barh-barh-barh-barh-barh-barh-barh_cropped.gif" alt="Horizontal Bar Plot" width="150" />
+    <img src="templates/gif/box-box-box-box-box-box-box-box-box-box-box-box-box_cropped.gif" alt="Box Plot" width="150" />
+    <img src="templates/gif/boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh_cropped.gif" alt="Horizontal Box Plot" width="150" />
+    <img src="templates/gif/line-line-line-line-line-line-line-line-line-line-line-line-line_cropped.gif" alt="Line Plot" width="150" />
+    <img src="templates/gif/scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter_cropped.gif" alt="Scatter Plot" width="150" />
+    <img src="templates/gif/polar-polar-polar-polar-polar-polar-polar-polar-polar-polar-polar-polar-polar_cropped.gif" alt="Polar Plot" width="150" />
     <!-- Not implemented yet -->
-    <img src="./templates/gif/filled_line.gif" alt="Filled Line Plot" width="150" />
-    <img src="./templates/gif/violin.gif" alt="Violin Plot" width="150" />
-    <img src="./templates/gif/violinh.gif" alt="Violin Plot" width="150" />
-    <img src="./templates/gif/contour.gif" alt="Contour Plot" width="150" />
-    <img src="./templates/gif/confusion_matrix.gif" alt="Confusion Matrix" width="150" />
+    <img src="templates/gif/filled_line.gif" alt="Filled Line Plot" width="150" />
+    <img src="templates/gif/violin.gif" alt="Violin Plot" width="150" />
+    <img src="templates/gif/violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh_cropped.gif" alt="Violin Plot" width="150" />
+    <img src="templates/gif/contour.gif" alt="Contour Plot" width="150" />
+    <img src="templates/gif/confusion_matrix.gif" alt="Confusion Matrix" width="150" />
 </div>
+
+
 
 ## Prerequisite
 
