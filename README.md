@@ -1,12 +1,21 @@
 <!-- ---
-!-- Timestamp: 2025-04-06 20:00:25
+!-- Timestamp: 2025-04-06 20:20:51
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/win/documents/SigMacro/README.md
 !-- --- -->
 
 # SigMacro
 
-A package for automating SigmaPlot routines.
+A package for automating SigmaPlot routines to create publication-ready, high-quality figures. The core of this package includes:
+
+1. Sending graph parameters and plotting data to worksheets from Python
+2. Preparing template files with embedded macros for:
+   - Reading graph parameters
+   - Reading plotting data
+3. Calling macros from Python (using COM Object Handling)
+4. Saving figures as GIF, JPG, TIF, or BMP
+
+In other words, users can plot figures using SigmaPlot similar to matplotlib.
 
 ![SigMacro Demo](./docs/demo.gif)
 
@@ -21,11 +30,18 @@ A package for automating SigmaPlot routines.
     <img src="templates/gif/polar-polar-polar-polar-polar-polar-polar-polar-polar-polar-polar-polar-polar_cropped.gif" alt="Polar Plot" width="150" />
     <!-- Not implemented yet -->
     <img src="templates/gif/filled_line.gif" alt="Filled Line Plot" width="150" />
-    <img src="templates/gif/violin.gif" alt="Violin Plot" width="150" />
-    <img src="templates/gif/violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh_cropped.gif" alt="Violin Plot" width="150" />
+    <img src="templates/gif/violin-violin-violin-violin-violin-violin-violin-violin-violin-violin-violin-violin-violin_cropped.gif" alt="Violin Plot" width="150" />
+    <img src="templates/gif/violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh_cropped.gif" alt="Horizontal Violin Plot" width="150" />
     <img src="templates/gif/contour.gif" alt="Contour Plot" width="150" />
     <img src="templates/gif/confusion_matrix.gif" alt="Confusion Matrix" width="150" />
 </div>
+
+## TODO
+- [ ] Filled Line
+- [ ] Violin
+- [ ] Violinh
+- [ ] Contour
+- [ ] Confusion Matrix
 
 
 
