@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-04-06 20:20:51
+!-- Timestamp: 2025-04-06 20:22:19
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/win/documents/SigMacro/README.md
 !-- --- -->
@@ -8,11 +8,11 @@
 
 A package for automating SigmaPlot routines to create publication-ready, high-quality figures. The core of this package includes:
 
-1. Sending graph parameters and plotting data to worksheets from Python
+1. Sending graph parameters and plotting data to a SigmaPlot worksheet from Python
 2. Preparing template files with embedded macros for:
    - Reading graph parameters
    - Reading plotting data
-3. Calling macros from Python (using COM Object Handling)
+3. Calling macros from Python (via COM Object)
 4. Saving figures as GIF, JPG, TIF, or BMP
 
 In other words, users can plot figures using SigmaPlot similar to matplotlib.
