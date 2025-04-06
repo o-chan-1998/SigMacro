@@ -1,12 +1,12 @@
 <!-- ---
-!-- Timestamp: 2025-04-06 20:27:44
+!-- Timestamp: 2025-04-06 20:31:43
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/win/documents/SigMacro/README.md
 !-- --- -->
 
 # SigMacro
 
-A package for automating SigmaPlot routines to create publication-ready, high-quality figures.
+This package allows users to plot publication-ready figures using [SigmaPlot](https://grafiti.com/sigmaplot-v16/) from Python, similar to matplotlib.
 
 ## In SigmaPlot:
 1. Preparing template SigmaPlot files with embedded macros for:
@@ -16,9 +16,7 @@ A package for automating SigmaPlot routines to create publication-ready, high-qu
 ## From Python:
 1. Sending plotting data and graph visualization parameters to SigmaPlot
 2. Calling SigmaPlot macros
-3. Saving figures & performing image processing
-
-In other words, users can plot figures using SigmaPlot similar to matplotlib.
+3. Saving figures & cropping margins
 
 ![SigMacro Demo](./docs/demo.gif)
 
