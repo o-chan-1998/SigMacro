@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-04-01 08:19:33 (ywatanabe)"
+# Timestamp: "2025-04-02 02:52:18 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/data/_create_graph_wizard_params.py
 # ----------------------------------------
 import os
@@ -28,12 +28,14 @@ def create_graph_wizard_params(plot_type, **kwargs):
         "bar": _create_graph_wizard_params_bar,
         "barh": _create_graph_wizard_params_barh,
         "area": _create_graph_wizard_params_area,
+        "areah": _create_graph_wizard_params_areah,
         "box": _create_graph_wizard_params_box,
         "boxh": _create_graph_wizard_params_boxh,
         "line": _create_graph_wizard_params_line,
         "polar": _create_graph_wizard_params_polar,
         "scatter": _create_graph_wizard_params_scatter,
         "violin": _create_graph_wizard_params_violin,
+        "violinh": _create_graph_wizard_params_violinh,
         # Special
         "filled_line": _create_graph_wizard_params_filled_line,
         "contour": _create_graph_wizard_params_contour,
@@ -44,14 +46,13 @@ def create_graph_wizard_params(plot_type, **kwargs):
 
     # Reformat
     params_df = pd.DataFrame(pd.Series(graph_wizard_params)).reset_index()
-    params_df.columns = ["graph wizard parameter", "value"]
+    params_df.columns = ["gw_param_keys", "gw_param_values"]
 
     return create_padded_df(params_df)
 
 
 # Core Functions
 # ------------------------------
-
 
 def _create_graph_wizard_params_bar():
     return {
@@ -94,6 +95,23 @@ def _create_graph_wizard_params_area():
         "plot_type": "Area Plot",
         "plot_style_type": "Simple Area",
         "plot_data_type": "XY Pair",
+        "plot_columns_per_plot": "ColumnsPerPlot",
+        "plot_plot_columns_count_array": "PlotColumnCountArray",
+        "plot_data_source": "Worksheet Columns",
+        "plot_polarunits": "Standard Deviation",
+        "plot_anguleunits": "Degrees",
+        "plot_min_angle_row": 0,
+        "plot_max_angle_row": 360,
+        "plot_unknown1": "NONE_STR",
+        "plot_group_style": "Standard Deviation",
+        "plot_use_automatic_legends": True,
+    }
+
+def _create_graph_wizard_params_areah():
+    return {
+        "plot_type": "Area Plot",
+        "plot_style_type": "Vertical Area",
+        "plot_data_type": "YX Pair",
         "plot_columns_per_plot": "ColumnsPerPlot",
         "plot_plot_columns_count_array": "PlotColumnCountArray",
         "plot_data_source": "Worksheet Columns",
@@ -161,6 +179,7 @@ def _create_graph_wizard_params_line():
     }
 
 
+
 def _create_graph_wizard_params_scatter():
     return {
         "plot_type": "Scatter Plot",
@@ -199,7 +218,24 @@ def _create_graph_wizard_params_polar():
 
 def _create_graph_wizard_params_violin():
     return {
-        "plot_type": "Violin Plot",
+        "plot_type": "Vertical Violin Plot",
+        "plot_style_type": "NONE_STR",
+        "plot_data_type": "NONE_STR",
+        "plot_columns_per_plot": "NONE_STR",
+        "plot_plot_columns_count_array": "NONE_STR",
+        "plot_data_source": "NONE_STR",
+        "plot_polarunits": "NONE_STR",
+        "plot_anguleunits": "NONE_STR",
+        "plot_min_angle_row": "NONE_STR",
+        "plot_max_angle_row": "NONE_STR",
+        "plot_unknown1": "NONE_STR",
+        "plot_group_style": "NONE_STR",
+        "plot_use_automatic_legends": True,
+    }
+
+def _create_graph_wizard_params_violinh():
+    return {
+        "plot_type": "Horizontal Violin Plot",
         "plot_style_type": "NONE_STR",
         "plot_data_type": "NONE_STR",
         "plot_columns_per_plot": "NONE_STR",

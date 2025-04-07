@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-04-01 19:14:29 (ywatanabe)"
+# Timestamp: "2025-04-05 06:36:41 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/demo/_gen_visual_params.py
 # ----------------------------------------
 import os
@@ -18,6 +18,7 @@ from ..utils._calculate_nice_ticks import calculate_nice_ticks
 # Parameters
 # ------------------------------
 
+
 def gen_visual_params(plot_type, n_cols=8, **kwargs):
     # Base Parameters
     out_dict = {}
@@ -33,6 +34,7 @@ def gen_visual_params(plot_type, n_cols=8, **kwargs):
         "polar": _gen_demo_visual_params_polar(),
         "scatter": _gen_demo_visual_params_scatter(),
         "violin": _gen_demo_visual_params_violin(),
+        "violinh": _gen_demo_visual_params_violinh(),
         # Special
         "filled_line": _gen_demo_visual_params_filled_line(),
         "contour": _gen_demo_visual_params_contour(),
@@ -44,12 +46,9 @@ def gen_visual_params(plot_type, n_cols=8, **kwargs):
     out_dict.update(kwargs)
 
     # Reformat
-    try:
-        xticks = dict(xticks=out_dict.pop("xticks"))
-        yticks = dict(yticks=out_dict.pop("yticks"))
-    except Exception as e:
-        print(e)
-        __import__("ipdb").set_trace()
+    xticks = dict(xticks=out_dict.pop("xticks"))
+    yticks = dict(yticks=out_dict.pop("yticks"))
+
     params_df = pd.DataFrame(pd.Series(out_dict)).reset_index()
     params_df.columns = ["visual parameter", "value"]
 
@@ -70,15 +69,15 @@ def _gen_demo_visual_params_bar():
         "xrot": 45,
         "xmm": 40,
         "xscale": "category",
-        "xmin": 0,
-        "xmax": 11,
+        "xmin": "NONE_STR",
+        "xmax": "NONE_STR",
         "xticks": ["auto"],
         "ylabel": "Y-Axis Label",
         "yrot": 0,
         "ymm": 40 * 0.7,
         "yscale": "linear",
-        "ymin": 0,
-        "ymax": 16,
+        "ymin": "NONE_STR",
+        "ymax": "NONE_STR",
         "yticks": ["auto"],
     }
 
@@ -108,15 +107,15 @@ def _gen_demo_visual_params_area():
         "xrot": 0,
         "xmm": 40,
         "xscale": "linear",
-        "xmin": 0,
-        "xmax": 21,
+        "xmin": "auto",
+        "xmax": "auto",
         "xticks": ["auto"],
         "ylabel": "Y-Axis Label",
         "yrot": 0,
         "ymm": 40 * 0.7,
         "yscale": "linear",
-        "ymin": 0,
-        "ymax": 1.65,
+        "ymin": "auto",
+        "ymax": "auto",
         "yticks": ["auto"],
     }
 
@@ -231,6 +230,24 @@ def _gen_demo_visual_params_violin():
         "yscale": "linear",
         "ymin": 0,
         "ymax": 21,
+        "yticks": ["auto"],
+    }
+
+def _gen_demo_visual_params_violinh():
+    return {
+        "xlabel": "X-Axis Label",
+        "xrot": 0,
+        "xmm": 40,
+        "xscale": "linear",
+        "xmin": 0,
+        "xmax": 21,
+        "xticks": ["auto"],
+        "ylabel": "Y-Axis Label",
+        "yrot": 0,
+        "ymm": 40 * 0.7,
+        "yscale": "category",
+        "ymin": 0,
+        "ymax": "NONE_STR",
         "yticks": ["auto"],
     }
 

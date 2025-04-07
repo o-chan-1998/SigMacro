@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-04-01 19:23:56 (ywatanabe)"
+# Timestamp: "2025-04-05 06:08:05 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/demo/_gen_jnb.py
 # ----------------------------------------
 import os
@@ -25,12 +25,12 @@ from ..utils._remove import remove
 class JNBGenerator:
     def __init__(
         self,
-        plot_type,
+        plot_types,
         templates_dir=None,
         df=None,
         from_demo_csv=True,
     ):
-        self.plot_type = plot_type
+        self.plot_types = plot_types
         self.df = df
         self.from_demo_csv = from_demo_csv
 
@@ -47,22 +47,34 @@ class JNBGenerator:
         self.path_jnb_template = os.path.join(
             templates_dir, "jnb", "template.JNB"
         )
-        self.path_csv = os.path.join(templates_dir, "csv", f"{plot_type}.csv")
-        self.path_save = os.path.join(templates_dir, "jnb", f"{plot_type}.JNB")
+        fname = "-".join(plot_types)
 
-        assert os.path.exists(self.path_csv), f"CSV path does not exist: {self.path_csv}"
-        assert os.path.exists(self.path_jnb_template), f"JNB template path does not exist: {self.path_jnb_template}"
+        self.path_jnb = os.path.join(templates_dir, "jnb", f"{fname}.jnb")
+        self.path_csv = self.path_jnb.replace("jnb", "csv")
+        self.path_tif = self.path_jnb.replace("jnb", "tif")
+        self.path_png = self.path_jnb.replace("jnb", "png")
+        self.path_jpg = self.path_jnb.replace("jnb", "jpg")
+        self.path_gif = self.path_jnb.replace("jnb", "gif")
+        self.path_bmp = self.path_jnb.replace("jnb", "bmp")
+
+        assert os.path.exists(
+            self.path_csv
+        ), f"CSV path does not exist: {self.path_csv}"
+        assert os.path.exists(
+            self.path_jnb_template
+        ), f"JNB template path does not exist: {self.path_jnb_template}"
 
     def remove_template(self):
-        if os.path.exists(self.path_save):
-            remove(self.path_save)
+        if os.path.exists(self.path_jnb):
+            remove(self.path_jnb)
 
     def copy_template(self):
         from ..utils._copy import copy
-        copy(self.path_jnb_template, self.path_save)
+
+        copy(self.path_jnb_template, self.path_jnb)
 
     def process_connection(self):
-        self.spw = ps_con_open(lpath=self.path_save, close_others=True)
+        self.spw = ps_con_open(lpath=self.path_jnb, close_others=True)
 
     def process_application(self):
         self.app = self.spw.Application_obj
@@ -72,7 +84,7 @@ class JNBGenerator:
         self.notebooks.clean()
 
     def process_notebook(self):
-        filename = os.path.basename(self.path_save)
+        filename = os.path.basename(self.path_jnb)
         try:
             filename in self.notebooks.list
             self.notebook = self.notebooks[
@@ -133,12 +145,14 @@ class JNBGenerator:
         self.process_notebook()
         self.process_notebookitems()
         self.import_data()
+        self.save_notebook()
         self.run_all_in_one_macro()
-        self.graphitem.export_as_tif(keep_orig=True)
-        self.graphitem.export_as_gif(keep_orig=True)
+        self.save_notebook()
+        self.graphitem.export_as_tif(path=self.path_tif, keep_orig=False)
+        self.graphitem.export_as_gif(path=self.path_gif, keep_orig=False)
         self.save_notebook()
         ps_con_close_all()
-        return self.path_save
+        return self.path_jnb
 
     def run(self):
         max_retry = 3
@@ -149,17 +163,20 @@ class JNBGenerator:
                 return self._run()
             except Exception as e:
                 last_error = e
-                print(f"Attempt {retry_count + 1}/{max_retry} failed: {str(e)}")
+                print(
+                    f"Attempt {retry_count + 1}/{max_retry} failed: {str(e)}"
+                )
                 if retry_count < max_retry - 1:
                     print(f"Retrying...")
 
-        print(f"All {max_retry} attempts failed. Last error: {str(last_error)}")
+        print(
+            f"All {max_retry} attempts failed. Last error: {str(last_error)}"
+        )
         raise last_error
 
 
-
-def gen_jnb(plot_type):
-    generator = JNBGenerator(plot_type, from_demo_csv=True)
+def gen_jnb(plot_types):
+    generator = JNBGenerator(plot_types, from_demo_csv=True)
     generator.run()
 
 

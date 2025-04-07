@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-04-01 19:45:28 (ywatanabe)"
+# Timestamp: "2025-04-06 01:49:54 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/examples/demo.py
 # ----------------------------------------
 import os
@@ -20,27 +20,30 @@ if "SIGMAPLOT_BIN_PATH_WIN" not in os.environ:
 
 import pysigmacro as psm
 
-UNABAILABLE_PLOT_TYPES = ["violin", "contour", "conf_mat", "filled_line"]
+# UNABAILABLE_PLOT_TYPES = ["violin", "contour", "conf_mat", "filled_line"]
+
+# plot_types = ["scatter", "line"]
+# plot_types = psm.const.PLOT_TYPES
 
 for plot_type in psm.const.PLOT_TYPES:
-
-    if plot_type in UNABAILABLE_PLOT_TYPES:
+    if plot_type != "scatter":
         continue
+    plot_types = [plot_type for _ in range(13)]
+    psm.demo.gen_csv(plot_types, save=True)
+    psm.demo.gen_jnb(plot_types)
 
-    # if plot_type != "box":
-    #     continue
+# try:
+#     # CSV data
+#     psm.demo.gen_csv(plot_types, save=True)
+# except Exception as e:
+#     print(f"Creating csv data for {plot_types} failed")
+#     print(e)
 
-    # if plot_type != "violin":
-    #     continue
-
-    # CSV data
-    psm.demo.gen_csv(plot_type, save=True)
-
-    # JNB and Figures
-    try:
-        psm.demo.gen_jnb(plot_type)
-    except Exception as e:
-        print(f"Creating template for {plot_type} failed")
-        print(e)
+# try:
+#     # JNB and Figures
+#     psm.demo.gen_jnb(plot_types)
+# except Exception as e:
+#     print(f"Creating JNB file for {plot_types} failed")
+#     print(e)
 
 # EOF

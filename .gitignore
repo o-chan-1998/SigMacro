@@ -633,3 +633,26 @@ docs/dev
 PySigMacro/docs/*SigMacro/SigMacro - Copy.JNB
 SigMacro/SigMacro_backup.zip
 SigMacro/SigMacro - Copy.JNB
+SigMacro/SigMacro.JNB
+templates/violin_manual.JNB
+**/*.jnb
+templates/jnb/area-area-area-area-area-area-area-area-area-area-area-area-area.jnb
+templates/jnb/bar-bar-bar-bar-bar-bar-bar-bar-bar-bar-bar-bar-bar.jnb
+templates/jnb/barh-barh-barh-barh-barh-barh-barh-barh-barh-barh-barh-barh-barh.jnb
+templates/jnb/box-box-box-box-box-box-box-box-box-box-box-box-box.jnb
+templates/jnb/boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh.jnb
+templates/jnb/line-line-line-line-line-line-line-line-line-line-line-line-line.jnb
+templates/jnb/polar-polar-polar-polar-polar-polar-polar-polar-polar-polar-polar-polar-polar.jnb
+templates/jnb/scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter.jnb
+templates/jnb/violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh.jnb
+SigMacro/old/ConfusionMatrix.JNB
+SigMacro/old/SigMacro - Copy.JNB
+SigMacro/old/SigMacro_dev.JNB
+SigMacro/_templates/area.JNB
+SigMacro/_templates/bar - Copy.JNB
+SigMacro/_templates/_bar_h.JNB
+SigMacro/_templates/bar_h.JNB
+SigMacro/_templates/bar.JNB
+SigMacro/_templates/line.JNB
+SigMacro/_templates/scatter.JNB
+templates/jnb/template.JNB

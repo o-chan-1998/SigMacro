@@ -1,29 +1,52 @@
 <!-- ---
-!-- Timestamp: 2025-04-01 20:39:06
+!-- Timestamp: 2025-04-08 06:58:05
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/win/documents/SigMacro/README.md
 !-- --- -->
 
 # SigMacro
 
-A package for automating SigmaPlot routines.
+This package allows users to create publication-ready figures using [SigmaPlot](https://grafiti.com/sigmaplot-v16/) from Python, in a similar manner to matplotlib.
+
+## In SigmaPlot:
+1. Preparing template SigmaPlot files with embedded macros for:
+   - Reading graph parameters
+   - Plotting data
+
+## From Python:
+1. Sending plotting data and graph visualization parameters to SigmaPlot
+2. Calling SigmaPlot macros
+3. Saving figures & cropping margins
 
 ![SigMacro Demo](./docs/demo.gif)
 
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 10px;">
-    <img src="./templates/jnb/line_cropped.gif" alt="Line Plot" width="150" />
-    <img src="./templates/jnb/filled_line_cropped.gif" alt="Filled Line Plot" width="150" />
-    <img src="./templates/jnb/area_cropped.gif" alt="Area Plot" width="150" />
-    <img src="./templates/jnb/scatter_cropped.gif" alt="Scatter Plot" width="150" />
-    <img src="./templates/jnb/bar_cropped.gif" alt="Bar Plot" width="150" />
-    <img src="./templates/jnb/barh_cropped.gif" alt="Horizontal Bar Plot" width="150" />
-    <img src="./templates/jnb/box_cropped.gif" alt="Box Plot" width="150" />
-    <img src="./templates/jnb/boxh_cropped.gif" alt="Horizontal Box Plot" width="150" />
-    <img src="./templates/jnb/violin_cropped.gif" alt="Violin Plot" width="150" />
-    <img src="./templates/jnb/contour_cropped.gif" alt="Contour Plot" width="150" />
-    <img src="./templates/jnb/polar_cropped.gif" alt="Polar Plot" width="150" />
-    <img src="./templates/jnb/confusion_matrix_cropped.gif" alt="Confusion Matrix" width="150" />
+    <img src="templates/gif/area-area-area-area-area-area-area-area-area-area-area-area-area_cropped.gif" alt="Area Plot" width="150" />
+    <img src="templates/gif/bar-bar-bar-bar-bar-bar-bar-bar-bar-bar-bar-bar-bar_cropped.gif" alt="Bar Plot" width="150" />
+    <img src="templates/gif/barh-barh-barh-barh-barh-barh-barh-barh-barh-barh-barh-barh-barh_cropped.gif" alt="Horizontal Bar Plot" width="150" />
+    <img src="templates/gif/box-box-box-box-box-box-box-box-box-box-box-box-box_cropped.gif" alt="Box Plot" width="150" />
+    <img src="templates/gif/boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh_cropped.gif" alt="Horizontal Box Plot" width="150" />
+    <img src="templates/gif/line-line-line-line-line-line-line-line-line-line-line-line-line_cropped.gif" alt="Line Plot" width="150" />
+    <img src="templates/gif/scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter_cropped.gif" alt="Scatter Plot" width="150" />
+    <img src="templates/gif/polar-polar-polar-polar-polar-polar-polar-polar-polar-polar-polar-polar-polar_cropped.gif" alt="Polar Plot" width="150" />
+    <img src="templates/gif/contour_cropped.gif" alt="Contour Plot" width="150" />
+    <img src="templates/gif/heatmap_cropped.gif" alt="Confusion Matrix" width="150" />
+    <!-- Not implemented yet -->
+    <img src="templates/gif/filled_line.gif" alt="Filled Line Plot" width="150" />
+    <img src="templates/gif/violin-violin-violin-violin-violin-violin-violin-violin-violin-violin-violin-violin-violin_cropped.gif" alt="Violin Plot" width="150" />
+    <img src="templates/gif/violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh_cropped.gif" alt="Horizontal Violin Plot" width="150" />
 </div>
+
+## Key files
+- ['./vba/ALL-IN-ONE-MACRO.vba'](./vba/ALL-IN-ONE-MACRO.vba)
+  - All-in-one macro for all types of available plot types
+    - (This is because calling macro from another macro seems not allowed)
+- ['./templates/jnb/template.JNB'](./templates/jnb/template.JNB)
+  - The template file for all types of plot. This file contains the all-in-one macro.
+- ['./PySigMacro/examples/demo.py'](./PySigMacro/examples/demo.py)
+  - Demo Python code to plot figures using SigmaPlot
+- ['./templates/gif/*.gif'](./templates/gif/*.gif)
+  - The produced figures by running the demo.py script.
 
 ## Prerequisite
 
@@ -32,10 +55,10 @@ A package for automating SigmaPlot routines.
 
 ## Insallation
 
-- SigmaPlot
-  - A proprietary software for professional plotting (https://grafiti.com/sigmaplot-detail/)
-  - Installation
-    - [`./docs/v12_Installer/README.md`](./docs/v12_Installer/README.md)
+- ['SigmaPlot'](https://grafiti.com/sigmaplot-detail/)
+  <!-- - A proprietary software for professional plotting (https://grafiti.com/sigmaplot-detail/)
+   !-- - Installation
+   !--   - [`./docs/v12_Installer/README.md`](./docs/v12_Installer/README.md) -->
 
 - SigMacro
   - Series of macros for automating SigmaPlot
@@ -48,21 +71,39 @@ A package for automating SigmaPlot routines.
   - Installation
     - [`./PySigMacro/README.md`](./PySigMacro/README.md)
 
-## Key Directories
-
-``` bash
-./PySigMacro/examples
-./PySigMacro/src/pysigmacro/data/temp
-```
-
 ## Usage
 
 ``` powershell
-python.exe ./PySigMacro/examples/create_demo_data.py
+python.exe ./PySigMacro/examples/demo.py
 ```
 
 ## TODO
-- [ ] As a Service
+- [ ] Histgram (= binning + bar)
+
+- [ ] Jitter (= area + line + area)
+
+- [ ] Filled Line (= area + line + area)
+
+- [ ] Violin/Violinh (= kde calculation + multiple lines + boxplot (+ jitter))
+  - [ ] ./PySigMacro/src/pysigmacro/violin/_prepare_violin_data.py
+
+- [ ] Simple interface like below
+
+  ``` python
+  import pysigmacro as psm
+  import pandas as pd
+
+  df = pd.DataFrame(...)
+
+  plotter = psm.Plotter()
+  plotter.add("area", df["x", "y"])
+  plotter.add("line", df["x", "y", "yerr"])
+  plotter.add("box", df["x"])
+  plotter.add("scatter", df["x", "y"])
+  # plotter.add("boxh", df["y"])
+  ...
+
+    ```
 
 ## Contact
 Yusuke Watanabe (ywatanabe@alumni.u-tokyo.ac.jp)
