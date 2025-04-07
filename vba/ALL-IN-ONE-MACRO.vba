@@ -158,15 +158,18 @@ Function _ReadRGB(columnIndex As Long) As Long
     End If
 End Function
 
-Function _ReadAlpha(columnIndex As Long) As Long
+Function _ReadAlphaAsTransparency(columnIndex As Long) As Long
     Const DEBUG_MODE As Boolean = False
     Dim alphaValue As Variant
+    Dim transparency As Variant    
     alphaValue = _ReadCell(columnIndex, 3)
     If (alphaValue = "None") Then
-        _ReadAlpha = -1
+        _ReadAlphaAsTransparency = -1
     Else
-        alphaValue = alphaValue * 100
-        _ReadAlpha = alphaValue
+        transparency = (1 - alphaValue) * 100
+        _ReadAlphaAsTransparency = transparency
+        ' alphaValue = alphaValue * 100
+        ' _ReadAlphaAsTransparency = alphaValue
     End If
 End Function
 
@@ -228,6 +231,11 @@ Function _ReadColumnMapping(plotType As String, startCol As Long, endCol As Long
 
     nDataCols = (endCol - startCol + 1) - (nHeadCols + nTailCols)
 
+    ' Fixme; the third columns is symbol ...
+    If plotType = "scatter" Then
+       nDataCols = 2
+    End If
+
     ReDim mapping(2, nDataCols)
 
     Dim iCol As Long
@@ -257,6 +265,12 @@ Function _ReadPlotCountColumnArray(plotType As String, startCol As Long, endCol 
     Const nTailCols As Long = 1
 
     nDataCols = (endCol - startCol + 1) - (nHeadCols + nTailCols)
+
+    ' Fixme; the third columns is symbol ...
+    If plotType = "scatter" Then
+       nDataCols = 2
+    End If
+    
 
     DebugMsg(DEBUG_MODE, "_ReadPlotCountColumnArray called")
     DebugMsg(DEBUG_MODE, "startCol: " & startCol)
@@ -290,6 +304,7 @@ Function _DoesGraphExist() As Boolean
 End Function
 
 Function _CountPlot() As Long
+    Const DEBUG_MODE As Boolean = False
     Dim graphItem As Object
     Set graphItem = ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_GRAPH)
     If Not graphItem Is Nothing Then
@@ -297,6 +312,7 @@ Function _CountPlot() As Long
     Else
         _CountPlot = 0
     End If
+    DebugMsg(DEBUG_MODE, "Number of plots: " & _CountPlot)
 End Function
 
 Sub _SelectPlot(plotIndex As Long)
@@ -549,7 +565,7 @@ Sub ApplyColors()
     Dim iPlot As Long
     Dim colorColumn As Long
     Dim RGB_VAL As Long
-    Dim ALPHA_VAL As Long
+    Dim transparencyVAL As Long
     Dim graphItem As Object
     Dim plotObj As Object
     Dim plotType As String
@@ -573,31 +589,31 @@ Sub ApplyColors()
             ' Special handling for contour or heatmap
         Else
             RGB_VAL = _ReadRGB(colorColumn)
-            ALPHA_VAL = _ReadAlpha(colorColumn)
+            transparencyVal = _ReadAlphaAsTransparency(colorColumn)
         End If
 
         ' Apply color based on plot type
         Select Case plotType
            Case "area"
-              _ApplyColorArea(iPlot, RGB_VAL, ALPHA_VAL)
+              _ApplyColorArea(iPlot, RGB_VAL, transparencyVal)
            Case "bar", "barh"
-              _ApplyColorBar(iPlot, RGB_VAL, ALPHA_VAL)
+              _ApplyColorBar(iPlot, RGB_VAL, transparencyVal)
            Case "box", "boxh"
-              _ApplyColorBox(iPlot, RGB_VAL, ALPHA_VAL)
+              _ApplyColorBox(iPlot, RGB_VAL, transparencyVal)
            Case "line"
-              _ApplyColorLine(iPlot, RGB_VAL, ALPHA_VAL)
+              _ApplyColorLine(iPlot, RGB_VAL, transparencyVal)
            Case "polar"
-              _ApplyColorPolar(iPlot, RGB_VAL, ALPHA_VAL)
+              _ApplyColorPolar(iPlot, RGB_VAL, transparencyVal)
            Case "scatter"
-              _ApplyColorScatter(iPlot, RGB_VAL, ALPHA_VAL)
+              _ApplyColorScatter(iPlot, RGB_VAL, transparencyVal)
            Case "violin", "violinh"
-              _ApplyColorViolin(iPlot, RGB_VAL, ALPHA_VAL)
+              _ApplyColorViolin(iPlot, RGB_VAL, transparencyVal)
            Case "filled_Line"
-              _ApplyColorFilledLine(iPlot, RGB_VAL, ALPHA_VAL)
+              _ApplyColorFilledLine(iPlot, RGB_VAL, transparencyVal)
            Case "3dscatter"
-              _ApplyColor3DScatter(iPlot, RGB_VAL, ALPHA_VAL)
+              _ApplyColor3DScatter(iPlot, RGB_VAL, transparencyVal)
            Case "contour", "heatmap"
-              _ApplyColorFake()
+              _ApplyColorFake(iPlot, RGB_VAL, transparencyVal)
         End Select
     Next iPlot
     Exit Sub
@@ -606,7 +622,7 @@ ErrorHandler:
     DebugMsg(DEBUG_MODE, "Error in Main: " & Err.Description)
 End Sub
 
-Sub _ApplyColorArea(iPlot As Long, RGB_VAL As Long, ALPHA_VAL As Long)
+Sub _ApplyColorArea(iPlot As Long, RGB_VAL As Long, transparencyVal As Long)
     Const DEBUG_MODE As Boolean = False
     DebugMsg(DEBUG_MODE, "_ApplyColorArea called")
     _SelectPlot(iPlot)
@@ -615,11 +631,11 @@ Sub _ApplyColorArea(iPlot As Long, RGB_VAL As Long, ALPHA_VAL As Long)
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SEA_COLOR, RGB_VAL)
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_COLOR, RGB_VAL)
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_AREAFILLTYPE, AREAFILLTYPE_VERTICAL)
-        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_COLOR_ALPHA, ALPHA_VAL)
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_COLOR_ALPHA, transparencyVal)
     End With
 End Sub
 
-Sub _ApplyColorBar(iPlot As Long, RGB_VAL As Long, ALPHA_VAL As Long)
+Sub _ApplyColorBar(iPlot As Long, RGB_VAL As Long, transparencyVal As Long)
     Const DEBUG_MODE As Boolean = False
     DebugMsg(DEBUG_MODE, "_ApplyColorBar called")
     _SelectPlot(iPlot)
@@ -629,7 +645,7 @@ Sub _ApplyColorBar(iPlot As Long, RGB_VAL As Long, ALPHA_VAL As Long)
     End With
 End Sub
 
-Sub _ApplyColorBox(iPlot As Long, RGB_VAL As Long, ALPHA_VAL As Long)
+Sub _ApplyColorBox(iPlot As Long, RGB_VAL As Long, transparencyVal As Long)
     Const DEBUG_MODE As Boolean = False
     DebugMsg(DEBUG_MODE, "_ApplyColorBox called")
     _SelectPlot(iPlot)
@@ -639,7 +655,7 @@ Sub _ApplyColorBox(iPlot As Long, RGB_VAL As Long, ALPHA_VAL As Long)
     End With
 End Sub
 
-Sub _ApplyColorLine(iPlot As Long, RGB_VAL As Long, ALPHA_VAL As Long)
+Sub _ApplyColorLine(iPlot As Long, RGB_VAL As Long, transparencyVal As Long)
     Const DEBUG_MODE As Boolean = False
     DebugMsg(DEBUG_MODE, "_ApplyColorLine called")
     _SelectPlot(iPlot)
@@ -652,7 +668,7 @@ Sub _ApplyColorLine(iPlot As Long, RGB_VAL As Long, ALPHA_VAL As Long)
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_EDGECOLOR, RGB_VAL)
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_COLOR, RGB_VAL)
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_COLORREPEAT, 2)
-        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_COLOR_ALPHA, ALPHA_VAL)
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_COLOR_ALPHA, transparencyVal)
         ' Solid
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_COLOR, RGB_VAL)
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_EDGECOLOR, RGB_VAL)
@@ -661,7 +677,7 @@ Sub _ApplyColorLine(iPlot As Long, RGB_VAL As Long, ALPHA_VAL As Long)
     End With
 End Sub
 
-Sub _ApplyColorPolar(iPlot As Long, RGB_VAL As Long, ALPHA_VAL As Long)
+Sub _ApplyColorPolar(iPlot As Long, RGB_VAL As Long, transparencyVal As Long)
     Const DEBUG_MODE As Boolean = False
     DebugMsg(DEBUG_MODE, "_ApplyColorPolar called")
     _SelectPlot(iPlot)
@@ -672,7 +688,7 @@ Sub _ApplyColorPolar(iPlot As Long, RGB_VAL As Long, ALPHA_VAL As Long)
     End With
 End Sub
 
-Sub _ApplyColorScatter(iPlot As Long, RGB_VAL As Long, ALPHA_VAL As Long)
+Sub _ApplyColorScatter(iPlot As Long, RGB_VAL As Long, transparencyVal As Long)
     Const DEBUG_MODE As Boolean = False
     DebugMsg(DEBUG_MODE, "_ApplyColorScatter called")
     _SelectPlot(iPlot)
@@ -685,7 +701,7 @@ Sub _ApplyColorScatter(iPlot As Long, RGB_VAL As Long, ALPHA_VAL As Long)
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_EDGECOLOR, RGB_VAL)
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_COLOR, RGB_VAL)
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_COLORREPEAT, 2)
-        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_COLOR_ALPHA, ALPHA_VAL)
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_COLOR_ALPHA, transparencyVal)
         ' Solid attributes
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_COLOR, RGB_VAL)
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_EDGECOLOR, RGB_VAL)
@@ -694,7 +710,7 @@ Sub _ApplyColorScatter(iPlot As Long, RGB_VAL As Long, ALPHA_VAL As Long)
     End With
 End Sub
 
-Sub _ApplyColorViolin(iPlot As Long, RGB_VAL As Long, ALPHA_VAL As Long)
+Sub _ApplyColorViolin(iPlot As Long, RGB_VAL As Long, transparencyVal As Long)
     Const DEBUG_MODE As Boolean = False
     DebugMsg(DEBUG_MODE, "_ApplyColorViolin called")
     _SelectPlot(iPlot)
@@ -707,7 +723,7 @@ Sub _ApplyColorViolin(iPlot As Long, RGB_VAL As Long, ALPHA_VAL As Long)
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_EDGECOLOR, RGB_VAL)
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_COLOR, RGB_VAL)
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_COLORREPEAT, 2)
-        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_COLOR_ALPHA, ALPHA_VAL)
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_COLOR_ALPHA, transparencyVal)
         ' Solid attributes
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_COLOR, RGB_VAL)
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_EDGECOLOR, RGB_VAL)
@@ -716,7 +732,7 @@ Sub _ApplyColorViolin(iPlot As Long, RGB_VAL As Long, ALPHA_VAL As Long)
     End With
 End Sub
 
-Sub _ApplyColorFilledLine(iPlot As Long, RGB_VAL As Long, ALPHA_VAL As Long)
+Sub _ApplyColorFilledLine(iPlot As Long, RGB_VAL As Long, transparencyVal As Long)
     Const DEBUG_MODE As Boolean = False
     DebugMsg(DEBUG_MODE, "_ApplyColorFilledLine called")
     _SelectPlot(iPlot)
@@ -730,7 +746,7 @@ Sub _ApplyColorFilledLine(iPlot As Long, RGB_VAL As Long, ALPHA_VAL As Long)
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_EDGECOLOR, RGB_VAL)
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_COLOR, RGB_VAL)
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_COLORREPEAT, 2)
-        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_COLOR_ALPHA, ALPHA_VAL)
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_COLOR_ALPHA, transparencyVal)
 
         ' Solid attributes
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_COLOR, RGB_VAL)
@@ -741,7 +757,7 @@ Sub _ApplyColorFilledLine(iPlot As Long, RGB_VAL As Long, ALPHA_VAL As Long)
     End With
 End Sub
 
-Sub _ApplyColor3DScatter(iPlot As Long, RGB_VAL As Long, ALPHA_VAL As Long)
+Sub _ApplyColor3DScatter(iPlot As Long, RGB_VAL As Long, transparencyVal As Long)
     Const DEBUG_MODE As Boolean = False
     DebugMsg(DEBUG_MODE, "_ApplyColor3DScatter called")
 
@@ -759,11 +775,11 @@ Sub _ApplyColor3DScatter(iPlot As Long, RGB_VAL As Long, ALPHA_VAL As Long)
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_EDGECOLOR, RGB_VAL)
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_COLOR, RGB_VAL)
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_COLORREPEAT, 2)
-        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_COLOR_ALPHA, ALPHA_VAL)
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_COLOR_ALPHA, transparencyVal)
     End With
 End Sub
 
-Sub _ApplyColorFake()
+Sub _ApplyColorFake(iPlot As Long, RGB_VAL As Long, transparencyVal As Long)
     Const DEBUG_MODE As Boolean = False
     DebugMsg(DEBUG_MODE, "_ApplyColorFake called")
 End Sub
@@ -831,6 +847,7 @@ Sub _SetRange(axisDim As Long, scaleTypeRow As Long, minRow As Long, maxRow As L
     Dim axisMin As String
     Dim axisMax As String
     Dim axisScaleType As Variant
+    Const USE_CONSTANT_VALUE As Integer = 10    
 
     ' Get the scale type for the specified axis
     axisScaleType = _ReadCell(GRAPH_PARAMS_COL, scaleTypeRow)
@@ -851,6 +868,7 @@ Sub _SetRange(axisDim As Long, scaleTypeRow As Long, minRow As Long, maxRow As L
     ' Select the correct axis object
     ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_AXIS).NameObject.SetObjectCurrent
     ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_SELECTDIM, axisDim)
+    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_OPTIONS, USE_CONSTANT_VALUE)    
 
     ' Temporarily ignore errors during attribute setting
     On Error Resume Next
@@ -858,6 +876,8 @@ Sub _SetRange(axisDim As Long, scaleTypeRow As Long, minRow As Long, maxRow As L
     ' Set the 'From' value if provided
     If LCase(axisMin) <> "none" And axisMin <> "" Then
         ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTRSTRING, SAA_FROMVAL, CStr(axisMin))
+        ' ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_OPTIONS, 42991617)
+        ' ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_OPTIONS, 20972546)       
         DebugMsg DEBUG_MODE, "Attempted to set Min value for axis " & axisDim & " to " & axisMin
     Else
         DebugMsg DEBUG_MODE, "Min value 'None' for axis " & axisDim & ", skipping."
@@ -891,13 +911,13 @@ Function _CvtScaleTypeFromVariantToLong(cellValue As Variant) As Long
     Dim scaleType As Long
     ' Convert string or number to appropriate scale type constant
     Select Case CStr(LCase(cellValue))
-        Case "linear", "1"
+        Case "linear", "heatmap", "1"
             scaleType = SAA_TYPE_LINEAR
-        Case "common", "common log", "2"
+        Case "common", "common log", "log10", "2"
             scaleType = SAA_TYPE_COMMON
         Case "log", "natural log", "3"
             scaleType = SAA_TYPE_LOG
-        Case "probability", "4"
+        Case "probability", "prob", "4"
             scaleType = SAA_TYPE_PROBABILITY
         Case "probit", "5"
             scaleType = SAA_TYPE_PROBIT

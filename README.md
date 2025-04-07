@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-04-06 22:44:59
+!-- Timestamp: 2025-04-07 22:02:35
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/win/documents/SigMacro/README.md
 !-- --- -->
@@ -30,11 +30,11 @@ This package allows users to create publication-ready figures using [SigmaPlot](
     <img src="templates/gif/scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter_cropped.gif" alt="Scatter Plot" width="150" />
     <img src="templates/gif/polar-polar-polar-polar-polar-polar-polar-polar-polar-polar-polar-polar-polar_cropped.gif" alt="Polar Plot" width="150" />
     <img src="templates/gif/contour_cropped.gif" alt="Contour Plot" width="150" />
+    <img src="templates/gif/heatmap_cropped.gif" alt="Confusion Matrix" width="150" />
     <!-- Not implemented yet -->
     <img src="templates/gif/filled_line.gif" alt="Filled Line Plot" width="150" />
     <img src="templates/gif/violin-violin-violin-violin-violin-violin-violin-violin-violin-violin-violin-violin-violin_cropped.gif" alt="Violin Plot" width="150" />
     <img src="templates/gif/violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh_cropped.gif" alt="Horizontal Violin Plot" width="150" />
-    <img src="templates/gif/confusion_matrix.gif" alt="Confusion Matrix" width="150" />
 </div>
 
 ## TODO
@@ -53,13 +53,6 @@ This package allows users to create publication-ready figures using [SigmaPlot](
 
 - [ ] Violinh
   - [ ] like Violin
-
-- [ ] Confusion Matrix
-  - [ ] x
-  - [ ] y
-  - [ ] z
-  - [ ] Color Bar
-
 
 
 ## Prerequisite
