@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-04-07 22:02:35
+!-- Timestamp: 2025-04-08 06:58:05
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/win/documents/SigMacro/README.md
 !-- --- -->
@@ -37,23 +37,16 @@ This package allows users to create publication-ready figures using [SigmaPlot](
     <img src="templates/gif/violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh_cropped.gif" alt="Horizontal Violin Plot" width="150" />
 </div>
 
-## TODO
-- [ ] Jitter
-  - [ ] 
-
-- [ ] Filled Line
-  - [ ] Area (upper)
-  - [ ] Line
-  - [ ] Area (lower)
-
-- [ ] Violin
-  - [ ] Calculating kde
-  - [ ] kde left - right (multiple line plots)
-  - [ ] Box plot
-
-- [ ] Violinh
-  - [ ] like Violin
-
+## Key files
+- ['./vba/ALL-IN-ONE-MACRO.vba'](./vba/ALL-IN-ONE-MACRO.vba)
+  - All-in-one macro for all types of available plot types
+    - (This is because calling macro from another macro seems not allowed)
+- ['./templates/jnb/template.JNB'](./templates/jnb/template.JNB)
+  - The template file for all types of plot. This file contains the all-in-one macro.
+- ['./PySigMacro/examples/demo.py'](./PySigMacro/examples/demo.py)
+  - Demo Python code to plot figures using SigmaPlot
+- ['./templates/gif/*.gif'](./templates/gif/*.gif)
+  - The produced figures by running the demo.py script.
 
 ## Prerequisite
 
@@ -62,10 +55,10 @@ This package allows users to create publication-ready figures using [SigmaPlot](
 
 ## Insallation
 
-- SigmaPlot
-  - A proprietary software for professional plotting (https://grafiti.com/sigmaplot-detail/)
-  - Installation
-    - [`./docs/v12_Installer/README.md`](./docs/v12_Installer/README.md)
+- ['SigmaPlot'](https://grafiti.com/sigmaplot-detail/)
+  <!-- - A proprietary software for professional plotting (https://grafiti.com/sigmaplot-detail/)
+   !-- - Installation
+   !--   - [`./docs/v12_Installer/README.md`](./docs/v12_Installer/README.md) -->
 
 - SigMacro
   - Series of macros for automating SigmaPlot
@@ -78,21 +71,39 @@ This package allows users to create publication-ready figures using [SigmaPlot](
   - Installation
     - [`./PySigMacro/README.md`](./PySigMacro/README.md)
 
-## Key Directories
-
-``` bash
-./PySigMacro/examples
-./PySigMacro/src/pysigmacro/data/temp
-```
-
 ## Usage
 
 ``` powershell
-python.exe ./PySigMacro/examples/create_demo_data.py
+python.exe ./PySigMacro/examples/demo.py
 ```
 
 ## TODO
-- [ ] As a Service
+- [ ] Histgram (= binning + bar)
+
+- [ ] Jitter (= area + line + area)
+
+- [ ] Filled Line (= area + line + area)
+
+- [ ] Violin/Violinh (= kde calculation + multiple lines + boxplot (+ jitter))
+  - [ ] ./PySigMacro/src/pysigmacro/violin/_prepare_violin_data.py
+
+- [ ] Simple interface like below
+
+  ``` python
+  import pysigmacro as psm
+  import pandas as pd
+
+  df = pd.DataFrame(...)
+
+  plotter = psm.Plotter()
+  plotter.add("area", df["x", "y"])
+  plotter.add("line", df["x", "y", "yerr"])
+  plotter.add("box", df["x"])
+  plotter.add("scatter", df["x", "y"])
+  # plotter.add("boxh", df["y"])
+  ...
+
+    ```
 
 ## Contact
 Yusuke Watanabe (ywatanabe@alumni.u-tokyo.ac.jp)
