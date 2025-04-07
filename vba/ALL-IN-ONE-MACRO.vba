@@ -41,6 +41,7 @@ Const LABEL_PTS_08 As Long = 111
 ' Line Thickness
 Const POLAR_LINE_THICKNESS As Double = 0.008 * 1000
 Const AREA_LINE_THICKNESS As Double = 0
+Const LINETYPE_NONE As Long = 1
 
 ' Rows
 Const LABEL_ROW As Long = -1
@@ -1005,6 +1006,26 @@ Sub SetLabelSizes()
 End Sub
 
 ' ========================================
+' Label Rotation
+' ========================================
+Sub _SetTickLabelRotation(axisDim As Long, labelRotationRow As Long)
+    On Error Resume Next
+    Dim oTextTick As Object
+    Dim rotationDegrees As Long
+
+    rotationDegrees = CLng(_ReadCell(GRAPH_PARAMS_COL, labelRotationRow))
+    Set oTextTick = ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_GRAPH).Axes(axisDim).AxisTitles(0).TickLabelAttributes(MAJOR_TICK_INDEX)
+
+    oTextTick.SetAttribute(STA_ORIENTATION, rotationDegrees * 10)
+    On Error GoTo 0
+End Sub
+
+Sub SetTickLabelRotation()
+    _SetTickLabelRotation(HORIZONTAL, X_LABEL_ROTATION_ROW)
+    _SetTickLabelRotation(VERTICAL, Y_LABEL_ROTATION_ROW)
+End Sub
+
+' ========================================
 ' Line Width
 ' ========================================
 Sub SetLineWidth()
@@ -1021,34 +1042,13 @@ Sub SetLineWidth()
         Select Case plotType
             Case "area"
                 ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, _
-                    SEA_THICKNESS, _
-                    AREA_LINE_THICKNESS)
+                    SEA_LINETYPE, LINETYPE_NONE)
             Case "polar"
                 ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, _
                     SEA_THICKNESS, _
                     POLAR_LINE_THICKNESS)
         End Select
     Next iPlot
-End Sub
-
-' ========================================
-' Label Rotation
-' ========================================
-Sub _SetSingleAxisTickLabelRotation(axisDim As Long, labelRotationRow As Long)
-    On Error Resume Next
-    Dim oTextTick As Object
-    Dim rotationDegrees As Long
-
-    rotationDegrees = CLng(_ReadCell(GRAPH_PARAMS_COL, labelRotationRow))
-    Set oTextTick = ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_GRAPH).Axes(axisDim).AxisTitles(0).TickLabelAttributes(MAJOR_TICK_INDEX)
-
-    oTextTick.SetAttribute(STA_ORIENTATION, rotationDegrees * 10)
-    On Error GoTo 0
-End Sub
-
-Sub SetTickLabelRotation()
-    _SetSingleAxisTickLabelRotation(HORIZONTAL, X_LABEL_ROTATION_ROW)
-    _SetSingleAxisTickLabelRotation(VERTICAL, Y_LABEL_ROTATION_ROW)
 End Sub
 
 ' ========================================
