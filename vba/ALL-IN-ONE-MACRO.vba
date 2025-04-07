@@ -1,5 +1,6 @@
 Option Explicit
 
+
 ' ========================================
 ' General Constants
 ' ========================================
@@ -14,10 +15,11 @@ Const GRAPH_NAME As String = "graph"
 ' ========================================
 Const AXIS_X As Long = 1
 Const AXIS_Y As Long = 2
+Const TICK_DIM_H As Long = 1
+Const TICK_DIM_V As Long = 2
+
 Const HORIZONTAL As Long = 0
 Const VERTICAL As Long = 1
-Const TICK_DIM_H As Long = 1
-Const Tick_Dim_V As Long = 2
 Const MAJOR_TICK_INDEX As Long = 2
 
 ' ========================================
@@ -28,6 +30,7 @@ Const HIDE_LEGEND As Long = 0
 Const HIDE_TITLE As Long = 0
 
 ' Styling
+Const LINE_THICKNESS_INVISIBLE As Variant = &H00000000
 Const TICK_THICKNESS_INVISIBLE As Variant = &H00000000
 Const TICK_THICKNESS_00008 As Variant = &H00000008
 Const TICK_LENGTH_00032 As Variant = &H00000020
@@ -110,7 +113,18 @@ Const GW_ID_LABEL As Long = 2
 Const GW_ID_RGBA As Long = -1
 ' Colors
 Const RGB_BLACK As Long = &H00000000
-Const RGB_TRANSPARENT As Long = 0
+Const RGB_NONE As Long = &Hff000000&
+
+' ========================================
+' Heatmap
+' ========================================
+Const HEATMAP_SCATTER_ID_Z As Long = 5
+Const HEATMAP_SCATTER_ID_SYMBOL As Long = 7
+
+' ========================================
+' Symbol Constants
+' ========================================
+Const SSA_SHAPE As Long = &H00000706&
 
 ' ========================================
 ' Helper Functions
@@ -123,7 +137,7 @@ End Sub
 
 Sub DebugType(DEBUG_MODE As Boolean, item)
     If GLOBAL_DEBUG_MODE Or DEBUG_MODE Then
-       MsgBox "Type: " & TypeName(item)
+        MsgBox "Type: " & TypeName(item)
     End If
 End Sub
 
@@ -161,15 +175,13 @@ End Function
 Function _ReadAlphaAsTransparency(columnIndex As Long) As Long
     Const DEBUG_MODE As Boolean = False
     Dim alphaValue As Variant
-    Dim transparency As Variant    
+    Dim transparency As Variant
     alphaValue = _ReadCell(columnIndex, 3)
     If (alphaValue = "None") Then
         _ReadAlphaAsTransparency = -1
     Else
         transparency = (1 - alphaValue) * 100
         _ReadAlphaAsTransparency = transparency
-        ' alphaValue = alphaValue * 100
-        ' _ReadAlphaAsTransparency = alphaValue
     End If
 End Function
 
@@ -183,7 +195,7 @@ Sub _CreateColorColumn(rColumn As Long, gColumn As Long, bColumn As Long, result
 
     ' Simple transform to create color from RGB values
     SPTransform.Text = "col(" & resultColumn & ") = rgbcolor(col(" & rColumn & ")" & _
-                       sep & "col(" & gColumn & ")" & sep & "col(" & bColumn & "))"
+               sep & "col(" & gColumn & ")" & sep & "col(" & bColumn & "))"
 
     ' Execute transform
     SPTransform.Execute
@@ -191,9 +203,8 @@ Sub _CreateColorColumn(rColumn As Long, gColumn As Long, bColumn As Long, result
 
     ' Add column title
     ActiveDocument.CurrentDataItem.DataTable.NamedRanges.Add _
-        "Color", resultColumn-1, 0, 1, -1, True
+               "Color", resultColumn-1, 0, 1, -1, True
 End Sub
-
 
 Function _ReadPlotTypeStr(iPlot As Long) As String
     Const DEBUG_MODE As Boolean = False
@@ -232,8 +243,8 @@ Function _ReadColumnMapping(plotType As String, startCol As Long, endCol As Long
     nDataCols = (endCol - startCol + 1) - (nHeadCols + nTailCols)
 
     ' Fixme; the third columns is symbol ...
-    If plotType = "scatter" Then
-       nDataCols = 2
+    If plotType = "scatter_heatmap" Then
+        nDataCols = 2
     End If
 
     ReDim mapping(2, nDataCols)
@@ -267,10 +278,9 @@ Function _ReadPlotCountColumnArray(plotType As String, startCol As Long, endCol 
     nDataCols = (endCol - startCol + 1) - (nHeadCols + nTailCols)
 
     ' Fixme; the third columns is symbol ...
-    If plotType = "scatter" Then
-       nDataCols = 2
+    If plotType = "scatter_heatmap" Then
+        nDataCols = 2
     End If
-    
 
     DebugMsg(DEBUG_MODE, "_ReadPlotCountColumnArray called")
     DebugMsg(DEBUG_MODE, "startCol: " & startCol)
@@ -315,8 +325,9 @@ Function _CountPlot() As Long
     DebugMsg(DEBUG_MODE, "Number of plots: " & _CountPlot)
 End Function
 
-Sub _SelectPlot(plotIndex As Long)
-    Const DEBUG_MODE As Boolean = False
+Function _SelectPlot(plotIndex As Long) As Object
+    Const DEBUG_MODE As Boolean = True
+    ActiveDocument.NotebookItems(GRAPH_NAME).Open
     On Error Resume Next
     Dim plotObj As Object
     Set plotObj = ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_GRAPH).Plots(plotIndex)
@@ -329,13 +340,70 @@ Sub _SelectPlot(plotIndex As Long)
     Else
         DebugMsg(DEBUG_MODE, "Plot object not found in _SelectPlot for index " & plotIndex)
     End If
-End Sub
+    _SelectPlot = plotObj
+End Function
 
 Function _MmToSigmaPlotUnit(mm As Long)
     Const DEBUG_MODE As Boolean = False
     DebugMsg(DEBUG_MODE, "_MmToSigmaPlotUnit called")
     _MmToSigmaPlotUnit = mm*30
 End Function
+
+Sub _ConvertNumToText(numericCol As Long, targetCol As Long)
+    Const DEBUG_MODE As Boolean = False
+    Dim dataTable As Object
+    Dim rowIndex As Long
+    Dim nRows As Long
+    Dim dataIndex As Long
+    Dim maxNRows As Long
+    Dim readValue As Variant
+    Dim sourceValues As Variant
+
+    Debug.Print "Starting _ConvertNumToText with column: " & numericCol
+
+    ' Open worksheet before accessing data
+    ActiveDocument.NotebookItems(WORKSHEET_NAME).Open()
+    Set dataTable = ActiveDocument.NotebookItems(WORKSHEET_NAME).DataTable
+
+    ' Find the first empty or last valid row
+    maxNRows = 16
+    nRows = 4
+
+    For rowIndex = 0 To maxNRows
+        readValue = _ReadCell(numericCol, rowIndex)
+
+        If CStr(readValue) = "-1.#QNAN" Then
+            DebugMsg(DEBUG_MODE, "readValue: " & readValue)
+            DebugType(DEBUG_MODE, "type(readValue): " & readValue)
+
+            nRows = rowIndex
+            Exit For
+        End If
+    Next rowIndex
+
+    ' Get values from the source column
+    sourceValues = dataTable.GetData(numericCol, 0, numericCol, nRows - 1)
+
+    ' Create text array with the same dimensions
+    Debug.Print "Creating text array"
+    Dim textArray() As Variant
+    ReDim textArray(0, nRows - 1)
+
+    ' Convert numeric values to formatted text
+    For dataIndex = 0 To nRows - 1
+        If Not IsEmpty(sourceValues(0, dataIndex)) Then
+            textArray(0, dataIndex) = Format(sourceValues(0, dataIndex), "0.00") & " "
+            Debug.Print "Row " & dataIndex & ": " & textArray(0, dataIndex)
+        End If
+    Next dataIndex
+
+    ' Write formatted text to target column
+    Debug.Print "Writing data to column " & targetCol
+    dataTable.PutData(textArray, targetCol, 0)
+
+    ' Add column title/header
+    dataTable.ColumnTitle(targetCol) = "Text"
+End Sub
 
 ' Finder
 ' ----------------------------------------
@@ -549,6 +617,36 @@ Sub RemoveRightSpine()
     ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_SUB2OPTIONS, TICK_THICKNESS_INVISIBLE)
 End Sub
 
+Sub _RemoveLineButTicks(axisDim As Long)
+    Const DEBUG_MODE As Boolean = False
+    With ActiveDocument.CurrentPageItem
+        ' First handle X axis (dimension 1)
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_SELECTDIM, axisDim)
+        ' Select the axis line
+        .SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_SELECTLINE, 1)
+        ' Set graph flags (affects how axis components are displayed)
+        .SetCurrentObjectAttribute(GPM_SETGRAPHATTR, SGA_FLAGS, &H00010001&)
+        ' Set axis color (still needed even with thickness 0)
+        .SetCurrentObjectAttribute(GPM_SETAXISATTR, SEA_COLOR, &Hff000000&)
+        ' Set axis line thickness to 0 (invisible)
+        .SetCurrentObjectAttribute(GPM_SETAXISATTR, SEA_THICKNESS, 0)
+        ' Set position parameters (anchors the axis)
+        .SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_POS1PERMILL, 0)
+        .SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_POS2PERMILL, 0)
+        ' Set sub-options controlling ticks and other elements
+        .SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_SUB1OPTIONS, &H0000000d&)
+        .SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_SUB2OPTIONS, &H0000000e&)
+    End With
+End Sub
+
+Sub RemoveLeftLine()
+    _RemoveLineButTicks(AXIS_Y)
+End Sub
+
+Sub RemoveBottomLine()
+    _RemoveLineButTicks(AXIS_X)
+End Sub
+
 Sub RemoveTitle()
     Const DEBUG_MODE As Boolean = False
     ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_GRAPH).SetObjectCurrent
@@ -585,35 +683,33 @@ Sub ApplyColors()
         plotType = LCase(_ReadPlotTypeStr(iPlot))
         colorColumn = _FindChunkEndCol(iPlot)
 
-        If (plotType = "contour") Or (plotType = "heatmap") Then
-            ' Special handling for contour or heatmap
-        Else
-            RGB_VAL = _ReadRGB(colorColumn)
-            transparencyVal = _ReadAlphaAsTransparency(colorColumn)
-        End If
+        RGB_VAL = _ReadRGB(colorColumn)
+        transparencyVal = _ReadAlphaAsTransparency(colorColumn)
 
         ' Apply color based on plot type
         Select Case plotType
-           Case "area"
-              _ApplyColorArea(iPlot, RGB_VAL, transparencyVal)
-           Case "bar", "barh"
-              _ApplyColorBar(iPlot, RGB_VAL, transparencyVal)
-           Case "box", "boxh"
-              _ApplyColorBox(iPlot, RGB_VAL, transparencyVal)
-           Case "line"
-              _ApplyColorLine(iPlot, RGB_VAL, transparencyVal)
-           Case "polar"
-              _ApplyColorPolar(iPlot, RGB_VAL, transparencyVal)
-           Case "scatter"
-              _ApplyColorScatter(iPlot, RGB_VAL, transparencyVal)
-           Case "violin", "violinh"
-              _ApplyColorViolin(iPlot, RGB_VAL, transparencyVal)
-           Case "filled_Line"
-              _ApplyColorFilledLine(iPlot, RGB_VAL, transparencyVal)
-           Case "3dscatter"
-              _ApplyColor3DScatter(iPlot, RGB_VAL, transparencyVal)
-           Case "contour", "heatmap"
-              _ApplyColorFake(iPlot, RGB_VAL, transparencyVal)
+            Case "area", "area_heatmap"
+                _ApplyColorArea(iPlot, RGB_VAL, transparencyVal)
+            Case "bar", "barh", "barh_heatmap"
+                _ApplyColorBar(iPlot, RGB_VAL, transparencyVal)
+            Case "box", "boxh"
+                _ApplyColorBox(iPlot, RGB_VAL, transparencyVal)
+            Case "line"
+                _ApplyColorLine(iPlot, RGB_VAL, transparencyVal)
+            Case "polar"
+                _ApplyColorPolar(iPlot, RGB_VAL, transparencyVal)
+            Case "scatter"
+                _ApplyColorScatter(iPlot, RGB_VAL, transparencyVal)
+            Case "scatter_heatmap"
+                _ApplyColorScatter(iPlot, RGB_VAL, transparencyVal)
+            Case "violin", "violinh"
+                _ApplyColorViolin(iPlot, RGB_VAL, transparencyVal)
+            Case "filled_Line"
+                _ApplyColorFilledLine(iPlot, RGB_VAL, transparencyVal)
+            Case "3dscatter"
+                _ApplyColor3DScatter(iPlot, RGB_VAL, transparencyVal)
+            Case "contour", "heatmap"
+                _ApplyColorFake(iPlot, RGB_VAL, transparencyVal)
         End Select
     Next iPlot
     Exit Sub
@@ -626,12 +722,11 @@ Sub _ApplyColorArea(iPlot As Long, RGB_VAL As Long, transparencyVal As Long)
     Const DEBUG_MODE As Boolean = False
     DebugMsg(DEBUG_MODE, "_ApplyColorArea called")
     _SelectPlot(iPlot)
-    ' FIXME; I'd like to make line invisible
     With ActiveDocument.CurrentPageItem
-        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SEA_COLOR, RGB_VAL)
-        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_COLOR, RGB_VAL)
-        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_AREAFILLTYPE, AREAFILLTYPE_VERTICAL)
-        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_COLOR_ALPHA, transparencyVal)
+    .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SEA_COLOR, RGB_VAL)
+    .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_COLOR, RGB_VAL)
+    .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_AREAFILLTYPE, AREAFILLTYPE_VERTICAL)
+    .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_COLOR_ALPHA, transparencyVal)
     End With
 End Sub
 
@@ -640,8 +735,8 @@ Sub _ApplyColorBar(iPlot As Long, RGB_VAL As Long, transparencyVal As Long)
     DebugMsg(DEBUG_MODE, "_ApplyColorBar called")
     _SelectPlot(iPlot)
     With ActiveDocument.CurrentPageItem
-        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_COLOR, RGB_VAL)
-        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_EDGECOLOR, RGB_BLACK)
+    .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_COLOR, RGB_VAL)
+    .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_EDGECOLOR, RGB_BLACK)
     End With
 End Sub
 
@@ -650,8 +745,8 @@ Sub _ApplyColorBox(iPlot As Long, RGB_VAL As Long, transparencyVal As Long)
     DebugMsg(DEBUG_MODE, "_ApplyColorBox called")
     _SelectPlot(iPlot)
     With ActiveDocument.CurrentPageItem
-        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_COLOR, RGB_VAL)
-        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_EDGECOLOR, RGB_BLACK)
+    .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_COLOR, RGB_VAL)
+    .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_EDGECOLOR, RGB_BLACK)
     End With
 End Sub
 
@@ -760,17 +855,12 @@ End Sub
 Sub _ApplyColor3DScatter(iPlot As Long, RGB_VAL As Long, transparencyVal As Long)
     Const DEBUG_MODE As Boolean = False
     DebugMsg(DEBUG_MODE, "_ApplyColor3DScatter called")
-
-    ' Select the plot object
     _SelectPlot(iPlot)
-
-    ' Apply 3D scatter colors
     With ActiveDocument.CurrentPageItem
         ' Line attributes
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SEA_COLOR, RGB_VAL)
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SEA_COLORCOL, -2)
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SOA_COLOR, RGB_VAL)
-
         ' Symbol attributes
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_EDGECOLOR, RGB_VAL)
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_COLOR, RGB_VAL)
@@ -790,9 +880,7 @@ End Sub
 Sub _SetWidth()
     Const DEBUG_MODE As Boolean = False
     DebugMsg(DEBUG_MODE, "_SetWidth called")
-
     On Error Resume Next
-
     Dim xLength_mm As Double
     Dim xLength_sp As Double
     xLength_mm = _ReadCell(GRAPH_PARAMS_COL, X_MM_ROW)
@@ -810,7 +898,7 @@ Sub _SetHeight()
     yLength_mm = _ReadCell(GRAPH_PARAMS_COL, Y_MM_ROW)
     yLength_sp = _MmToSigmaPlotUnit(yLength_mm)
     With ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_GRAPH)
-        .Height = yLength_sp
+       .Height = yLength_sp
     End With
 End Sub
 
@@ -834,9 +922,9 @@ Function _SetLabelText(axisDim As Variant, labelCol As Long)
 End Function
 
 Sub SetLabelsText()
-   Const DEBUG_MODE As Boolean = False
-   _SetLabelText(AXIS_X, X_LABEL_ROW)
-   _SetLabelText(AXIS_Y, Y_LABEL_ROW)
+    Const DEBUG_MODE As Boolean = False
+    _SetLabelText(AXIS_X, X_LABEL_ROW)
+    _SetLabelText(AXIS_Y, Y_LABEL_ROW)
 End Sub
 
 ' ========================================
@@ -847,7 +935,7 @@ Sub _SetRange(axisDim As Long, scaleTypeRow As Long, minRow As Long, maxRow As L
     Dim axisMin As String
     Dim axisMax As String
     Dim axisScaleType As Variant
-    Const USE_CONSTANT_VALUE As Integer = 10    
+    Const USE_CONSTANT_VALUE As Integer = 10
 
     ' Get the scale type for the specified axis
     axisScaleType = _ReadCell(GRAPH_PARAMS_COL, scaleTypeRow)
@@ -855,7 +943,8 @@ Sub _SetRange(axisDim As Long, scaleTypeRow As Long, minRow As Long, maxRow As L
     ' Skip range setting for category or datetime axes
     Select Case LCase(CStr(axisScaleType))
         Case "category", "7", "datetime", "date", "time", "8"
-            DebugMsg DEBUG_MODE, "Skipping range setting for axis " & axisDim & " due to scale type: " & axisScaleType
+           DebugMsg(DEBUG_MODE, "Skipping range setting for axis " & axisDim & _
+                    " due to scale type: " & axisScaleType)
             Exit Sub
     End Select
 
@@ -863,12 +952,12 @@ Sub _SetRange(axisDim As Long, scaleTypeRow As Long, minRow As Long, maxRow As L
     axisMin = _ReadCell(GRAPH_PARAMS_COL, minRow)
     axisMax = _ReadCell(GRAPH_PARAMS_COL, maxRow)
 
-    DebugMsg DEBUG_MODE, "Setting range for axis " & axisDim & ": Min=" & axisMin & ", Max=" & axisMax
+    DebugMsg(DEBUG_MODE, "Setting range for axis " & axisDim & ": Min=" & axisMin & ", Max=" & axisMax)
 
     ' Select the correct axis object
     ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_AXIS).NameObject.SetObjectCurrent
     ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_SELECTDIM, axisDim)
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_OPTIONS, USE_CONSTANT_VALUE)    
+    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_OPTIONS, USE_CONSTANT_VALUE)
 
     ' Temporarily ignore errors during attribute setting
     On Error Resume Next
@@ -876,19 +965,17 @@ Sub _SetRange(axisDim As Long, scaleTypeRow As Long, minRow As Long, maxRow As L
     ' Set the 'From' value if provided
     If LCase(axisMin) <> "none" And axisMin <> "" Then
         ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTRSTRING, SAA_FROMVAL, CStr(axisMin))
-        ' ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_OPTIONS, 42991617)
-        ' ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_OPTIONS, 20972546)       
-        DebugMsg DEBUG_MODE, "Attempted to set Min value for axis " & axisDim & " to " & axisMin
+        DebugMsg(DEBUG_MODE, "Attempted to set Min value for axis " & axisDim & " to " & axisMin)
     Else
-        DebugMsg DEBUG_MODE, "Min value 'None' for axis " & axisDim & ", skipping."
+        DebugMsg(DEBUG_MODE, "Min value 'None' for axis " & axisDim & ", skipping.")
     End If
 
     ' Set the 'To' value if provided
     If LCase(axisMax) <> "none" And axisMax <> "" Then
         ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTRSTRING, SAA_TOVAL, CStr(axisMax))
-        DebugMsg DEBUG_MODE, "Attempted to set Max value for axis " & axisDim & " to " & axisMax
+        DebugMsg(DEBUG_MODE, "Attempted to set Max value for axis " & axisDim & " to " & axisMax)
     Else
-        DebugMsg DEBUG_MODE, "Max value 'None' for axis " & axisDim & ", skipping."
+        DebugMsg(DEBUG_MODE, "Max value 'None' for axis " & axisDim & ", skipping.")
     End If
 
     ' Restore default error handling
@@ -898,26 +985,101 @@ End Sub
 
 Sub SetRanges()
     Const DEBUG_MODE As Boolean = False
-    DebugMsg DEBUG_MODE, "Setting X and Y ranges..."
+    DebugMsg(DEBUG_MODE, "Setting X and Y ranges...")
     _SetRange(AXIS_X, X_SCALE_TYPE_ROW, X_MIN_ROW, X_MAX_ROW)
     _SetRange(AXIS_Y, Y_SCALE_TYPE_ROW, Y_MIN_ROW, Y_MAX_ROW)
 End Sub
 
+' ' ========================================
+' ' Scales
+' ' ========================================
+' Function _CvtScaleTypeFromVariantToLong(cellValue As Variant) As Long
+'     Const DEBUG_MODE As Boolean = True
+'     Dim scaleType As Long
+'     ' Convert string or number to appropriate scale type constant
+'     Select Case CStr(LCase(cellValue))
+'         Case "linear", "heatmap", "1"
+'             scaleType = SAA_TYPE_LINEAR
+'         Case "common", "common log", "log10", "2"
+'             scaleType = SAA_TYPE_COMMON
+'         Case "log", "natural log", "3"
+'             scaleType = SAA_TYPE_LOG
+'         Case "probability", "prob", "4"
+'             scaleType = SAA_TYPE_PROBABILITY
+'         Case "probit", "5"
+'             scaleType = SAA_TYPE_PROBIT
+'         Case "logit", "6"
+'             scaleType = SAA_TYPE_LOGIT
+'         Case "category", "7"
+'             scaleType = SAA_TYPE_CATEGORY
+'         Case "datetime", "date", "time", "8"
+'             scaleType = SAA_TYPE_DATETIME
+'         Case Else
+'             ' Default to linear if unrecognized
+'             scaleType = SAA_TYPE_LINEAR
+'     End Select
+'     _CvtScaleTypeFromVariantToLong = scaleType
+' End Function
+
+' Sub _SetScale(axisDim As Long, scaleTypeRow As Long)
+'     Const DEBUG_MODE As Boolean = True
+'     On Error Resume Next
+'     Dim scaleVariant As Variant
+'     Dim scaleLong As Long
+'     Dim axis As Object
+
+'     ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_GRAPH).NameObject.SetObjectCurrent    
+
+'     scaleVariant = _ReadCell(GRAPH_PARAMS_COL, scaleTypeRow)
+'     DebugMsg(DEBUG_MODE, "scaleVariant: " & scaleVariant)
+    
+'     scaleLong = _CvtScaleTypeFromVariantToLong(scaleVariant)
+'     DebugMsg(DEBUG_MODE, "scaleLong: " & scaleLong)
+    
+'     Set axis = ActiveDocument.CurrentPageItem.GraphPages(0).Graphs(0).Axes(axisDim)
+'     axis.SetAttribute(SAA_TYPE, scaleLong)
+
+'     On Error GoTo 0
+' End Sub
+
+' Sub SetScales()
+'     Const DEBUG_MODE As Boolean = False
+'     DebugMsg(DEBUG_MODE, "SetScales called")
+'     _SetScale(AXIS_X, X_SCALE_TYPE_ROW)
+'     _SetScale(AXIS_Y, Y_SCALE_TYPE_ROW)
+' End Sub
+
 ' ========================================
 ' Scales
 ' ========================================
-Function _CvtScaleTypeFromVariantToLong(cellValue As Variant) As Long
+Function _SetScaleType(axisIndex As Long, scaleType As Long)
+    Dim axis As Object
+    ' Get the axis object directly
+    Set axis = ActiveDocument.CurrentPageItem.GraphPages(0).Graphs(0).Axes(axisIndex)
+    ' Set scale type
+    axis.SetAttribute(SAA_TYPE, scaleType)
+End Function
+
+Function _cvtScaleTypeFromVariantToLong(cellValue As Variant) As Long
     Const DEBUG_MODE As Boolean = False
+    Const SAA_TYPE_LINEAR = 1
+    Const SAA_TYPE_COMMON = 2
+    Const SAA_TYPE_LOG = 3
+    Const SAA_TYPE_PROBABILITY = 4
+    Const SAA_TYPE_PROBIT = 5
+    Const SAA_TYPE_LOGIT = 6
+    Const SAA_TYPE_CATEGORY = 7
+    Const SAA_TYPE_DATETIME = 8
     Dim scaleType As Long
     ' Convert string or number to appropriate scale type constant
     Select Case CStr(LCase(cellValue))
-        Case "linear", "heatmap", "1"
+        Case "linear", "1"
             scaleType = SAA_TYPE_LINEAR
-        Case "common", "common log", "log10", "2"
+        Case "common", "common log", "2"
             scaleType = SAA_TYPE_COMMON
         Case "log", "natural log", "3"
             scaleType = SAA_TYPE_LOG
-        Case "probability", "prob", "4"
+        Case "probability", "4"
             scaleType = SAA_TYPE_PROBABILITY
         Case "probit", "5"
             scaleType = SAA_TYPE_PROBIT
@@ -931,70 +1093,114 @@ Function _CvtScaleTypeFromVariantToLong(cellValue As Variant) As Long
             ' Default to linear if unrecognized
             scaleType = SAA_TYPE_LINEAR
     End Select
-    _CvtScaleTypeFromVariantToLong = scaleType
+    _cvtScaleTypeFromVariantToLong = scaleType
 End Function
 
-Sub _SetScale(axisDim As Long, scaleTypeRow As Long)
+Sub _SetXScale()
     Const DEBUG_MODE As Boolean = False
     On Error Resume Next
-    Dim scaleVariant As Variant
-    Dim scaleLong As Long
-    Dim axis As Object
+    Dim xScaleVariant As Variant
+    Dim xScaleLong As Long
 
-    scaleVariant = _ReadCell(GRAPH_PARAMS_COL, scaleTypeRow)
-    scaleLong = _CvtScaleTypeFromVariantToLong(scaleVariant)
-    Set axis = ActiveDocument.CurrentPageItem.GraphPages(0).Graphs(0).Axes(axisDim)
-    axis.SetAttribute(SAA_TYPE, scaleLong)
+    xScaleVariant = _ReadCell(GRAPH_PARAMS_COL, X_SCALE_TYPE_ROW)
+    xScaleLong = _cvtScaleTypeFromVariantToLong(xScaleVariant)
+
+    _SetScaleType(HORIZONTAL, xScaleLong)
+    On Error GoTo 0
+End Sub
+
+Sub _SetYScale()
+    Const DEBUG_MODE As Boolean = False
+    On Error Resume Next
+    Dim yScaleVariant As Variant
+    Dim yScaleLong As Long
+
+    yScaleVariant = _ReadCell(GRAPH_PARAMS_COL, Y_SCALE_TYPE_ROW)
+    yScaleLong = _cvtScaleTypeFromVariantToLong(yScaleVariant)
+    _SetScaleType(VERTICAL, yScaleLong)
 
     On Error GoTo 0
 End Sub
 
 Sub SetScales()
     Const DEBUG_MODE As Boolean = False
-    DebugMsg(DEBUG_MODE, "SetScales called")
-    _SetScale(AXIS_X, X_SCALE_TYPE_ROW)
-    _SetScale(AXIS_Y, Y_SCALE_TYPE_ROW)
+    _SetXScale()
+    _SetYScale()
 End Sub
 
-
 ' ========================================
-' Ticks
+' Tick Positions
 ' ========================================
-Sub _SetTickPositions(axisDim As Long, ticksCol As Long)
+Sub _SetXTickPositions()
     Const DEBUG_MODE As Boolean = False
-    Dim ticksFirstValue As Variant
-    ticksFirstValue = _ReadCell(ticksCol, 0)
-    If Not (LCase(CStr(ticksFirstValue)) = "none" Or _
-            LCase(CStr(ticksFirstValue)) = "auto" Or _
-            IsEmpty(ticksFirstValue)) Then
-        ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_AXIS).NameObject.SetObjectCurrent()
-        ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_SELECTDIM, axisDim)
+    Dim xTicksFirstRow As Variant
+    xTicksFirstRow = _ReadCell(X_TICKS_COL, 0)
+    If Not (xTicksFirstRow = "None" Or xTicksFirstRow = "auto") Then
+        ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_AXIS).NameObject.SetObjectCurrent
+        ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_SELECTDIM, AXIS_X)
         ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SAA_TICCOLUSED, 1)
-        ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SAA_TICCOL, ticksCol)
-    Else
-        DebugMsg(DEBUG_MODE, "Skipping custom ticks for axis " & axisDim)
+        ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SAA_TICCOL, X_TICKS_COL)
+    End If
+End Sub
+
+Sub _SetYTickPositions()
+    Const DEBUG_MODE As Boolean = False
+    Dim yTicksFirstRow As Variant
+    yTicksFirstRow = _ReadCell(Y_TICKS_COL, 0)
+    If Not (yTicksFirstRow = "None" Or yTicksFirstRow = "auto") Then
+        ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_AXIS).NameObject.SetObjectCurrent
+        ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_SELECTDIM, AXIS_Y)
+        ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SAA_TICCOLUSED, 1)
+        ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SAA_TICCOL, Y_TICKS_COL)
     End If
 End Sub
 
 Sub SetTickPositions()
     Const DEBUG_MODE As Boolean = False
-    DebugMsg(DEBUG_MODE, "Setting ticks...")
-    _SetTickPositions(AXIS_X, X_TICKS_COL)
-    _SetTickPositions(AXIS_Y, Y_TICKS_COL)
+    _SetXTickPositions()
+    _SetYTickPositions()
 End Sub
+
+' ' ========================================
+' ' Tick Positions
+' ' ========================================
+' Sub _SetTickPositions(axisDim As Long, ticksCol As Long)
+'     Const DEBUG_MODE As Boolean = True
+'     Dim ticksFirstValue As Variant
+'     ticksFirstValue = _ReadCell(ticksCol, 0)
+'     If Not (LCase(CStr(ticksFirstValue)) = "none" Or _
+'             LCase(CStr(ticksFirstValue)) = "auto" Or _
+'             IsEmpty(ticksFirstValue)) Then
+'         ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_AXIS).NameObject.SetObjectCurrent()
+'         ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_SELECTDIM, axisDim)
+'         ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SAA_TICCOLUSED, 1)
+'         ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SAA_TICCOL, ticksCol)
+'     Else
+'         DebugMsg(DEBUG_MODE, "Skipping custom ticks for axis " & axisDim)
+'     End If
+' End Sub
+
+' Sub SetTickPositions()
+'     Const DEBUG_MODE As Boolean = False
+'     DebugMsg(DEBUG_MODE, "Setting ticks...")
+'     _SetTickPositions(AXIS_X, X_TICKS_COL)
+'     _SetTickPositions(AXIS_Y, Y_TICKS_COL)
+' End Sub
 
 ' ========================================
 ' Tick Sizes
 ' ========================================
 Sub _SetTickSize(axisDim As Long)
     ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_AXIS).NameObject.SetObjectCurrent()
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_SELECTDIM, axisDim)
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_SELECTLINE, TICK_DIM_H)
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SEA_THICKNESS, TICK_THICKNESS_00008)
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_TICSIZE, TICK_LENGTH_00032)
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_SELECTLINE, Tick_Dim_V)
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SEA_THICKNESS, TICK_THICKNESS_00008)
-    ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_TICSIZE, TICK_LENGTH_00032)
+    With ActiveDocument.CurrentPageItem 
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_SELECTDIM, axisDim)
+        .SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_SELECTLINE, TICK_DIM_H)
+        .SetCurrentObjectAttribute(GPM_SETAXISATTR, SEA_THICKNESS, TICK_THICKNESS_00008)
+        .SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_TICSIZE, TICK_LENGTH_00032)
+        .SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_SELECTLINE, TICK_DIM_V)
+        .SetCurrentObjectAttribute(GPM_SETAXISATTR, SEA_THICKNESS, TICK_THICKNESS_00008)
+        .SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_TICSIZE, TICK_LENGTH_00032)
+    End With
 End Sub
 
 Sub SetTickSizes()
@@ -1048,7 +1254,7 @@ End Sub
 ' ========================================
 ' Line Width
 ' ========================================
-Sub SetLineWidth()
+Sub HandleSpecialCases()
     Const DEBUG_MODE As Boolean = False
     Dim plotCount As Long
     Dim iPlot As Long
@@ -1062,13 +1268,69 @@ Sub SetLineWidth()
         Select Case plotType
             Case "area"
                 ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, _
-                    SEA_LINETYPE, LINETYPE_NONE)
+                                                                         SEA_LINETYPE, LINETYPE_NONE)
+            Case "scatter_heatmap"
+                RemoveBottomLine()
+                RemoveLeftLine()
+                SetTextAsSymbol(iPlot)
+
             Case "polar"
                 ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, _
-                    SEA_THICKNESS, _
-                    POLAR_LINE_THICKNESS)
+                                                                         SEA_THICKNESS, _
+                                                                         POLAR_LINE_THICKNESS)
         End Select
     Next iPlot
+End Sub
+
+' ========================================
+' SetTextAsSymbol
+' ========================================
+Sub SetTextAsSymbol(plotIndex As Long)
+    Const DEBUG_MODE As Boolean = False
+    Dim dataTable As Object
+    Dim rowIndex As Long
+    Dim nRows As Long
+    Dim tgtCol As Long
+    Dim plotStartCol As Long
+    Dim numCol As Long
+    Dim textCol As Long
+    Dim dataIndex As Long
+    Dim maxNRows As Long
+    Dim readValue As Variant
+    Dim plotObj As Object
+
+    ' Open worksheet before accessing data
+    ActiveDocument.NotebookItems(WORKSHEET_NAME).Open()
+    Set dataTable = ActiveDocument.NotebookItems(WORKSHEET_NAME).DataTable
+
+    ' Find source column for data values
+    plotStartCol = _FindChunkStartCol(plotIndex)
+    DebugMsg(DEBUG_MODE, "plotStartCol found: " & plotStartCol)
+
+    ' Try to find symbol column - look for the z-value column
+    numCol = plotStartCol + HEATMAP_SCATTER_ID_Z
+    DebugMsg(DEBUG_MODE, "numCol defined: " & numCol)
+
+    ' Convert numeric column to text-formatted column
+    textCol = plotStartCol + HEATMAP_SCATTER_ID_SYMBOL
+    _ConvertNumToText(numCol, textCol)
+
+    ' Apply text symbol settings in a specific order
+    DebugMsg(DEBUG_MODE, "Applying text symbol settings")
+    DebugMsg(DEBUG_MODE, "textCol: " & textCol)
+    
+    ActiveDocument.NotebookItems(GRAPH_NAME).Open()
+
+    ' Configure the plot to use text symbols
+    Set plotObj = _SelectPlot(plotIndex)
+
+    With ActiveDocument.CurrentPageItem
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_OPTIONS, &H00000201&)
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_SIZE, 64) ' I would like to 0.064 in
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_SIZEREPEAT, 4)       
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_SHAPE, textCol)
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_SHAPEREPEAT, 4)
+    End With
 End Sub
 
 ' ========================================
@@ -1076,6 +1338,8 @@ End Sub
 ' ========================================
 Sub Main()
     Const DEBUG_MODE As Boolean = False
+
+    ActiveDocument.NotebookItems(GRAPH_NAME).Open
 
     ' Remove any existing graphs
     RemoveExistingGraphs()
@@ -1112,8 +1376,8 @@ Sub Main()
     ' Tick label rotation
     SetTickLabelRotation()
 
-    ' Line Width
-    SetLineWidth()
+    ' Handle special cases
+    HandleSpecialCases()
 
     ' Activate the graph page
     ActiveDocument.NotebookItems(GRAPH_NAME).Open
