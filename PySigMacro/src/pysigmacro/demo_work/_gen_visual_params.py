@@ -36,7 +36,7 @@ def gen_visual_params(plot_type, n_cols=8, **kwargs):
         # Special
         "filled_line": _gen_demo_visual_params_filled_line(),
         "contour": _gen_demo_visual_params_contour(),
-        "conf_mat": _gen_demo_visual_params_conf_mat(),
+        "heatmap": _gen_demo_visual_params_heatmap(),
     }[plot_type]
     out_dict.update(PLOT_SPECIFIC_PARAMS)
 
@@ -239,7 +239,7 @@ def _gen_demo_visual_params_violin():
 # ------------------------------
 
 
-def _gen_demo_visual_params_conf_mat():
+def _gen_demo_visual_params_heatmap():
     return {
         "xlabel": "X-Axis Label",
         "xrot": 0,

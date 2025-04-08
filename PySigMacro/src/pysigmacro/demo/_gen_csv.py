@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-04-04 23:27:44 (ywatanabe)"
+# Timestamp: "2025-04-07 21:14:13 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/demo/_gen_csv.py
 # ----------------------------------------
 import os
@@ -65,13 +65,5 @@ def gen_csv(plot_types, save=False, plot_type_for_visual_params=None):
         df.to_csv(spath, index=False)
         print(f"Saved to: {spath}")
     return df
-
-
-# def get_chunk_starts(df_data):
-#     return {
-#         i_col: col
-#         for i_col, col in enumerate(df_data.columns)
-#         if re.match("gw_param_keys.*", col)
-#     }
 
 # EOF

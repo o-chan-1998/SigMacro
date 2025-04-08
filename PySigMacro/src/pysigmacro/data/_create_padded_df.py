@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-30 20:06:37 (ywatanabe)"
+# Timestamp: "2025-04-07 15:10:30 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/data/_create_padded_df.py
 # ----------------------------------------
 import os
