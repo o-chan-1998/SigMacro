@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-04-09 02:24:48
+!-- Timestamp: 2025-04-09 05:30:49
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/win/documents/SigMacro/README.md
 !-- --- -->
@@ -85,9 +85,6 @@ python.exe ./PySigMacro/examples/demo.py
 - [ ] Jitter (= area + line + area)
 
 - [ ] Filled Line (= area + line + area)
-
-- [ ] Violin/Violinh (= kde calculation + multiple lines + boxplot (+ jitter))
-  - [ ] ./PySigMacro/src/pysigmacro/violin/_prepare_violin_data.py
 
 - [ ] Simple interface like below
 
