@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-04-08 06:58:05
+!-- Timestamp: 2025-04-09 02:24:48
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/win/documents/SigMacro/README.md
 !-- --- -->
@@ -27,6 +27,8 @@ This package allows users to create publication-ready figures using [SigmaPlot](
     <img src="templates/gif/box-box-box-box-box-box-box-box-box-box-box-box-box_cropped.gif" alt="Box Plot" width="150" />
     <img src="templates/gif/boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh_cropped.gif" alt="Horizontal Box Plot" width="150" />
     <img src="templates/gif/line-line-line-line-line-line-line-line-line-line-line-line-line_cropped.gif" alt="Line Plot" width="150" />
+    <img src="templates/gif/line_yerr-line_yerr-line_yerr-line_yerr-line_yerr-line_yerr-line_yerr-line_yerr-line_yerr-line_yerr-line_yerr-line_yerr-line_yerr_cropped.gif" alt="Line_Yerr Plot" width="150" />    
+    <img src="templates/gif/lines_y_many_x_cropped.gif" alt="Line_Yerr Plot" width="150" />        
     <img src="templates/gif/scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter_cropped.gif" alt="Scatter Plot" width="150" />
     <img src="templates/gif/polar-polar-polar-polar-polar-polar-polar-polar-polar-polar-polar-polar-polar_cropped.gif" alt="Polar Plot" width="150" />
     <img src="templates/gif/contour_cropped.gif" alt="Contour Plot" width="150" />
