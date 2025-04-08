@@ -1,6 +1,5 @@
 Option Explicit
 
-
 ' ========================================
 ' General Constants
 ' ========================================
@@ -112,7 +111,10 @@ Const GW_ID_PARAM_VALUES As Long = 1
 Const GW_ID_LABEL As Long = 2
 Const GW_ID_RGBA As Long = -1
 ' Colors
+' Const RGB_WHITE As Long = &H00c0c0c0&
 Const RGB_BLACK As Long = &H00000000
+Const RGB_LIGHT_GRAY As Long = &H00808080&
+Const RGB_DARK_GRAY As Long = &H00c0c0c0&
 Const RGB_NONE As Long = &Hff000000&
 
 ' ========================================
@@ -120,6 +122,11 @@ Const RGB_NONE As Long = &Hff000000&
 ' ========================================
 Const HEATMAP_SCATTER_ID_Z As Long = 5
 Const HEATMAP_SCATTER_ID_SYMBOL As Long = 7
+
+' ========================================
+' Violin
+' ========================================
+Const VIOLIN_BOX_WIDTH_PERC_x_10 As Long = 150
 
 ' ========================================
 ' Symbol Constants
@@ -170,6 +177,10 @@ Function _ReadRGB(columnIndex As Long) As Long
         ' Standard RGB (VBA default)
         _ReadRGB = RGB(r, g, b)
     End If
+End Function
+
+Function _GenRGB(r As Long, g As Long, b As Long) As Long
+    _GenRGB = RGB(r, g, b)
 End Function
 
 Function _ReadAlphaAsTransparency(columnIndex As Long) As Long
@@ -241,6 +252,8 @@ Function _ReadColumnMapping(plotType As String, startCol As Long, endCol As Long
     Const nTailCols As Long = 1
 
     nDataCols = (endCol - startCol + 1) - (nHeadCols + nTailCols)
+
+    ' DebugMsg(True, "start, end, n_head, n_tail: " & startCol & endCol & nHeadCols & nTailCols)
 
     ' Fixme; the third columns is symbol ...
     If plotType = "scatter_heatmap" Then
@@ -326,7 +339,7 @@ Function _CountPlot() As Long
 End Function
 
 Function _SelectPlot(plotIndex As Long) As Object
-    Const DEBUG_MODE As Boolean = True
+    Const DEBUG_MODE As Boolean = False
     ActiveDocument.NotebookItems(GRAPH_NAME).Open
     On Error Resume Next
     Dim plotObj As Object
@@ -366,7 +379,7 @@ Sub _ConvertNumToText(numericCol As Long, targetCol As Long)
     Set dataTable = ActiveDocument.NotebookItems(WORKSHEET_NAME).DataTable
 
     ' Find the first empty or last valid row
-    maxNRows = 16
+    maxNRows = 32
     nRows = 4
 
     For rowIndex = 0 To maxNRows
@@ -694,16 +707,18 @@ Sub ApplyColors()
                 _ApplyColorBar(iPlot, RGB_VAL, transparencyVal)
             Case "box", "boxh"
                 _ApplyColorBox(iPlot, RGB_VAL, transparencyVal)
-            Case "line"
-                _ApplyColorLine(iPlot, RGB_VAL, transparencyVal)
+            Case "box_violin", "boxh_violin"
+                _ApplyColorViolinBox(iPlot, RGB_VAL, transparencyVal)
+            Case "line", "line_yerr", "lines_y_many_x"
+               _ApplyColorLine(iPlot, RGB_VAL, transparencyVal)
+            Case "lines_y_many_x_violin"
+               _ApplyColorViolinLine(iPlot, RGB_VAL, transparencyVal)
             Case "polar"
                 _ApplyColorPolar(iPlot, RGB_VAL, transparencyVal)
             Case "scatter"
                 _ApplyColorScatter(iPlot, RGB_VAL, transparencyVal)
             Case "scatter_heatmap"
                 _ApplyColorScatter(iPlot, RGB_VAL, transparencyVal)
-            Case "violin", "violinh"
-                _ApplyColorViolin(iPlot, RGB_VAL, transparencyVal)
             Case "filled_Line"
                 _ApplyColorFilledLine(iPlot, RGB_VAL, transparencyVal)
             Case "3dscatter"
@@ -772,6 +787,31 @@ Sub _ApplyColorLine(iPlot As Long, RGB_VAL As Long, transparencyVal As Long)
     End With
 End Sub
 
+' _ApplyColorViolin
+Sub _ApplyColorViolinBox(iPlot As Long, RGB_VAL As Long, transparencyVal As Long)
+Const DEBUG_MODE As Boolean = False
+    DebugMsg(DEBUG_MODE, "_ApplyColorBox called")
+    _SelectPlot(iPlot)
+    With ActiveDocument.CurrentPageItem
+       .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_COLOR, _GenRGB(200,200,200))
+       .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_COLOR, _GenRGB(200,200,200))
+       .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_EDGECOLOR, RGB_BLACK)
+    End With
+End Sub
+
+Sub _ApplyColorViolinLine(iPlot As Long, RGB_VAL As Long, transparencyVal As Long)
+    Const DEBUG_MODE As Boolean = False
+    DebugMsg(DEBUG_MODE, "_ApplyColorLine called")
+    _SelectPlot(iPlot)
+    With ActiveDocument.CurrentPageItem
+       .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_COLOR, RGB_VAL)
+       .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_COLORCOL, -2)
+       .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_COLORREPEAT, 2)
+       .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_AREAFILLTYPE, 1)
+       .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_EDGECOLOR, RGB_BLACK)
+    End With
+End Sub
+
 Sub _ApplyColorPolar(iPlot As Long, RGB_VAL As Long, transparencyVal As Long)
     Const DEBUG_MODE As Boolean = False
     DebugMsg(DEBUG_MODE, "_ApplyColorPolar called")
@@ -805,27 +845,6 @@ Sub _ApplyColorScatter(iPlot As Long, RGB_VAL As Long, transparencyVal As Long)
     End With
 End Sub
 
-Sub _ApplyColorViolin(iPlot As Long, RGB_VAL As Long, transparencyVal As Long)
-    Const DEBUG_MODE As Boolean = False
-    DebugMsg(DEBUG_MODE, "_ApplyColorViolin called")
-    _SelectPlot(iPlot)
-    With ActiveDocument.CurrentPageItem
-        ' Line attributes
-        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SEA_COLOR, RGB_VAL)
-        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SEA_COLORCOL, -2)
-        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SOA_COLOR, RGB_VAL)
-        ' Symbol attributes
-        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_EDGECOLOR, RGB_VAL)
-        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_COLOR, RGB_VAL)
-        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_COLORREPEAT, 2)
-        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_COLOR_ALPHA, transparencyVal)
-        ' Solid attributes
-        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_COLOR, RGB_VAL)
-        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_EDGECOLOR, RGB_VAL)
-        ' Error bar attributes
-        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_ERRCOLOR, RGB_VAL)
-    End With
-End Sub
 
 Sub _ApplyColorFilledLine(iPlot As Long, RGB_VAL As Long, transparencyVal As Long)
     Const DEBUG_MODE As Boolean = False
@@ -994,7 +1013,7 @@ End Sub
 ' ' Scales
 ' ' ========================================
 ' Function _CvtScaleTypeFromVariantToLong(cellValue As Variant) As Long
-'     Const DEBUG_MODE As Boolean = True
+'     Const DEBUG_MODE As Boolean = False
 '     Dim scaleType As Long
 '     ' Convert string or number to appropriate scale type constant
 '     Select Case CStr(LCase(cellValue))
@@ -1022,20 +1041,20 @@ End Sub
 ' End Function
 
 ' Sub _SetScale(axisDim As Long, scaleTypeRow As Long)
-'     Const DEBUG_MODE As Boolean = True
+'     Const DEBUG_MODE As Boolean = False
 '     On Error Resume Next
 '     Dim scaleVariant As Variant
 '     Dim scaleLong As Long
 '     Dim axis As Object
 
-'     ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_GRAPH).NameObject.SetObjectCurrent    
+'     ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_GRAPH).NameObject.SetObjectCurrent
 
 '     scaleVariant = _ReadCell(GRAPH_PARAMS_COL, scaleTypeRow)
 '     DebugMsg(DEBUG_MODE, "scaleVariant: " & scaleVariant)
-    
+
 '     scaleLong = _CvtScaleTypeFromVariantToLong(scaleVariant)
 '     DebugMsg(DEBUG_MODE, "scaleLong: " & scaleLong)
-    
+
 '     Set axis = ActiveDocument.CurrentPageItem.GraphPages(0).Graphs(0).Axes(axisDim)
 '     axis.SetAttribute(SAA_TYPE, scaleLong)
 
@@ -1161,38 +1180,12 @@ Sub SetTickPositions()
     _SetYTickPositions()
 End Sub
 
-' ' ========================================
-' ' Tick Positions
-' ' ========================================
-' Sub _SetTickPositions(axisDim As Long, ticksCol As Long)
-'     Const DEBUG_MODE As Boolean = True
-'     Dim ticksFirstValue As Variant
-'     ticksFirstValue = _ReadCell(ticksCol, 0)
-'     If Not (LCase(CStr(ticksFirstValue)) = "none" Or _
-'             LCase(CStr(ticksFirstValue)) = "auto" Or _
-'             IsEmpty(ticksFirstValue)) Then
-'         ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_AXIS).NameObject.SetObjectCurrent()
-'         ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_SELECTDIM, axisDim)
-'         ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SAA_TICCOLUSED, 1)
-'         ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, SAA_TICCOL, ticksCol)
-'     Else
-'         DebugMsg(DEBUG_MODE, "Skipping custom ticks for axis " & axisDim)
-'     End If
-' End Sub
-
-' Sub SetTickPositions()
-'     Const DEBUG_MODE As Boolean = False
-'     DebugMsg(DEBUG_MODE, "Setting ticks...")
-'     _SetTickPositions(AXIS_X, X_TICKS_COL)
-'     _SetTickPositions(AXIS_Y, Y_TICKS_COL)
-' End Sub
-
 ' ========================================
 ' Tick Sizes
 ' ========================================
 Sub _SetTickSize(axisDim As Long)
     ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_AXIS).NameObject.SetObjectCurrent()
-    With ActiveDocument.CurrentPageItem 
+    With ActiveDocument.CurrentPageItem
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_SELECTDIM, axisDim)
         .SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_SELECTLINE, TICK_DIM_H)
         .SetCurrentObjectAttribute(GPM_SETAXISATTR, SEA_THICKNESS, TICK_THICKNESS_00008)
@@ -1278,6 +1271,14 @@ Sub HandleSpecialCases()
                 ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, _
                                                                          SEA_THICKNESS, _
                                                                          POLAR_LINE_THICKNESS)
+           Case "box_violin"
+                ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, _
+                                                                         SLA_BARTHICKNESS, _
+                                                                         VIOLIN_BOX_WIDTH_PERC_x_10)
+           Case "lines_y_many_x_violin"
+              ' With ActiveDocument.CurrentPageItem
+              '   .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SEA_LINETYPE, LINETYPE_NONE)
+              ' End With
         End Select
     Next iPlot
 End Sub
@@ -1318,7 +1319,7 @@ Sub SetTextAsSymbol(plotIndex As Long)
     ' Apply text symbol settings in a specific order
     DebugMsg(DEBUG_MODE, "Applying text symbol settings")
     DebugMsg(DEBUG_MODE, "textCol: " & textCol)
-    
+
     ActiveDocument.NotebookItems(GRAPH_NAME).Open()
 
     ' Configure the plot to use text symbols
@@ -1326,8 +1327,8 @@ Sub SetTextAsSymbol(plotIndex As Long)
 
     With ActiveDocument.CurrentPageItem
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_OPTIONS, &H00000201&)
-        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_SIZE, 64) ' I would like to 0.064 in
-        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_SIZEREPEAT, 4)       
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_SIZE, 64)
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_SIZEREPEAT, 4)
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_SHAPE, textCol)
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_SHAPEREPEAT, 4)
     End With
