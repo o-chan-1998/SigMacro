@@ -1,5 +1,7 @@
 Option Explicit
 
+
+
 ' ========================================
 ' General Constants
 ' ========================================
@@ -111,7 +113,7 @@ Const GW_ID_PARAM_VALUES As Long = 1
 Const GW_ID_LABEL As Long = 2
 Const GW_ID_RGBA As Long = -1
 ' Colors
-' Const RGB_WHITE As Long = &H00c0c0c0&
+Const RGB_WHITE As Long = &H00c0c0c0&
 Const RGB_BLACK As Long = &H00000000
 Const RGB_LIGHT_GRAY As Long = &H00808080&
 Const RGB_DARK_GRAY As Long = &H00c0c0c0&
@@ -146,6 +148,30 @@ Sub DebugType(DEBUG_MODE As Boolean, item)
     If GLOBAL_DEBUG_MODE Or DEBUG_MODE Then
         MsgBox "Type: " & TypeName(item)
     End If
+End Sub
+
+Sub Sleep(milliseconds As Long)
+    Dim startTime As Double
+    Dim endTime As Double
+
+    ' Get start time
+    startTime = Timer
+
+    ' Calculate end time
+    endTime = startTime + (milliseconds / 1000)
+
+    ' Wait while processing events
+    Do
+        DoEvents
+        ' Check if we've reached the delay time
+        If Timer >= endTime Then
+            Exit Do
+        ElseIf Timer < startTime Then
+            ' Handle midnight rollover
+            endTime = endTime - 86400
+            startTime = 0
+        End If
+    Loop
 End Sub
 
 ' Reader
@@ -338,7 +364,7 @@ Function _CountPlot() As Long
     DebugMsg(DEBUG_MODE, "Number of plots: " & _CountPlot)
 End Function
 
-Function _SelectPlot(plotIndex As Long) As Object
+Sub _SelectPlot(plotIndex As Long)
     Const DEBUG_MODE As Boolean = False
     ActiveDocument.NotebookItems(GRAPH_NAME).Open
     On Error Resume Next
@@ -353,8 +379,8 @@ Function _SelectPlot(plotIndex As Long) As Object
     Else
         DebugMsg(DEBUG_MODE, "Plot object not found in _SelectPlot for index " & plotIndex)
     End If
-    _SelectPlot = plotObj
-End Function
+    ' _SelectPlot = plotObj
+End Sub
 
 Function _MmToSigmaPlotUnit(mm As Long)
     Const DEBUG_MODE As Boolean = False
@@ -707,23 +733,37 @@ Sub ApplyColors()
                 _ApplyColorBar(iPlot, RGB_VAL, transparencyVal)
             Case "box", "boxh"
                 _ApplyColorBox(iPlot, RGB_VAL, transparencyVal)
-            Case "box_violin", "boxh_violin"
+            Case "line", "line_yerr", "lines_y_many_x", "lines_x_many_y"
+                _ApplyColorLine(iPlot, RGB_VAL, transparencyVal)
+
+               ' Violine
+            Case "box_violin", "box_violinh"
                 _ApplyColorViolinBox(iPlot, RGB_VAL, transparencyVal)
-            Case "line", "line_yerr", "lines_y_many_x"
-               _ApplyColorLine(iPlot, RGB_VAL, transparencyVal)
-            Case "lines_y_many_x_violin"
-               _ApplyColorViolinLine(iPlot, RGB_VAL, transparencyVal)
+            Case "lines_y_many_x_violin", "lines_x_many_y_violinh"
+                _ApplyColorViolinLine(iPlot, RGB_VAL, transparencyVal)
+
             Case "polar"
                 _ApplyColorPolar(iPlot, RGB_VAL, transparencyVal)
             Case "scatter"
                 _ApplyColorScatter(iPlot, RGB_VAL, transparencyVal)
             Case "scatter_heatmap"
                 _ApplyColorScatter(iPlot, RGB_VAL, transparencyVal)
-            Case "filled_Line"
-                _ApplyColorFilledLine(iPlot, RGB_VAL, transparencyVal)
-            Case "3dscatter"
+
+            ' == Start Filled Line Handling ==
+           Case "filled_line_uu"
+                ' _ApplyColorArea(iPlot, RGB_VAL, transparencyVal)
+
+               _ApplyColorFilledLineUpper(iPlot, RGB_VAL, transparencyVal)
+           Case "filled_line_mm"
+                ' _ApplyColorArea(iPlot, RGB_VAL, transparencyVal)
+               _ApplyColorFilledLineMiddle(iPlot, RGB_VAL, transparencyVal)
+           Case "filled_line_ll"
+                ' _ApplyColorArea(iPlot, RGB_VAL, transparencyVal)
+               _ApplyColorFilledLineLower(iPlot, RGB_VAL, transparencyVal)
+            ' == End Filled Line Handling ==
+           Case "3dscatter"
                 _ApplyColor3DScatter(iPlot, RGB_VAL, transparencyVal)
-            Case "contour", "heatmap"
+           Case "contour", "heatmap"
                 _ApplyColorFake(iPlot, RGB_VAL, transparencyVal)
         End Select
     Next iPlot
@@ -787,10 +827,62 @@ Sub _ApplyColorLine(iPlot As Long, RGB_VAL As Long, transparencyVal As Long)
     End With
 End Sub
 
+Sub _ApplyColorFilledLineUpper(iPlot As Long, RGB_VAL As Long, transparencyVal As Long)
+    Const DEBUG_MODE As Boolean = False
+    DebugMsg(DEBUG_MODE, "_ApplyColorFilledLineUpper called")
+    _SelectPlot(iPlot)
+    With ActiveDocument.CurrentPageItem
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SEA_LINETYPE, LINETYPE_NONE)           
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_EDGECOLOR, &H00000000&)
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_EDGECOLORREPEAT, 2)
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, &H00000362&, 0)
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_COLOR, RGB_VAL)
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_COLORCOL, -2)
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_COLORREPEAT, 2)
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_AREAFILLTYPE, AREAFILLTYPE_VERTICAL)
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_EDGECOLOR, &H00000000&)
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, &H000008a7&, 0)
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, &H000008a8&, 0)
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_COLOR_ALPHA, transparencyVal)
+    End With
+End Sub
+
+Sub _ApplyColorFilledLineMiddle(iPlot As Long, RGB_VAL As Long, transparencyVal As Long)
+    Const DEBUG_MODE As Boolean = False
+    DebugMsg(DEBUG_MODE, "_ApplyColorFilledLineMiddle called")
+    _SelectPlot(iPlot)
+    With ActiveDocument.CurrentPageItem
+        ' Line
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SEA_COLOR, RGB_VAL)
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SEA_COLORCOL, -2)
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SOA_COLOR, RGB_VAL)
+    End With
+End Sub
+
+Sub _ApplyColorFilledLineLower(iPlot As Long, RGB_VAL As Long, transparencyVal As Long)
+    Const DEBUG_MODE As Boolean = False
+    DebugMsg(DEBUG_MODE, "_ApplyColorFilledLineLower called")
+    _SelectPlot(iPlot)
+    With ActiveDocument.CurrentPageItem    
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SEA_LINETYPE, LINETYPE_NONE)    
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_EDGECOLOR, &H00000000&)
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_EDGECOLORREPEAT, 2)
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, &H00000362&, 0)
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_COLOR, RGB_VAL)
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_COLORCOL, -2)
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_COLORREPEAT, 2)
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_AREAFILLTYPE, AREAFILLTYPE_VERTICAL)
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_EDGECOLOR, &H00000000&)
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, &H000008a7&, 0)
+        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, &H000008a8&, 0)       
+    End With
+End Sub
+
+
 ' _ApplyColorViolin
 Sub _ApplyColorViolinBox(iPlot As Long, RGB_VAL As Long, transparencyVal As Long)
-Const DEBUG_MODE As Boolean = False
-    DebugMsg(DEBUG_MODE, "_ApplyColorBox called")
+    Const DEBUG_MODE As Boolean = False
+    DebugMsg(DEBUG_MODE, "_ApplyColorViolinBox called")
     _SelectPlot(iPlot)
     With ActiveDocument.CurrentPageItem
        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_COLOR, _GenRGB(200,200,200))
@@ -811,6 +903,35 @@ Sub _ApplyColorViolinLine(iPlot As Long, RGB_VAL As Long, transparencyVal As Lon
        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_EDGECOLOR, RGB_BLACK)
     End With
 End Sub
+
+' _ApplyColorFilledLine
+Sub _ApplyColorFilledLineFill(iPlot As Long, RGB_VAL As Long, transparencyVal As Long)
+Const DEBUG_MODE As Boolean = False
+    DebugMsg(DEBUG_MODE, "_ApplyColorFilledLineFill called")
+    _SelectPlot(iPlot)
+    With ActiveDocument.CurrentPageItem
+       .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_COLOR, RGB_VAL)
+       .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_COLORCOL, -2)
+       .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_COLORREPEAT, 2)
+       .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_AREAFILLTYPE, 1)
+       .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_EDGECOLOR, RGB_BLACK)
+    End With
+End Sub
+
+' Sub _ApplyColorFilledLineLine(iPlot As Long, RGB_VAL As Long, transparencyVal As Long)
+'     Const DEBUG_MODE As Boolean = False
+'     DebugMsg(DEBUG_MODE, "_ApplyColorLine called")
+'     _SelectPlot(iPlot)
+'     With ActiveDocument.CurrentPageItem
+'        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_COLOR, RGB_VAL)
+'        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_COLORCOL, -2)
+'        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_COLORREPEAT, 2)
+'        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_AREAFILLTYPE, 1)
+'        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_EDGECOLOR, RGB_BLACK)
+'     End With
+' End Sub
+
+
 
 Sub _ApplyColorPolar(iPlot As Long, RGB_VAL As Long, transparencyVal As Long)
     Const DEBUG_MODE As Boolean = False
@@ -845,31 +966,6 @@ Sub _ApplyColorScatter(iPlot As Long, RGB_VAL As Long, transparencyVal As Long)
     End With
 End Sub
 
-
-Sub _ApplyColorFilledLine(iPlot As Long, RGB_VAL As Long, transparencyVal As Long)
-    Const DEBUG_MODE As Boolean = False
-    DebugMsg(DEBUG_MODE, "_ApplyColorFilledLine called")
-    _SelectPlot(iPlot)
-    With ActiveDocument.CurrentPageItem
-        ' Line attributes
-        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SEA_COLOR, RGB_VAL)
-        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SEA_COLORCOL, -2)
-        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SOA_COLOR, RGB_VAL)
-
-        ' Symbol attributes
-        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_EDGECOLOR, RGB_VAL)
-        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_COLOR, RGB_VAL)
-        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_COLORREPEAT, 2)
-        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_COLOR_ALPHA, transparencyVal)
-
-        ' Solid attributes
-        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_COLOR, RGB_VAL)
-        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_EDGECOLOR, RGB_VAL)
-
-        ' Error bar attributes
-        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_ERRCOLOR, RGB_VAL)
-    End With
-End Sub
 
 Sub _ApplyColor3DScatter(iPlot As Long, RGB_VAL As Long, transparencyVal As Long)
     Const DEBUG_MODE As Boolean = False
@@ -1323,7 +1419,8 @@ Sub SetTextAsSymbol(plotIndex As Long)
     ActiveDocument.NotebookItems(GRAPH_NAME).Open()
 
     ' Configure the plot to use text symbols
-    Set plotObj = _SelectPlot(plotIndex)
+    ' Set plotObj = _SelectPlot(plotIndex)
+    _SelectPlot(plotIndex)
 
     With ActiveDocument.CurrentPageItem
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_OPTIONS, &H00000201&)
