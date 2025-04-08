@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-04-05 06:08:05 (ywatanabe)"
+# Timestamp: "2025-04-09 02:12:46 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/demo/_gen_jnb.py
 # ----------------------------------------
 import os
@@ -151,7 +151,7 @@ class JNBGenerator:
         self.graphitem.export_as_tif(path=self.path_tif, keep_orig=False)
         self.graphitem.export_as_gif(path=self.path_gif, keep_orig=False)
         self.save_notebook()
-        ps_con_close_all()
+        # ps_con_close_all()
         return self.path_jnb
 
     def run(self):

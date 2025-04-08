@@ -35,7 +35,7 @@ def gen_data(plot_type, n_plots=len(COLORS)):
         "violin": _gen_data_violin,
         "filled_line": _gen_data_filled_line,
         "contour": _gen_data_contour,
-        "conf_mat": _gen_data_conf_mat,
+        "heatmap": _gen_data_heatmap,
     }[plot_type]
     return gen_data_func(n_plots)
 
@@ -55,7 +55,7 @@ def _gen_data_contour(*args, **kwargs):
     pass
 
 
-def _gen_data_conf_mat(*args, **kwargs):
+def _gen_data_heatmap(*args, **kwargs):
     pass
 
 

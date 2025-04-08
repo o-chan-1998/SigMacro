@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-04-05 02:15:54 (ywatanabe)"
+# Timestamp: "2025-04-09 05:47:22 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/const/_PLOT_TYPES.py
 # ----------------------------------------
 import os
@@ -17,6 +17,9 @@ PLOT_TYPES = [
         "box",
         "boxh",
         "line",
+        "line_yerr",
+        "lines_y_many_x",
+        "lines_x_many_y",
         "polar",
         "scatter",
         "violin",
@@ -24,7 +27,7 @@ PLOT_TYPES = [
         # Special
         "filled_line",
         "contour",
-        "conf_mat",
+        "heatmap",
     ]
 
 # EOF

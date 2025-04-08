@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-04-05 05:23:52 (ywatanabe)"
+# Timestamp: "2025-04-07 23:28:07 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/data/_import_data.py
 # ----------------------------------------
 import os
@@ -53,6 +53,8 @@ def import_data(worksheet_item, df=None, csv=None, left=0, top=0):
         # Remove NaN for data
         col = col.replace("NONE_STR", "None")
         col = col[~col.isna()]
+        if column_name == "symbol":
+            col = col.astype(str)
         datatable_obj.PutData(col.tolist(), left+ii, top)
 
     # Header

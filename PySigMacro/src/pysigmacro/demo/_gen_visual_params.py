@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-04-05 06:36:41 (ywatanabe)"
+# Timestamp: "2025-04-09 05:46:49 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/demo/_gen_visual_params.py
 # ----------------------------------------
 import os
@@ -31,14 +31,17 @@ def gen_visual_params(plot_type, n_cols=8, **kwargs):
         "box": _gen_demo_visual_params_box(),
         "boxh": _gen_demo_visual_params_boxh(),
         "line": _gen_demo_visual_params_line(),
+        "line_yerr": _gen_demo_visual_params_line_yerr(),
         "polar": _gen_demo_visual_params_polar(),
         "scatter": _gen_demo_visual_params_scatter(),
+        "heatmap": _gen_demo_visual_params_heatmap(),
+        "lines_y_many_x": _gen_demo_visual_params_lines_y_many_x(),
+        "lines_x_many_y": _gen_demo_visual_params_lines_x_many_y(),
         "violin": _gen_demo_visual_params_violin(),
+        # not implemented yet
         "violinh": _gen_demo_visual_params_violinh(),
-        # Special
         "filled_line": _gen_demo_visual_params_filled_line(),
         "contour": _gen_demo_visual_params_contour(),
-        "conf_mat": _gen_demo_visual_params_conf_mat(),
     }[plot_type]
     out_dict.update(PLOT_SPECIFIC_PARAMS)
 
@@ -50,7 +53,7 @@ def gen_visual_params(plot_type, n_cols=8, **kwargs):
     yticks = dict(yticks=out_dict.pop("yticks"))
 
     params_df = pd.DataFrame(pd.Series(out_dict)).reset_index()
-    params_df.columns = ["visual parameter", "value"]
+    params_df.columns = ["visual parameter label", "visual parameter value"]
 
     # NaN padding
     params_df = create_padded_df(params_df, xticks, yticks)
@@ -69,15 +72,15 @@ def _gen_demo_visual_params_bar():
         "xrot": 45,
         "xmm": 40,
         "xscale": "category",
-        "xmin": "NONE_STR",
-        "xmax": "NONE_STR",
+        "xmin": "auto",
+        "xmax": "auto",
         "xticks": ["auto"],
         "ylabel": "Y-Axis Label",
         "yrot": 0,
         "ymm": 40 * 0.7,
         "yscale": "linear",
-        "ymin": "NONE_STR",
-        "ymax": "NONE_STR",
+        "ymin": 0,
+        "ymax": "auto",
         "yticks": ["auto"],
     }
 
@@ -89,14 +92,14 @@ def _gen_demo_visual_params_barh():
         "xmm": 40,
         "xscale": "linear",
         "xmin": 0,
-        "xmax": 21,
+        "xmax": "auto",
         "xticks": ["auto"],
         "ylabel": "Y-Axis Label",
         "yrot": 0,
         "ymm": 40 * 0.7,
         "yscale": "category",
-        "ymin": 0,
-        "ymax": "NONE_STR",
+        "ymin": "auto",
+        "ymax": "auto",
         "yticks": ["auto"],
     }
 
@@ -126,8 +129,8 @@ def _gen_demo_visual_params_box():
         "xrot": 90,
         "xmm": 40,
         "xscale": "category",
-        "xmin": 0,
-        "xmax": "NONE_STR",
+        "xmin": "auto",
+        "xmax": "auto",
         "xticks": ["auto"],
         "ylabel": "Y-Axis Label",
         "yrot": 0,
@@ -145,18 +148,17 @@ def _gen_demo_visual_params_boxh():
         "xrot": 0,
         "xmm": 40,
         "xscale": "linear",
-        "xmin": 0,
-        "xmax": 88,
+        "xmin": "auto",
+        "xmax": "auto",
         "xticks": ["auto"],
         "ylabel": "Y-Axis Label",
         "yrot": 0,
         "ymm": 40 * 0.7,
         "yscale": "category",
-        "ymin": "NONE_STR",
-        "ymax": "NONE_STR",
+        "ymin": "auto",
+        "ymax": "auto",
         "yticks": ["auto"],
     }
-
 
 def _gen_demo_visual_params_line():
     return {
@@ -171,8 +173,64 @@ def _gen_demo_visual_params_line():
         "yrot": 0,
         "ymm": 40 * 0.7,
         "yscale": "linear",
-        "ymin": 0,
-        "ymax": 16,
+        "ymin": "auto",
+        "ymax": "auto",
+        "yticks": ["auto"],
+    }
+
+
+def _gen_demo_visual_params_line_yerr():
+    return {
+        "xlabel": "X-Axis Label",
+        "xrot": 0,
+        "xmm": 40,
+        "xscale": "linear",
+        "xmin": 0,
+        "xmax": 11,
+        "xticks": ["auto"],
+        "ylabel": "Y-Axis Label",
+        "yrot": 0,
+        "ymm": 40 * 0.7,
+        "yscale": "linear",
+        "ymin": "auto",
+        "ymax": "auto",
+        "yticks": ["auto"],
+    }
+
+
+def _gen_demo_visual_params_lines_y_many_x():
+    return {
+        "xlabel": "X-Axis Label",
+        "xrot": 0,
+        "xmm": 40,
+        "xscale": "linear",
+        "xmin": "auto",
+        "xmax": "auto",
+        "xticks": ["auto"],
+        "ylabel": "Y-Axis Label",
+        "yrot": 0,
+        "ymm": 40 * 0.7,
+        "yscale": "linear",
+        "ymin": "auto",
+        "ymax": "auto",
+        "yticks": ["auto"],
+    }
+
+def _gen_demo_visual_params_lines_x_many_y():
+    return {
+        "xlabel": "X-Axis Label",
+        "xrot": 0,
+        "xmm": 40,
+        "xscale": "linear",
+        "xmin": "auto",
+        "xmax": "auto",
+        "xticks": ["auto"],
+        "ylabel": "Y-Axis Label",
+        "yrot": 0,
+        "ymm": 40 * 0.7,
+        "yscale": "linear",
+        "ymin": "auto",
+        "ymax": "auto",
         "yticks": ["auto"],
     }
 
@@ -190,8 +248,8 @@ def _gen_demo_visual_params_polar():
         "yrot": 0,
         "ymm": 40,
         "yscale": "linear",
-        "ymin": "NONE_STR",
-        "ymax": "NONE_STR",
+        "ymin": "auto",
+        "ymax": "auto",
         "yticks": ["auto"],
     }
 
@@ -202,15 +260,15 @@ def _gen_demo_visual_params_scatter():
         "xrot": 0,
         "xmm": 40,
         "xscale": "linear",
-        "xmin": 0,
-        "xmax": 21,
+        "xmin": "auto",
+        "xmax": "auto",
         "xticks": ["auto"],
         "ylabel": "Y-Axis Label",
         "yrot": 0,
         "ymm": 40 * 0.7,
         "yscale": "linear",
-        "ymin": 0,
-        "ymax": 21,
+        "ymin": "auto",
+        "ymax": "auto",
         "yticks": ["auto"],
     }
 
@@ -220,18 +278,19 @@ def _gen_demo_visual_params_violin():
         "xlabel": "X-Axis Label",
         "xrot": 0,
         "xmm": 40,
-        "xscale": "category",
-        "xmin": 0,
-        "xmax": "NONE_STR",
+        "xscale": "linear",
+        "xmin": "auto",
+        "xmax": "auto",
         "xticks": ["auto"],
         "ylabel": "Y-Axis Label",
         "yrot": 0,
         "ymm": 40 * 0.7,
         "yscale": "linear",
-        "ymin": 0,
-        "ymax": 21,
+        "ymin": "auto",
+        "ymax": "auto",
         "yticks": ["auto"],
     }
+
 
 def _gen_demo_visual_params_violinh():
     return {
@@ -239,15 +298,15 @@ def _gen_demo_visual_params_violinh():
         "xrot": 0,
         "xmm": 40,
         "xscale": "linear",
-        "xmin": 0,
-        "xmax": 21,
+        "xmin": "auto",
+        "xmax": "auto",
         "xticks": ["auto"],
         "ylabel": "Y-Axis Label",
         "yrot": 0,
         "ymm": 40 * 0.7,
         "yscale": "category",
         "ymin": 0,
-        "ymax": "NONE_STR",
+        "ymax": "auto",
         "yticks": ["auto"],
     }
 
@@ -256,21 +315,21 @@ def _gen_demo_visual_params_violinh():
 # ------------------------------
 
 
-def _gen_demo_visual_params_conf_mat():
+def _gen_demo_visual_params_heatmap():
     return {
         "xlabel": "X-Axis Label",
         "xrot": 0,
         "xmm": 40,
-        "xscale": "category",
-        "xmin": "NONE_STR",
-        "xmax": "NONE_STR",
+        "xscale": "linear",
+        "xmin": "auto",
+        "xmax": "auto",
         "xticks": ["auto"],
         "ylabel": "Y-Axis Label",
         "yrot": 0,
-        "ymm": 40 * 0.7,
-        "yscale": "category",
-        "ymin": ["NONE_STR"],
-        "ymax": ["NONE_STR"],
+        "ymm": 40,
+        "yscale": "linear",
+        "ymin": "auto",
+        "ymax": "auto",
         "yticks": ["auto"],
     }
 
@@ -280,16 +339,16 @@ def _gen_demo_visual_params_contour():
         "xlabel": "X-Axis Label",
         "xrot": 0,
         "xmm": 40,
-        "xscale": "category",
-        "xmin": "NONE_STR",
-        "xmax": "NONE_STR",
+        "xscale": "linear",
+        "xmin": "auto",
+        "xmax": "auto",
         "xticks": ["auto"],
         "ylabel": "Y-Axis Label",
         "yrot": 0,
-        "ymm": 40 * 0.7,
-        "yscale": "category",
-        "ymin": ["NONE_STR"],
-        "ymax": ["NONE_STR"],
+        "ymm": 40,
+        "yscale": "linear",
+        "ymin": "auto",
+        "ymax": "auto",
         "yticks": ["auto"],
     }
 
@@ -300,15 +359,15 @@ def _gen_demo_visual_params_filled_line():
         "xrot": 0,
         "xmm": 40,
         "xscale": "linear",
-        "xmin": 0,
-        "xmax": 21,
+        "xmin": "auto",
+        "xmax": "auto",
         "xticks": ["auto"],
         "ylabel": "Y-Axis Label",
         "yrot": 0,
         "ymm": 40 * 0.7,
         "yscale": "linear",
-        "ymin": 0,
-        "ymax": 21,
+        "ymin": "auto",
+        "ymax": "auto",
         "yticks": ["auto"],
     }
 

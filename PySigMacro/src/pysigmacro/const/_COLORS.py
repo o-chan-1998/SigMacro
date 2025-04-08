@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-03-29 19:25:42 (ywatanabe)"
-# File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/const/_COLOLR.py
+# Timestamp: "2025-04-07 12:28:48 (ywatanabe)"
+# File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/const/_COLORS.py
 # ----------------------------------------
 import os
 __FILE__ = (
-    "/home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/const/_COLOLR.py"
+    "/home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/const/_COLORS.py"
 )
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
@@ -29,5 +29,7 @@ BGR = {
 }
 BGRA = {k: [b, g, r, 1.0] for k, (b, g, r) in BGR.items()}
 COLORS = list(BGR.keys())
+
+BGRA_FAKE = ["NONE_STR", "NONE_STR", "NONE_STR", "NONE_STR"]
 
 # EOF

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-04-01 14:44:20 (ywatanabe)"
+# Timestamp: "2025-04-07 19:47:56 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/utils/_calculate_nice_ticks.py
 # ----------------------------------------
 import os
