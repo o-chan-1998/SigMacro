@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-04-09 15:08:59
+!-- Timestamp: 2025-04-09 15:12:00
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/win/documents/SigMacro/README.md
 !-- --- -->
@@ -33,14 +33,14 @@ This package allows users to create publication-ready figures using [SigmaPlot](
 ## How does it work?
 
 #### In SigmaPlot:
-1. [Pre-defined all-in-one macro](./vba/ALL-IN-ONE-MACRO.vba) is embedded in a [SigmaPlot template file](./templates/jnb/template.JNB)) for:
+1. [Pre-defined all-in-one macro](./vba/ALL-IN-ONE-MACRO.vba) is embedded in a [SigmaPlot template file](./templates/jnb/template.JNB) for:
    - Reading graph parameters
    - Plotting data
 
 #### From Python:
 1. Sending plotting data and graph visualization parameters to SigmaPlot
 2. Calling SigmaPlot macros
-3. Saving figures & cropping margins
+3. Saving (cropped) figures
 
 In other wards, [csv files in these formats](./templates/csv) can be rendered by the [all-in-one-macro]((./vba/ALL-IN-ONE-MACRO.vba)). For more details, please see refer to [the entry script](./PySigMacro/examples/demo.py) for the above demonstrations 
 
