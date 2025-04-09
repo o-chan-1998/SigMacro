@@ -744,7 +744,7 @@ Sub ApplyColors()
 
             Case "polar"
                 _ApplyColorPolar(iPlot, RGB_VAL, transparencyVal)
-            Case "scatter"
+            Case "scatter", "jitter"
                 _ApplyColorScatter(iPlot, RGB_VAL, transparencyVal)
             Case "scatter_heatmap"
                 _ApplyColorScatter(iPlot, RGB_VAL, transparencyVal)

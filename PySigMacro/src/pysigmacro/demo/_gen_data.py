@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-04-09 13:47:43 (ywatanabe)"
+# Timestamp: "2025-04-09 14:04:35 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/demo/_gen_data.py
 # ----------------------------------------
 import os
@@ -37,6 +37,7 @@ def gen_data(plot_types):
         try:
             gen_single_data_func = {
                 "scatter": _gen_single_data_scatter,
+                "jitter": _gen_single_data_jitter,
                 "line": _gen_single_data_line,
                 "line_yerr": _gen_single_data_line_yerr,
                 "lines_y_many_x": _gen_single_data_lines_y_many_x,
@@ -408,6 +409,53 @@ def _gen_single_data_histogram(
     return dict(
         x=bin_centers,
         y=hist,
+        bgra=bgra_color,
+    )
+
+def _gen_single_data_jitter(i_plot, jitter_width=0.2, alpha=0.8):
+    """Generate data for a jitter plot (scatter plot with categorical x-axis).
+
+    Args:
+        i_plot: Index for plot variation
+        jitter_width: Width of the jitter (scatter spread) around each category
+        alpha: Transparency of points
+
+    Returns:
+        Dictionary with data for a scatter plot with jittered x positions
+    """
+    # Random seed for reproducibility
+    np.random.seed(42 + i_plot)
+
+    # Points per category
+    points_per_category = 20
+
+    # Generate data for just one category
+    category = f"Category {i_plot+1}"
+
+    # Base position for this category
+    x_position = i_plot + 1
+
+    # Generate data points with characteristics based on i_plot
+    base_mean = 5 + (i_plot * 2)
+    base_std = 1.0 + (0.2 * i_plot)
+
+    # Generate y values from normal distribution
+    y_values = np.random.normal(base_mean, base_std, points_per_category)
+
+    # Create jittered x positions around the category position
+    x_positions = np.full(points_per_category, x_position)
+    jitter = np.random.uniform(-jitter_width, jitter_width, points_per_category)
+    jittered_positions = x_positions + jitter
+
+    # Get color based on index
+    color_name = COLORS[i_plot % len(COLORS)]
+    bgra_color = BGRA[color_name].copy()
+    bgra_color[-1] = alpha
+
+    # Return data with jittered x positions and category mapping
+    return dict(
+        x=jittered_positions,       # Numerical positions with jitter
+        y=y_values,
         bgra=bgra_color,
     )
 

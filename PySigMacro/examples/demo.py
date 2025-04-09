@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-04-09 13:38:28 (ywatanabe)"
+# Timestamp: "2025-04-09 13:59:02 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/examples/demo.py
 # ----------------------------------------
 import os
@@ -43,8 +43,9 @@ def run_demo():
             # "heatmap",
             # "violin",
             # "filled_line",
+            # "histogram",
             # Not Implemented from here
-            "histogram",
+            "jitter"
         ]:
             n_plots = define_n_plots(plot_type)
             plot_types = [plot_type for _ in range(n_plots)]
