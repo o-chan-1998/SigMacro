@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-04-09 15:07:45
+!-- Timestamp: 2025-04-09 15:08:59
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/win/documents/SigMacro/README.md
 !-- --- -->
@@ -33,7 +33,7 @@ This package allows users to create publication-ready figures using [SigmaPlot](
 ## How does it work?
 
 #### In SigmaPlot:
-1. [Pre-defined all-in-one macro](./vba/ALL-IN-ONE-MACRO.vba) are embedded in a [SigmaPlot template file](./templates/jnb/template.JNB)) for:
+1. [Pre-defined all-in-one macro](./vba/ALL-IN-ONE-MACRO.vba) is embedded in a [SigmaPlot template file](./templates/jnb/template.JNB)) for:
    - Reading graph parameters
    - Plotting data
 
