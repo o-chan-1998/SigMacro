@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-04-09 08:09:43
+!-- Timestamp: 2025-04-09 13:49:50
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/win/documents/SigMacro/README.md
 !-- --- -->
@@ -23,7 +23,8 @@ This package allows users to create publication-ready figures using [SigmaPlot](
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 10px;">
     <img src="templates/gif/area-area-area-area-area-area-area-area-area-area-area-area-area_cropped.gif" alt="Area Plot" width="150" />
     <img src="templates/gif/bar-bar-bar-bar-bar-bar-bar-bar-bar-bar-bar-bar-bar_cropped.gif" alt="Bar Plot" width="150" />
-    <img src="templates/gif/barh-barh-barh-barh-barh-barh-barh-barh-barh-barh-barh-barh-barh_cropped.gif" alt="Horizontal Bar Plot" width="150" />
+    <img src="templates/gif/histogram-histogram-histogram_cropped.gif" alt="Histogram Plot" width="150" />    
+    <img src="templates/gif/barh-barh-barh-barh-barh-barh-barh-barh-barh-barh-barh-barh-barh_cropped.gif" alt="Horizontal Histogram Plot" width="150" />
     <img src="templates/gif/box-box-box-box-box-box-box-box-box-box-box-box-box_cropped.gif" alt="Box Plot" width="150" />
     <img src="templates/gif/boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh_cropped.gif" alt="Horizontal Box Plot" width="150" />
     <img src="templates/gif/line-line-line-line-line-line-line-line-line-line-line-line-line_cropped.gif" alt="Line Plot" width="150" />
@@ -81,11 +82,7 @@ python.exe ./PySigMacro/examples/demo.py
 ```
 
 ## TODO
-- [ ] Histgram (= binning + bar)
-
 - [ ] Jitter (= area + line + area)
-
-- [ ] Filled Line (= area + line + area)
 
 - [ ] Simple interface like below
 

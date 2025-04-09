@@ -131,6 +131,11 @@ Const HEATMAP_SCATTER_ID_SYMBOL As Long = 7
 Const VIOLIN_BOX_WIDTH_PERC_x_10 As Long = 150
 
 ' ========================================
+' Histogram
+' ========================================
+Const HISTOGRAM_BAR_WIDTH_PERC_x_10 As Long = 1000
+
+' ========================================
 ' Symbol Constants
 ' ========================================
 Const SSA_SHAPE As Long = &H00000706&
@@ -279,9 +284,6 @@ Function _ReadColumnMapping(plotType As String, startCol As Long, endCol As Long
 
     nDataCols = (endCol - startCol + 1) - (nHeadCols + nTailCols)
 
-    ' DebugMsg(True, "start, end, n_head, n_tail: " & startCol & endCol & nHeadCols & nTailCols)
-
-    ' Fixme; the third columns is symbol ...
     If plotType = "scatter_heatmap" Then
         nDataCols = 2
     End If
@@ -379,7 +381,6 @@ Sub _SelectPlot(plotIndex As Long)
     Else
         DebugMsg(DEBUG_MODE, "Plot object not found in _SelectPlot for index " & plotIndex)
     End If
-    ' _SelectPlot = plotObj
 End Sub
 
 Function _MmToSigmaPlotUnit(mm As Long)
@@ -659,9 +660,8 @@ End Sub
 Sub _RemoveLineButTicks(axisDim As Long)
     Const DEBUG_MODE As Boolean = False
     With ActiveDocument.CurrentPageItem
-        ' First handle X axis (dimension 1)
         .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_SELECTDIM, axisDim)
-        ' Select the axis line
+        ' Select the axis Line
         .SetCurrentObjectAttribute(GPM_SETAXISATTR, SAA_SELECTLINE, 1)
         ' Set graph flags (affects how axis components are displayed)
         .SetCurrentObjectAttribute(GPM_SETGRAPHATTR, SGA_FLAGS, &H00010001&)
@@ -729,7 +729,7 @@ Sub ApplyColors()
         Select Case plotType
             Case "area", "area_heatmap"
                 _ApplyColorArea(iPlot, RGB_VAL, transparencyVal)
-            Case "bar", "barh", "barh_heatmap"
+            Case "bar", "barh", "barh_heatmap", "histogram"
                 _ApplyColorBar(iPlot, RGB_VAL, transparencyVal)
             Case "box", "boxh"
                 _ApplyColorBox(iPlot, RGB_VAL, transparencyVal)
@@ -792,6 +792,7 @@ Sub _ApplyColorBar(iPlot As Long, RGB_VAL As Long, transparencyVal As Long)
     With ActiveDocument.CurrentPageItem
     .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_COLOR, RGB_VAL)
     .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_EDGECOLOR, RGB_BLACK)
+    .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SSA_COLOR_ALPHA, transparencyVal)    
     End With
 End Sub
 
@@ -1371,10 +1372,10 @@ Sub HandleSpecialCases()
                 ActiveDocument.CurrentPageItem.SetCurrentObjectAttribute(GPM_SETPLOTATTR, _
                                                                          SLA_BARTHICKNESS, _
                                                                          VIOLIN_BOX_WIDTH_PERC_x_10)
-           Case "lines_y_many_x_violin"
-              ' With ActiveDocument.CurrentPageItem
-              '   .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SEA_LINETYPE, LINETYPE_NONE)
-              ' End With
+           Case "histogram"
+              With ActiveDocument.CurrentPageItem
+                .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_BARTHICKNESS, HISTOGRAM_BAR_WIDTH_PERC_x_10)
+              End With
         End Select
     Next iPlot
 End Sub
