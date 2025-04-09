@@ -1,13 +1,12 @@
 Option Explicit
 
-
-
 ' ========================================
 ' General Constants
 ' ========================================
+Const GLOBAL_DEBUG_MODE As Boolean = False
+' Just for searching
 ' Const DEBUG_MODE As Boolean = True
 ' Const DEBUG_MODE As Boolean = False
-Const GLOBAL_DEBUG_MODE As Boolean = False
 Const WORKSHEET_NAME As String = "worksheet"
 Const GRAPH_NAME As String = "graph"
 
@@ -24,52 +23,53 @@ Const VERTICAL As Long = 1
 Const MAJOR_TICK_INDEX As Long = 2
 
 ' ========================================
-' Visual Settings
+' Hide Options
 ' ========================================
-' Display Options
 Const HIDE_LEGEND As Long = 0
 Const HIDE_TITLE As Long = 0
 
-' Styling
+' ========================================
+' Thickness
+' ========================================
 Const LINE_THICKNESS_INVISIBLE As Variant = &H00000000
 Const TICK_THICKNESS_INVISIBLE As Variant = &H00000000
 Const TICK_THICKNESS_00008 As Variant = &H00000008
-Const TICK_LENGTH_00032 As Variant = &H00000020
-Const AREAFILLTYPE_VERTICAL As Long = 1
-Const SSA_COLOR_ALPHA As Long = &H000008a7&
-
-' Font Sizes
-Const LABEL_PTS_07 As Long = 97
-Const LABEL_PTS_08 As Long = 111
-
-' Line Thickness
 Const POLAR_LINE_THICKNESS As Double = 0.008 * 1000
 Const AREA_LINE_THICKNESS As Double = 0
 Const LINETYPE_NONE As Long = 1
 
-' Rows
+' ========================================
+' Length
+' ========================================
+Const TICK_LENGTH_00032 As Variant = &H00000020
+
+' ========================================
+' Font Size
+' ========================================
+Const LABEL_PTS_07 As Long = 97
+Const LABEL_PTS_08 As Long = 111
+
+' ========================================
+' Symbol
+' ========================================
+Const SSA_SHAPE As Long = &H00000706&
+
+' ========================================
+' Colors
+' ========================================
+Const AREAFILLTYPE_VERTICAL As Long = 1
+Const SSA_COLOR_ALPHA As Long = &H000008a7&
+Const RGB_WHITE As Long = &H00c0c0c0&
+Const RGB_BLACK As Long = &H00000000
+Const RGB_LIGHT_GRAY As Long = &H00808080&
+Const RGB_DARK_GRAY As Long = &H00c0c0c0&
+Const RGB_NONE As Long = &Hff000000&
+
+' ========================================
+' Worksheet
+' ========================================
 Const LABEL_ROW As Long = -1
 
-' ========================================
-' Graph Wizard-related constants
-' ========================================
-Const GW_PLOT_TYPE_ROW As Long = 0
-Const GW_PLOT_STYLE_ROW As Long = 1
-Const GW_DATA_TYPE_ROW As Long = 2
-Const _GW_COLUMNS_PER_GW_ROW As Long = 3
-Const _GW_GW_COLUMNS_COUNT_ARRAY_ROW As Long = 4
-Const GW_DATA_SOURCE_ROW As Long = 5
-Const GW_POLARUNITS_ROW As Long = 6
-Const GW_ANGLEUNITS_ROW As Long = 7
-Const GW_MIN_ANGLE_ROW As Long = 8
-Const GW_MAX_ANGLE_ROW As Long = 9
-Const GW_UNKONWN1_ROW As Long = 10
-Const GW_GROUP_STYLE_ROW As Long = 11
-Const GW_USE_AUTOMATIC_LEGENDS_ROW As Long = 12
-
-' ========================================
-' Entire Graph
-' ========================================
 ' Columns
 Const _GRAPH_PARAMS_EXPLANATION_COL As Long = 0
 Const GRAPH_PARAMS_COL As Long = 1
@@ -91,6 +91,31 @@ Const Y_MIN_ROW As Long = 10
 Const Y_MAX_ROW As Long = 11
 
 ' ========================================
+' Graph Wizard-related constants
+' ========================================
+Const GW_PLOT_TYPE_ROW As Long = 0
+Const GW_PLOT_STYLE_ROW As Long = 1
+Const GW_DATA_TYPE_ROW As Long = 2
+Const _GW_COLUMNS_PER_GW_ROW As Long = 3
+Const _GW_GW_COLUMNS_COUNT_ARRAY_ROW As Long = 4
+Const GW_DATA_SOURCE_ROW As Long = 5
+Const GW_POLARUNITS_ROW As Long = 6
+Const GW_ANGLEUNITS_ROW As Long = 7
+Const GW_MIN_ANGLE_ROW As Long = 8
+Const GW_MAX_ANGLE_ROW As Long = 9
+Const GW_UNKONWN1_ROW As Long = 10
+Const GW_GROUP_STYLE_ROW As Long = 11
+Const GW_USE_AUTOMATIC_LEGENDS_ROW As Long = 12
+
+' For each plot
+Const GW_START_COL_BASE_NAME As String = "gw_param_keys "
+Const GW_START_COL As Long = -1
+Const GW_ID_PARAM_KEYS As Long = 0
+Const GW_ID_PARAM_VALUES As Long = 1
+Const GW_ID_LABEL As Long = 2
+Const GW_ID_RGBA As Long = -1
+
+' ========================================
 ' Axis Scales
 ' ========================================
 Const SAA_TYPE_LINEAR = 1
@@ -101,23 +126,6 @@ Const SAA_TYPE_PROBIT = 5
 Const SAA_TYPE_LOGIT = 6
 Const SAA_TYPE_CATEGORY = 7
 Const SAA_TYPE_DATETIME = 8
-
-
-' Data Columns
-' ----------------------------------------
-' General
-Const GW_START_COL_BASE_NAME As String = "gw_param_keys "
-Const GW_START_COL As Long = -1
-Const GW_ID_PARAM_KEYS As Long = 0
-Const GW_ID_PARAM_VALUES As Long = 1
-Const GW_ID_LABEL As Long = 2
-Const GW_ID_RGBA As Long = -1
-' Colors
-Const RGB_WHITE As Long = &H00c0c0c0&
-Const RGB_BLACK As Long = &H00000000
-Const RGB_LIGHT_GRAY As Long = &H00808080&
-Const RGB_DARK_GRAY As Long = &H00c0c0c0&
-Const RGB_NONE As Long = &Hff000000&
 
 ' ========================================
 ' Heatmap
@@ -134,11 +142,6 @@ Const VIOLIN_BOX_WIDTH_PERC_x_10 As Long = 150
 ' Histogram
 ' ========================================
 Const HISTOGRAM_BAR_WIDTH_PERC_x_10 As Long = 1000
-
-' ========================================
-' Symbol Constants
-' ========================================
-Const SSA_SHAPE As Long = &H00000706&
 
 ' ========================================
 ' Helper Functions
@@ -178,161 +181,6 @@ Sub Sleep(milliseconds As Long)
         End If
     Loop
 End Sub
-
-' Reader
-' ----------------------------------------
-Function _ReadCell(columnIndex As Long, rowIndex As Long) As Variant
-    Dim dataTable As Object
-    Dim cellValue As Variant
-    Set dataTable = ActiveDocument.NotebookItems(WORKSHEET_NAME).DataTable
-    cellValue = dataTable.GetData(columnIndex, rowIndex, columnIndex, rowIndex)
-    _ReadCell = cellValue(0, 0)
-End Function
-
-Function _ReadRGB(columnIndex As Long) As Long
-    Const DEBUG_MODE As Boolean = False
-    ' DebugMsg(DEBUG_MODE, "_ReadRGB called for plot " & columnIndex
-    Dim rValue As Variant, gValue As Variant, bValue As Variant
-    ' Read RGB values from worksheet (R, G, B values are assumed to be in adjacent columns)
-    bValue = _ReadCell(columnIndex, 0)
-    gValue = _ReadCell(columnIndex, 1)
-    rValue = _ReadCell(columnIndex, 2)
-    If (bValue = "None") And (gValue = "None") And (rValue = "None") Then
-        _ReadRGB = -1
-    Else
-        ' Convert to integers and create RGB color
-        Dim r As Integer, g As Integer, b As Integer
-        b = CInt(bValue)
-        g = CInt(gValue)
-        r = CInt(rValue)
-        ' Standard RGB (VBA default)
-        _ReadRGB = RGB(r, g, b)
-    End If
-End Function
-
-Function _GenRGB(r As Long, g As Long, b As Long) As Long
-    _GenRGB = RGB(r, g, b)
-End Function
-
-Function _ReadAlphaAsTransparency(columnIndex As Long) As Long
-    Const DEBUG_MODE As Boolean = False
-    Dim alphaValue As Variant
-    Dim transparency As Variant
-    alphaValue = _ReadCell(columnIndex, 3)
-    If (alphaValue = "None") Then
-        _ReadAlphaAsTransparency = -1
-    Else
-        transparency = (1 - alphaValue) * 100
-        _ReadAlphaAsTransparency = transparency
-    End If
-End Function
-
-Sub _CreateColorColumn(rColumn As Long, gColumn As Long, bColumn As Long, resultColumn As Long)
-    Dim sep As String
-    sep = ListSeparator
-
-    Dim SPTransform As Object
-    Set SPTransform = ActiveDocument.NotebookItems.Add(9)
-    SPTransform.Open
-
-    ' Simple transform to create color from RGB values
-    SPTransform.Text = "col(" & resultColumn & ") = rgbcolor(col(" & rColumn & ")" & _
-               sep & "col(" & gColumn & ")" & sep & "col(" & bColumn & "))"
-
-    ' Execute transform
-    SPTransform.Execute
-    SPTransform.Close(False)
-
-    ' Add column title
-    ActiveDocument.CurrentDataItem.DataTable.NamedRanges.Add _
-               "Color", resultColumn-1, 0, 1, -1, True
-End Sub
-
-Function _ReadPlotTypeStr(iPlot As Long) As String
-    Const DEBUG_MODE As Boolean = False
-    Dim startCol As Long, valuesCol As Long, labelCol As Long
-    Dim plotType As String
-    Dim spacePos As Long
-
-    startCol = _FindChunkStartCol(iPlot)
-    If startCol <> -1 Then
-        labelCol = startCol + GW_ID_LABEL
-        plotType = _ReadCell(labelCol, 0)
-
-        ' Extract base type by removing any trailing numbers
-        spacePos = InStr(plotType, " ")
-        If spacePos > 0 Then
-            plotType = Left(plotType, spacePos - 1)
-        End If
-
-        _ReadPlotTypeStr = plotType
-    Else
-        _ReadPlotTypeStr = "line"
-    End If
-End Function
-
-' Graph Wizard
-' ----------------------------------------
-Function _ReadColumnMapping(plotType As String, startCol As Long, endCol As Long) As Variant
-    Const DEBUG_MODE As Boolean = False
-    Dim mapping()
-
-    ' Data Columns
-    Dim nDataCols As Long
-    Const nHeadCols As Long = 3
-    Const nTailCols As Long = 1
-
-    nDataCols = (endCol - startCol + 1) - (nHeadCols + nTailCols)
-
-    If plotType = "scatter_heatmap" Then
-        nDataCols = 2
-    End If
-
-    ReDim mapping(2, nDataCols)
-
-    Dim iCol As Long
-    For iCol = 0 To nDataCols
-        mapping(0, iCol) = startCol + nHeadCols + iCol
-    Next iCol
-
-    ' Fill in the row ranges for all columns
-    Dim ii As Integer
-    For ii = 0 To UBound(mapping, 2)
-        mapping(1, ii) = 0
-        mapping(2, ii) = 31999999
-    Next ii
-
-    _ReadColumnMapping = mapping
-End Function
-
-Function _ReadPlotCountColumnArray(plotType As String, startCol As Long, endCol As Long) As Variant
-    Const DEBUG_MODE As Boolean = False
-
-    Dim countArray()
-    ReDim countArray(0)
-
-    ' Data Columns
-    Dim nDataCols As Long
-    Const nHeadCols As Long = 3
-    Const nTailCols As Long = 1
-
-    nDataCols = (endCol - startCol + 1) - (nHeadCols + nTailCols)
-
-    ' Fixme; the third columns is symbol ...
-    If plotType = "scatter_heatmap" Then
-        nDataCols = 2
-    End If
-
-    DebugMsg(DEBUG_MODE, "_ReadPlotCountColumnArray called")
-    DebugMsg(DEBUG_MODE, "startCol: " & startCol)
-    DebugMsg(DEBUG_MODE, "endCol: " & endCol)
-    DebugMsg(DEBUG_MODE, "nDataCols: " & nDataCols)
-
-    ' ReDim countArray(0)
-    countArray(0) = nDataCols
-
-    _ReadPlotCountColumnArray = countArray
-End Function
 
 ' Graph
 ' ----------------------------------------
@@ -445,8 +293,166 @@ Sub _ConvertNumToText(numericCol As Long, targetCol As Long)
     dataTable.ColumnTitle(targetCol) = "Text"
 End Sub
 
-' Finder
-' ----------------------------------------
+' ========================================
+' Reader Functions
+' ========================================
+Function _ReadCell(columnIndex As Long, rowIndex As Long) As Variant
+    Dim dataTable As Object
+    Dim cellValue As Variant
+    Set dataTable = ActiveDocument.NotebookItems(WORKSHEET_NAME).DataTable
+    cellValue = dataTable.GetData(columnIndex, rowIndex, columnIndex, rowIndex)
+    _ReadCell = cellValue(0, 0)
+End Function
+
+Function _ReadRGB(columnIndex As Long) As Long
+    Const DEBUG_MODE As Boolean = False
+    ' DebugMsg(DEBUG_MODE, "_ReadRGB called for plot " & columnIndex
+    Dim rValue As Variant, gValue As Variant, bValue As Variant
+    ' Read RGB values from worksheet (R, G, B values are assumed to be in adjacent columns)
+    bValue = _ReadCell(columnIndex, 0)
+    gValue = _ReadCell(columnIndex, 1)
+    rValue = _ReadCell(columnIndex, 2)
+    If (bValue = "None") And (gValue = "None") And (rValue = "None") Then
+        _ReadRGB = -1
+    Else
+        ' Convert to integers and create RGB color
+        Dim r As Integer, g As Integer, b As Integer
+        b = CInt(bValue)
+        g = CInt(gValue)
+        r = CInt(rValue)
+        ' Standard RGB (VBA default)
+        _ReadRGB = RGB(r, g, b)
+    End If
+End Function
+
+Function _ReadAlphaAsTransparency(columnIndex As Long) As Long
+    Const DEBUG_MODE As Boolean = False
+    Dim alphaValue As Variant
+    Dim transparency As Variant
+    alphaValue = _ReadCell(columnIndex, 3)
+    If (alphaValue = "None") Then
+        _ReadAlphaAsTransparency = -1
+    Else
+        transparency = (1 - alphaValue) * 100
+        _ReadAlphaAsTransparency = transparency
+    End If
+End Function
+
+Function _ReadPlotTypeStr(iPlot As Long) As String
+    Const DEBUG_MODE As Boolean = False
+    Dim startCol As Long, valuesCol As Long, labelCol As Long
+    Dim plotType As String
+    Dim spacePos As Long
+
+    startCol = _FindChunkStartCol(iPlot)
+    If startCol <> -1 Then
+        labelCol = startCol + GW_ID_LABEL
+        plotType = _ReadCell(labelCol, 0)
+
+        ' Extract base type by removing any trailing numbers
+        spacePos = InStr(plotType, " ")
+        If spacePos > 0 Then
+            plotType = Left(plotType, spacePos - 1)
+        End If
+
+        _ReadPlotTypeStr = plotType
+    Else
+        _ReadPlotTypeStr = "line"
+    End If
+End Function
+
+' ========================================
+' Color-related Functions
+' ========================================
+Function _GenRGB(r As Long, g As Long, b As Long) As Long
+    _GenRGB = RGB(r, g, b)
+End Function
+
+Sub _CreateColorColumn(rColumn As Long, gColumn As Long, bColumn As Long, resultColumn As Long)
+    Dim sep As String
+    sep = ListSeparator
+
+    Dim SPTransform As Object
+    Set SPTransform = ActiveDocument.NotebookItems.Add(9)
+    SPTransform.Open
+
+    ' Simple transform to create color from RGB values
+    SPTransform.Text = "col(" & resultColumn & ") = rgbcolor(col(" & rColumn & ")" & _
+               sep & "col(" & gColumn & ")" & sep & "col(" & bColumn & "))"
+
+    ' Execute transform
+    SPTransform.Execute
+    SPTransform.Close(False)
+
+    ' Add column title
+    ActiveDocument.CurrentDataItem.DataTable.NamedRanges.Add _
+               "Color", resultColumn-1, 0, 1, -1, True
+End Sub
+
+Function _ReadGWColumnMapping(plotType As String, startCol As Long, endCol As Long) As Variant
+    Const DEBUG_MODE As Boolean = False
+    Dim mapping()
+
+    ' Data Columns
+    Dim nDataCols As Long
+    Const nHeadCols As Long = 3
+    Const nTailCols As Long = 1
+
+    nDataCols = (endCol - startCol + 1) - (nHeadCols + nTailCols)
+
+    If plotType = "scatter_heatmap" Then
+        nDataCols = 2
+    End If
+
+    ReDim mapping(2, nDataCols)
+
+    Dim iCol As Long
+    For iCol = 0 To nDataCols
+        mapping(0, iCol) = startCol + nHeadCols + iCol
+    Next iCol
+
+    ' Fill in the row ranges for all columns
+    Dim ii As Integer
+    For ii = 0 To UBound(mapping, 2)
+        mapping(1, ii) = 0
+        mapping(2, ii) = 31999999
+    Next ii
+
+    _ReadGWColumnMapping = mapping
+End Function
+
+Function _ReadGWPlotCountColumnArray(plotType As String, startCol As Long, endCol As Long) As Variant
+    Const DEBUG_MODE As Boolean = False
+
+    Dim countArray()
+    ReDim countArray(0)
+
+    ' Data Columns
+    Dim nDataCols As Long
+    Const nHeadCols As Long = 3
+    Const nTailCols As Long = 1
+
+    nDataCols = (endCol - startCol + 1) - (nHeadCols + nTailCols)
+
+    ' Fixme; the third columns is symbol ...
+    If plotType = "scatter_heatmap" Then
+        nDataCols = 2
+    End If
+
+    DebugMsg(DEBUG_MODE, "_ReadGWPlotCountColumnArray called")
+    DebugMsg(DEBUG_MODE, "startCol: " & startCol)
+    DebugMsg(DEBUG_MODE, "endCol: " & endCol)
+    DebugMsg(DEBUG_MODE, "nDataCols: " & nDataCols)
+
+    ' ReDim countArray(0)
+    countArray(0) = nDataCols
+
+    _ReadGWPlotCountColumnArray = countArray
+End Function
+
+' ========================================
+' Finder Functions
+' ========================================
 Function _FindMaxCol() As Long
     Const DEBUG_MODE As Boolean = False
     Dim maxCol As Long, maxRow As Long, dataTable As Object
@@ -584,11 +590,11 @@ Sub Plot()
 
         ' Build column mapping based on the plot type
         Dim gwColumnsPerPlot() As Variant
-        gwColumnsPerPlot = _ReadColumnMapping(plotType, startCol, endCol)
+        gwColumnsPerPlot = _ReadGWColumnMapping(plotType, startCol, endCol)
 
         ' Get the column count array
         Dim gwPlotColumnCountArray() As Variant
-        gwPlotColumnCountArray = _ReadPlotCountColumnArray(plotType, startCol, endCol)
+        gwPlotColumnCountArray = _ReadGWPlotCountColumnArray(plotType, startCol, endCol)
 
         ' Create or add plot
         If Not graphAlreadyExists And iPlot = 0 Then
@@ -629,7 +635,7 @@ Sub Plot()
 End Sub
 
 ' ========================================
-' Removers
+' Remover Functions
 ' ========================================
 Sub RemoveExistingGraphs()
     Const DEBUG_MODE As Boolean = False
@@ -693,7 +699,7 @@ Sub RemoveTitle()
 End Sub
 
 ' ========================================
-' Color
+' Color Applying Functions
 ' ========================================
 Sub ApplyColors()
     Const DEBUG_MODE As Boolean = False
@@ -879,8 +885,6 @@ Sub _ApplyColorFilledLineLower(iPlot As Long, RGB_VAL As Long, transparencyVal A
     End With
 End Sub
 
-
-' _ApplyColorViolin
 Sub _ApplyColorViolinBox(iPlot As Long, RGB_VAL As Long, transparencyVal As Long)
     Const DEBUG_MODE As Boolean = False
     DebugMsg(DEBUG_MODE, "_ApplyColorViolinBox called")
@@ -905,7 +909,6 @@ Sub _ApplyColorViolinLine(iPlot As Long, RGB_VAL As Long, transparencyVal As Lon
     End With
 End Sub
 
-' _ApplyColorFilledLine
 Sub _ApplyColorFilledLineFill(iPlot As Long, RGB_VAL As Long, transparencyVal As Long)
 Const DEBUG_MODE As Boolean = False
     DebugMsg(DEBUG_MODE, "_ApplyColorFilledLineFill called")
@@ -918,21 +921,6 @@ Const DEBUG_MODE As Boolean = False
        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_EDGECOLOR, RGB_BLACK)
     End With
 End Sub
-
-' Sub _ApplyColorFilledLineLine(iPlot As Long, RGB_VAL As Long, transparencyVal As Long)
-'     Const DEBUG_MODE As Boolean = False
-'     DebugMsg(DEBUG_MODE, "_ApplyColorLine called")
-'     _SelectPlot(iPlot)
-'     With ActiveDocument.CurrentPageItem
-'        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_COLOR, RGB_VAL)
-'        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_COLORCOL, -2)
-'        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_COLORREPEAT, 2)
-'        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SLA_AREAFILLTYPE, 1)
-'        .SetCurrentObjectAttribute(GPM_SETPLOTATTR, SDA_EDGECOLOR, RGB_BLACK)
-'     End With
-' End Sub
-
-
 
 Sub _ApplyColorPolar(iPlot As Long, RGB_VAL As Long, transparencyVal As Long)
     Const DEBUG_MODE As Boolean = False
@@ -1105,65 +1093,6 @@ Sub SetRanges()
     _SetRange(AXIS_X, X_SCALE_TYPE_ROW, X_MIN_ROW, X_MAX_ROW)
     _SetRange(AXIS_Y, Y_SCALE_TYPE_ROW, Y_MIN_ROW, Y_MAX_ROW)
 End Sub
-
-' ' ========================================
-' ' Scales
-' ' ========================================
-' Function _CvtScaleTypeFromVariantToLong(cellValue As Variant) As Long
-'     Const DEBUG_MODE As Boolean = False
-'     Dim scaleType As Long
-'     ' Convert string or number to appropriate scale type constant
-'     Select Case CStr(LCase(cellValue))
-'         Case "linear", "heatmap", "1"
-'             scaleType = SAA_TYPE_LINEAR
-'         Case "common", "common log", "log10", "2"
-'             scaleType = SAA_TYPE_COMMON
-'         Case "log", "natural log", "3"
-'             scaleType = SAA_TYPE_LOG
-'         Case "probability", "prob", "4"
-'             scaleType = SAA_TYPE_PROBABILITY
-'         Case "probit", "5"
-'             scaleType = SAA_TYPE_PROBIT
-'         Case "logit", "6"
-'             scaleType = SAA_TYPE_LOGIT
-'         Case "category", "7"
-'             scaleType = SAA_TYPE_CATEGORY
-'         Case "datetime", "date", "time", "8"
-'             scaleType = SAA_TYPE_DATETIME
-'         Case Else
-'             ' Default to linear if unrecognized
-'             scaleType = SAA_TYPE_LINEAR
-'     End Select
-'     _CvtScaleTypeFromVariantToLong = scaleType
-' End Function
-
-' Sub _SetScale(axisDim As Long, scaleTypeRow As Long)
-'     Const DEBUG_MODE As Boolean = False
-'     On Error Resume Next
-'     Dim scaleVariant As Variant
-'     Dim scaleLong As Long
-'     Dim axis As Object
-
-'     ActiveDocument.CurrentPageItem.GraphPages(0).CurrentPageObject(GPT_GRAPH).NameObject.SetObjectCurrent
-
-'     scaleVariant = _ReadCell(GRAPH_PARAMS_COL, scaleTypeRow)
-'     DebugMsg(DEBUG_MODE, "scaleVariant: " & scaleVariant)
-
-'     scaleLong = _CvtScaleTypeFromVariantToLong(scaleVariant)
-'     DebugMsg(DEBUG_MODE, "scaleLong: " & scaleLong)
-
-'     Set axis = ActiveDocument.CurrentPageItem.GraphPages(0).Graphs(0).Axes(axisDim)
-'     axis.SetAttribute(SAA_TYPE, scaleLong)
-
-'     On Error GoTo 0
-' End Sub
-
-' Sub SetScales()
-'     Const DEBUG_MODE As Boolean = False
-'     DebugMsg(DEBUG_MODE, "SetScales called")
-'     _SetScale(AXIS_X, X_SCALE_TYPE_ROW)
-'     _SetScale(AXIS_Y, Y_SCALE_TYPE_ROW)
-' End Sub
 
 ' ========================================
 ' Scales
@@ -1342,7 +1271,7 @@ Sub SetTickLabelRotation()
 End Sub
 
 ' ========================================
-' Line Width
+' For Special Cases
 ' ========================================
 Sub HandleSpecialCases()
     Const DEBUG_MODE As Boolean = False
@@ -1381,7 +1310,7 @@ Sub HandleSpecialCases()
 End Sub
 
 ' ========================================
-' SetTextAsSymbol
+' To handle text as symbol
 ' ========================================
 Sub SetTextAsSymbol(plotIndex As Long)
     Const DEBUG_MODE As Boolean = False
