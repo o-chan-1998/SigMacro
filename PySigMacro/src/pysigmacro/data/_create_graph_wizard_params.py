@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-04-09 07:10:04 (ywatanabe)"
+# Timestamp: "2025-04-09 13:34:12 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/data/_create_graph_wizard_params.py
 # ----------------------------------------
 import os
@@ -49,10 +49,10 @@ def create_graph_wizard_params(plot_type, i_plot, label=None, **kwargs):
         "scatter_heatmap": _create_graph_wizard_params_scatter,
         "violin": _create_graph_wizard_params_violin,
         "violinh": _create_graph_wizard_params_violinh,
-        # Special
         "filled_line": _create_graph_wizard_params_filled_line,
         "contour": _create_graph_wizard_params_contour,
         "heatmap": _create_graph_wizard_params_heatmap,
+        "histogram": _create_graph_wizard_params_histogram,
     }[plot_type]
 
     graph_wizard_params = create_graph_wizard_func()
@@ -111,6 +111,22 @@ def _create_graph_wizard_params_barh():
         "plot_use_automatic_legends": True,
     }
 
+def _create_graph_wizard_params_histogram():
+    return {
+        "plot_type": "Vertical Bar Chart",
+        "plot_style_type": "Simple Bar",
+        "plot_data_type": "XY Pair",
+        "plot_columns_per_plot": "ColumnsPerPlot",
+        "plot_plot_columns_count_array": "PlotColumnCountArray",
+        "plot_data_source": "Worksheet Columns",
+        "plot_polarunits": "NONE_STR",
+        "plot_anguleunits": "Degrees",
+        "plot_min_angle_row": 0,
+        "plot_max_angle_row": 360,
+        "plot_unknown1": "NONE_STR",
+        "plot_group_style": "NONE_STR",
+        "plot_use_automatic_legends": True,
+    }
 
 def _create_graph_wizard_params_area():
     return {

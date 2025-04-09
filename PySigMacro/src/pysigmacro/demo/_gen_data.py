@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-04-09 06:18:18 (ywatanabe)"
+# Timestamp: "2025-04-09 13:47:43 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/demo/_gen_data.py
 # ----------------------------------------
 import os
@@ -20,11 +20,15 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.colors import to_rgba
 from ._gen_data_heatmap import _gen_data_heatmap
-from ._gen_single_data_violin import _gen_single_data_violin, _gen_single_data_violinh
+from ._gen_single_data_violin import (
+    _gen_single_data_violin,
+    _gen_single_data_violinh,
+)
 from ._gen_single_data_filled_line import _gen_single_data_filled_line
 
 # Main
 # ------------------------------
+
 
 def gen_data(plot_types):
 
@@ -39,6 +43,7 @@ def gen_data(plot_types):
                 "lines_x_many_y": _gen_single_data_lines_x_many_y,
                 "bar": _gen_single_data_bar,
                 "barh": _gen_single_data_barh,
+                "histogram": _gen_single_data_histogram,
                 "area": _gen_single_data_area,
                 "box": _gen_single_data_box,
                 "boxh": _gen_single_data_boxh,
@@ -76,50 +81,37 @@ def gen_data(plot_types):
 
 # Special
 # ------------------------------
-# def _gen_single_data_filled_line(ii, alpha=0.5):
-#     # Random Seed
-#     np.random.seed(ii * 555)
-#     # X
-#     x = np.linspace(0, 10, 20) + ii
-#     # Y
-#     y = np.exp(-((x - 5 * (ii % 3)) ** 2) / 10)
-#     y_lower = y - np.random.normal(0, 0.05 * (ii + 1), size=len(x))
-#     y_upper = y + np.random.normal(0, 0.05 * (ii + 1), size=len(x))
 
-#     # Color
-#     bgra = BGRA[COLORS[ii % len(COLORS)]]
-#     bgra[-1] = alpha
-#     return dict(
-#         x=x,
-#         y_lower=y_lower,
-#         y=y,
-#         y_upper=y_upper,
-#         bgra=bgra,
-#     )
 
-def _gen_single_data_lines_y_many_x(index_value, alpha=0.5):
+def _gen_single_data_lines_y_many_x(i_plot, alpha=0.5):
     # Random Seed for reproducibility based on index
-    np.random.seed(index_value * 555)
+    np.random.seed(42)
 
     # Generate multiple X arrays
     x_values = {}
     num_x_lines = 6
-    num_points = 50 # Increased points for smoother sine wave
+    num_points = 50  # Increased points for smoother sine wave
     for x_index in range(num_x_lines):
         # Generate x values relative to the index for variation
-        x_values[f"x{x_index}"] = np.linspace(0, 4 * np.pi, num_points) + x_index * np.pi / 4
+        x_values[f"x{x_index}"] = (
+            np.linspace(0, 4 * np.pi, num_points) + x_index * np.pi / 4
+        )
 
     # Calculate Y based on x0 as a shifted sine curve
     x0 = x_values["x0"]
-    # Calculate phase shift based on index_value
-    phase_shift = index_value * np.pi / 3
+    # Calculate phase shift based on i_plot
+    phase_shift = i_plot * np.pi / 3
     # Calculate sine wave
-    y_values = np.sin(x0 + phase_shift) + np.random.rand(num_points) * 0.2 # Add some noise
+    y_values = (
+        np.sin(x0 + phase_shift) + np.random.rand(num_points) * 0.2
+    )  # Add some noise
 
     # Determine color based on index
-    color_name = COLORS[index_value % len(COLORS)]
-    bgra_color = BGRA[color_name].copy() # Use copy to avoid modifying the original
-    bgra_color[-1] = alpha # Set alpha
+    color_name = COLORS[i_plot % len(COLORS)]
+    bgra_color = BGRA[
+        color_name
+    ].copy()  # Use copy to avoid modifying the original
+    bgra_color[-1] = alpha  # Set alpha
 
     return dict(
         y=y_values,
@@ -127,18 +119,20 @@ def _gen_single_data_lines_y_many_x(index_value, alpha=0.5):
         bgra=bgra_color,
     )
 
-def _gen_single_data_lines_x_many_y(index_value, alpha=0.5):
-    dd = _gen_single_data_lines_y_many_x(index_value, alpha=alpha)
-    y_dict = {f"y{k[1:]}":v for k,v in dd.items() if k.startswith("x")}
+
+def _gen_single_data_lines_x_many_y(i_plot, alpha=0.5):
+    dd = _gen_single_data_lines_y_many_x(i_plot, alpha=alpha)
+    y_dict = {f"y{k[1:]}": v for k, v in dd.items() if k.startswith("x")}
     return dict(
         x=dd["y"],
         **y_dict,
         bgra=dd["bgra"],
     )
 
+
 def _gen_single_data_contour(ii):
     # Random Seed
-    np.random.seed(ii * 999)
+    np.random.seed(42)
 
     # Create grid data
     x = np.linspace(-5, 5, 10)
@@ -190,7 +184,7 @@ def _gen_single_data_contour(ii):
 # ------------------------------
 def _gen_single_data_bar(ii):
     # Random Seed
-    np.random.seed(ii * 333)
+    np.random.seed(42)
     # X
     x = f"X {ii}"
     # Y
@@ -206,7 +200,7 @@ def _gen_single_data_bar(ii):
 
 def _gen_single_data_barh(ii):
     # Random Seed
-    np.random.seed(ii * 444)
+    np.random.seed(42)
     vv = _gen_single_data_bar(ii)
     return dict(
         y=vv["x"],
@@ -218,7 +212,7 @@ def _gen_single_data_barh(ii):
 
 def _gen_single_data_area(ii, alpha=0.5):
     # Random Seed
-    np.random.seed(ii * 555)
+    np.random.seed(42)
     # X
     x = np.linspace(0, 10, 20) + ii
     # Y
@@ -238,7 +232,7 @@ def _gen_single_data_area(ii, alpha=0.5):
 
 def _gen_single_data_box(ii):
     # Random Seed
-    np.random.seed(ii * 666)
+    np.random.seed(42)
     # X
     x = f"Category {ii}"
     # Y
@@ -265,9 +259,10 @@ def _gen_single_data_boxh(ii):
         bgra=BGRA[COLORS[ii % len(COLORS)]],
     )
 
+
 def _gen_single_data_line(ii):
     # Random Seed
-    np.random.seed(ii * 888)
+    np.random.seed(42)
     # X
     x = np.linspace(0, 10, 20)
     # Y
@@ -279,9 +274,10 @@ def _gen_single_data_line(ii):
         bgra=BGRA[COLORS[ii % len(COLORS)]],
     )
 
+
 def _gen_single_data_line_yerr(ii):
     # Random Seed
-    np.random.seed(ii * 888)
+    np.random.seed(42)
     # X
     x = np.linspace(0, 10, 20)
     # Y
@@ -298,7 +294,7 @@ def _gen_single_data_line_yerr(ii):
 
 def _gen_single_data_polar(ii):
     # Random Seed
-    np.random.seed(ii * 123)
+    np.random.seed(42)
 
     # X
     theta = np.linspace(0, 2 * np.pi, 30)
@@ -314,9 +310,10 @@ def _gen_single_data_polar(ii):
         bgra=BGRA[COLORS[ii % len(COLORS)]],
     )
 
+
 def _gen_single_data_scatter(ii):
     # Random Seed
-    np.random.seed(ii * 789)
+    np.random.seed(42)
     n_points = 30 + ii * 5
     # X
     center_x = 5 * (ii % 3)
@@ -328,6 +325,90 @@ def _gen_single_data_scatter(ii):
         x=x,
         y=y,
         bgra=BGRA[COLORS[ii % len(COLORS)]],
+    )
+
+
+def _gen_single_data_histogram(
+    i_plot, alpha=0.5, bin_count=15, bin_width=1, bin_range=None, x_shift=0
+):
+    """Generate histogram data for demonstration.
+
+    Args:
+        i_plot: Index for random seed and parameter variation
+        alpha: Transparency value for the histogram
+        bin_count: Number of bins to use (ignored if bin_width is specified)
+        bin_width: Exact width for each bin (overrides bin_count)
+        bin_range: Tuple of (min, max) to set the range of the histogram
+        x_shift: Value to shift all x positions (affects bin positions)
+
+    Returns:
+        Dictionary with data for a histogram plot
+    """
+    # Set random seed for reproducibility
+    np.random.seed(42)
+
+    # Generate different distributions based on i_plot
+    if i_plot % 3 == 0:
+        # Normal distribution
+        mean = 5 * (i_plot % 2 + 1)
+        std_dev = 1.0 + 0.5 * (i_plot % 3)
+        data = np.random.normal(mean, std_dev, 1000)
+    elif i_plot % 3 == 1:
+        # Bimodal distribution
+        mean1 = 2 + i_plot
+        mean2 = 8 + i_plot
+        std_dev = 1.0
+        samples1 = np.random.normal(mean1, std_dev, 500)
+        samples2 = np.random.normal(mean2, std_dev, 500)
+        data = np.concatenate([samples1, samples2])
+    else:
+        # Skewed distribution
+        shape = 2.0 + 0.5 * i_plot
+        scale = 2.0
+        data = np.random.gamma(shape, scale, 1000)
+
+    # Apply x_shift to the data if specified
+    if x_shift != 0:
+        data = data + x_shift
+
+    # Calculate histogram with specified bin parameters
+    if bin_width is not None:
+        # Create bins with exact width
+        if bin_range is None:
+            # Auto-detect range if not specified
+            bin_min = np.floor(data.min())
+            bin_max = np.ceil(data.max())
+        else:
+            bin_min, bin_max = bin_range
+
+        # Create bins of exact width
+        num_bins = int(np.ceil((bin_max - bin_min) / bin_width))
+        bins = np.linspace(
+            bin_min, bin_min + num_bins * bin_width, num_bins + 1
+        )
+    else:
+        # Use bin count with optional range
+        bins = (
+            bin_count
+            if bin_range is None
+            else np.linspace(bin_range[0], bin_range[1], bin_count + 1)
+        )
+
+    # Calculate histogram data
+    hist, bin_edges = np.histogram(data, bins=bins)
+
+    # Calculate bin centers for plotting
+    bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
+
+    # Get color based on index
+    color_name = COLORS[(i_plot+3) % len(COLORS)]
+    bgra_color = BGRA[color_name].copy()
+    bgra_color[-1] = alpha
+
+    return dict(
+        x=bin_centers,
+        y=hist,
+        bgra=bgra_color,
     )
 
 # EOF

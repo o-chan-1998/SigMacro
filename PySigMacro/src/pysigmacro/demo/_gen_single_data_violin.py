@@ -66,7 +66,7 @@ def _gen_single_raw_data_violin(i_plot):
     SigmaPlot handles KDE and box plot generation from these raw points.
     """
     # Random Seed - use the same seed as box plot for comparable data
-    np.random.seed(i_plot * 666)
+    np.random.seed(42)
     # X category label
     x_category = f"Category {i_plot}"  # Use a numeric category index for plotting position
     # x_position = i_plot + 1  # Position on the X-axis (1-based)

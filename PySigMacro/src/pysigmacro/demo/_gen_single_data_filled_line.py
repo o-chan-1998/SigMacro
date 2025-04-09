@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-04-09 08:04:49 (ywatanabe)"
+# Timestamp: "2025-04-09 13:45:48 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/demo/_gen_single_data_filled_line.py
 # ----------------------------------------
 import os
@@ -24,7 +24,7 @@ from scipy import stats
 # ------------------------------
 
 
-def _gen_single_data_filled_line(i_plot, alpha=0.5):
+def _gen_single_data_filled_line(i_plot, alpha=0.1):
     batch_size = 3
 
     # Upper -> Lower -> Middle
@@ -40,7 +40,7 @@ def _gen_single_data_filled_line(i_plot, alpha=0.5):
     y_upper = raw_data_dict.pop("y_upper")
     # bgra = raw_data_dict.pop("bgra")
     bgra = BGRA["blue"] # fixme
-    bgra[-1] = 0.5
+    bgra[-1] = alpha
 
     # Split data into filled area and line plot
     uu_dict = {"x": x, "y_upper": y_upper, "bgra": bgra}
@@ -118,7 +118,7 @@ def _gen_single_raw_data_filled_line(i_plot, alpha=0.5, num_points=50):
 
 # def _gen_single_raw_data_filled_line(ii, alpha=0.5):
 #     # Random Seed
-#     np.random.seed(ii * 555)
+#     np.random.seed(42)
 #     # X
 #     x = np.linspace(0, 10, 20) + ii
 #     # Y

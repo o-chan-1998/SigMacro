@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-04-07 23:26:42 (ywatanabe)"
+# Timestamp: "2025-04-09 13:45:49 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/demo/_gen_data_heatmap.py
 # ----------------------------------------
 import os
@@ -27,7 +27,7 @@ def _gen_data_heatmap(_ii, n_cols=4, n_rows=3, cbar=False):
     assert _ii == 0
 
     # Random seed for reproducibility
-    np.random.seed(_ii * 777)
+    np.random.seed(42)
 
     df_2d = _gen_simple_heatmap_2d(n_cols, n_rows).copy()
 
