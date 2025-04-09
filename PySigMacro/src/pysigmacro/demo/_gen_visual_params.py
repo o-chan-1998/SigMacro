@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-04-09 05:46:49 (ywatanabe)"
+# Timestamp: "2025-04-09 13:28:45 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/demo/_gen_visual_params.py
 # ----------------------------------------
 import os
@@ -28,6 +28,7 @@ def gen_visual_params(plot_type, n_cols=8, **kwargs):
         "area": _gen_demo_visual_params_area(),
         "bar": _gen_demo_visual_params_bar(),
         "barh": _gen_demo_visual_params_barh(),
+        "histogram": _gen_demo_visual_params_histogram(),
         "box": _gen_demo_visual_params_box(),
         "boxh": _gen_demo_visual_params_boxh(),
         "line": _gen_demo_visual_params_line(),
@@ -103,6 +104,23 @@ def _gen_demo_visual_params_barh():
         "yticks": ["auto"],
     }
 
+def _gen_demo_visual_params_histogram():
+    return {
+        "xlabel": "X-Axis Label",
+        "xrot": 45,
+        "xmm": 40,
+        "xscale": "linear",
+        "xmin": "auto",
+        "xmax": "auto",
+        "xticks": ["auto"],
+        "ylabel": "Y-Axis Label",
+        "yrot": 0,
+        "ymm": 40 * 0.7,
+        "yscale": "linear",
+        "ymin": 0,
+        "ymax": "auto",
+        "yticks": ["auto"],
+    }
 
 def _gen_demo_visual_params_area():
     return {

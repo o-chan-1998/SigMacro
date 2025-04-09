@@ -1,14 +1,17 @@
-graph wizard parameter,value,visual parameter,value,xticks,yticks,preserved 0,preserved 1,preserved 2,preserved 3
-plot_type,Contour,xlabel,X-Axis Label,auto,auto,NONE_STR,NONE_STR,NONE_STR,NONE_STR
-plot_style_type,NONE_STR,xmm,40,,,NONE_STR,NONE_STR,NONE_STR,NONE_STR
-plot_data_type,NONE_STR,xscale,category,,,NONE_STR,NONE_STR,NONE_STR,NONE_STR
-plot_columns_per_plot,NONE_STR,xmin,NONE_STR,,,NONE_STR,NONE_STR,NONE_STR,NONE_STR
-plot_plot_columns_count_array,NONE_STR,xmax,NONE_STR,,,NONE_STR,NONE_STR,NONE_STR,NONE_STR
-plot_data_source,NONE_STR,ylabel,Y-Axis Label,,,NONE_STR,NONE_STR,NONE_STR,NONE_STR
-plot_polarunits,NONE_STR,ymm,28.0,,,NONE_STR,NONE_STR,NONE_STR,NONE_STR
-plot_anguleunits,NONE_STR,yscale,category,,,NONE_STR,NONE_STR,NONE_STR,NONE_STR
-plot_min_angle_row,NONE_STR,ymin,9,,,NONE_STR,NONE_STR,NONE_STR,NONE_STR
-plot_max_angle_row,NONE_STR,ymax,5,,,NONE_STR,NONE_STR,NONE_STR,NONE_STR
-plot_unknown1,NONE_STR,,,,,,,,
-plot_group_style,NONE_STR,,,,,,,,
-plot_use_automatic_legends,True,,,,,,,,
+visual parameter label,visual parameter value,xticks,yticks,preserved 0,preserved 1,preserved 2,preserved 3,gw_param_keys 0,gw_param_values 0,label,true_class,predicted_class,x,y,z,r,g,b,alpha
+xlabel,X-Axis Label,auto,auto,NONE_STR,NONE_STR,NONE_STR,NONE_STR,plot_type,Confusion Matrix,conf_mat 0,Class A,Class A,0,0,15705,49,129,189,1.0
+xrot,0,,,NONE_STR,NONE_STR,NONE_STR,NONE_STR,plot_style_type,1,,Class A,Class B,0,1,18799,19,95,167,1.0
+xmm,40,,,NONE_STR,NONE_STR,NONE_STR,NONE_STR,plot_data_type,NONE_STR,,Class A,Class C,0,2,17845,26,105,174,1.0
+xscale,category,,,NONE_STR,NONE_STR,NONE_STR,NONE_STR,plot_columns_per_plot,NONE_STR,,Class A,Class D,0,3,11264,111,176,214,1.0
+xmin,auto,,,NONE_STR,NONE_STR,NONE_STR,NONE_STR,plot_plot_columns_count_array,NONE_STR,,Class B,Class A,1,0,21123,8,68,137,1.0
+xmax,auto,,,NONE_STR,NONE_STR,NONE_STR,NONE_STR,plot_data_source,NONE_STR,,Class B,Class B,1,1,17599,29,108,177,1.0
+ylabel,Y-Axis Label,,,NONE_STR,NONE_STR,NONE_STR,NONE_STR,plot_polarunits,NONE_STR,,Class B,Class C,1,2,22019,8,58,122,1.0
+yrot,0,,,NONE_STR,NONE_STR,NONE_STR,NONE_STR,plot_anguleunits,NONE_STR,,Class B,Class D,1,3,17225,32,112,180,1.0
+ymm,28.0,,,NONE_STR,NONE_STR,NONE_STR,NONE_STR,plot_min_angle_row,NONE_STR,,Class C,Class A,2,0,15891,47,127,188,1.0
+yscale,category,,,NONE_STR,NONE_STR,NONE_STR,NONE_STR,plot_max_angle_row,NONE_STR,,Class C,Class B,2,1,12373,93,164,208,1.0
+ymin,auto,,,NONE_STR,NONE_STR,NONE_STR,NONE_STR,plot_unknown1,NONE_STR,,Class C,Class C,2,2,17222,32,112,180,1.0
+ymax,auto,,,NONE_STR,NONE_STR,NONE_STR,NONE_STR,plot_group_style,NONE_STR,,Class C,Class D,2,3,22116,8,57,120,1.0
+,,,,,,,,plot_use_automatic_legends,True,,Class D,Class A,3,0,22935,8,48,107,1.0
+,,,,,,,,,,,Class D,Class B,3,1,14744,61,141,195,1.0
+,,,,,,,,,,,Class D,Class C,3,2,11468,106,173,213,1.0
+,,,,,,,,,,,Class D,Class D,3,3,22768,8,49,108,1.0
