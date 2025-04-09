@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-04-09 15:45:00 (ywatanabe)"
+# Timestamp: "2025-04-09 15:57:41 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/demo/_gen_data.py
 # ----------------------------------------
 import os
@@ -211,7 +211,7 @@ def _gen_single_data_barh(ii):
     )
 
 
-def _gen_single_data_area(ii, alpha=0.7):
+def _gen_single_data_area(ii, alpha=0.5):
     # Random Seed
     np.random.seed(42 + ii)
 
@@ -261,7 +261,7 @@ def _gen_single_data_area(ii, alpha=0.7):
     y = np.maximum(y, 0)
 
     # Color with proper alpha for stacking visibility
-    bgra = BGRA[COLORS[ii % len(COLORS)]].copy()
+    bgra = BGRA[COLORS[(ii+3) % len(COLORS)]].copy()
     bgra[-1] = alpha
 
     return dict(
