@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-04-09 13:28:45 (ywatanabe)"
+# Timestamp: "2025-04-09 14:08:13 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/demo/_gen_visual_params.py
 # ----------------------------------------
 import os
@@ -35,6 +35,7 @@ def gen_visual_params(plot_type, n_cols=8, **kwargs):
         "line_yerr": _gen_demo_visual_params_line_yerr(),
         "polar": _gen_demo_visual_params_polar(),
         "scatter": _gen_demo_visual_params_scatter(),
+        "jitter": _gen_demo_visual_params_jitter(),
         "heatmap": _gen_demo_visual_params_heatmap(),
         "lines_y_many_x": _gen_demo_visual_params_lines_y_many_x(),
         "lines_x_many_y": _gen_demo_visual_params_lines_x_many_y(),
@@ -290,6 +291,24 @@ def _gen_demo_visual_params_scatter():
         "yticks": ["auto"],
     }
 
+def _gen_demo_visual_params_jitter():
+    return {
+        "xlabel": "X-Axis Label",
+        "xrot": 0,
+        "xmm": 40,
+        "xscale": "linear",
+        "xmin": "auto",
+        "xmax": "auto",
+        "xticks": [ii for ii in range(1, 32)],
+        "ylabel": "Y-Axis Label",
+        "yrot": 0,
+        "ymm": 40 * 0.7,
+        "yscale": "linear",
+        "ymin": "auto",
+        "ymax": "auto",
+        "yticks": ["auto"],
+    }
+
 
 def _gen_demo_visual_params_violin():
     return {
@@ -299,7 +318,7 @@ def _gen_demo_visual_params_violin():
         "xscale": "linear",
         "xmin": "auto",
         "xmax": "auto",
-        "xticks": ["auto"],
+        "xticks": [ii for ii in range(1, 32)],
         "ylabel": "Y-Axis Label",
         "yrot": 0,
         "ymm": 40 * 0.7,

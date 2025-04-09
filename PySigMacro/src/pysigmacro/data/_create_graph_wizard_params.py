@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-04-09 13:34:12 (ywatanabe)"
+# Timestamp: "2025-04-09 13:57:57 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/data/_create_graph_wizard_params.py
 # ----------------------------------------
 import os
@@ -47,6 +47,7 @@ def create_graph_wizard_params(plot_type, i_plot, label=None, **kwargs):
         "polar": _create_graph_wizard_params_polar,
         "scatter": _create_graph_wizard_params_scatter,
         "scatter_heatmap": _create_graph_wizard_params_scatter,
+        "jitter": _create_graph_wizard_params_scatter,
         "violin": _create_graph_wizard_params_violin,
         "violinh": _create_graph_wizard_params_violinh,
         "filled_line": _create_graph_wizard_params_filled_line,
@@ -267,6 +268,23 @@ def _create_graph_wizard_params_lines_x_many_y():
     }
 
 def _create_graph_wizard_params_scatter():
+    return {
+        "plot_type": "Scatter Plot",
+        "plot_style_type": "Simple Scatter",
+        "plot_data_type": "XY Pair",
+        "plot_columns_per_plot": "ColumnsPerPlot",
+        "plot_plot_columns_count_array": "PlotColumnCountArray",
+        "plot_data_source": "Worksheet Columns",
+        "plot_polarunits": "Standard Deviation",
+        "plot_anguleunits": "Degrees",
+        "plot_min_angle_row": 0,
+        "plot_max_angle_row": 360,
+        "plot_unknown1": "NONE_STR",
+        "plot_group_style": "NONE_STR",
+        "plot_use_automatic_legends": True,
+    }
+
+def _create_graph_wizard_params_jitter():
     return {
         "plot_type": "Scatter Plot",
         "plot_style_type": "Simple Scatter",
