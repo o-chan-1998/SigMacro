@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-04-09 14:52:38
+!-- Timestamp: 2025-04-09 15:04:53
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/win/documents/SigMacro/README.md
 !-- --- -->
@@ -42,7 +42,7 @@ This package allows users to create publication-ready figures using [SigmaPlot](
 2. Calling SigmaPlot macros
 3. Saving figures & cropping margins
 
-For more details, please see refer to [the entry script](./PySigMacro/examples/demo.py) for the above demonstrations 
+In other wards, [csv files in these formats](./templates/csv) will be rendered by the all-in-one-macro. For more details, please see refer to [the entry script](./PySigMacro/examples/demo.py) for the above demonstrations 
 
 ## Prerequisite
 
