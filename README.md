@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-04-09 14:46:13
+!-- Timestamp: 2025-04-09 14:49:38
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/win/documents/SigMacro/README.md
 !-- --- -->
@@ -33,26 +33,16 @@ This package allows users to create publication-ready figures using [SigmaPlot](
 ## How does it work?
 
 #### In SigmaPlot:
-1. Preparing template SigmaPlot files with embedded macros for:
+1. Pre-defined macros (['./vba/ALL-IN-ONE-MACRO.vba'](./vba/ALL-IN-ONE-MACRO.vba)) are embedded in SigmaPlot template file (['./templates/jnb/template.JNB'](./templates/jnb/template.JNB)) for:
    - Reading graph parameters
    - Plotting data
 
 #### From Python:
 1. Sending plotting data and graph visualization parameters to SigmaPlot
 2. Calling SigmaPlot macros
-3. Saving figures & cropping margins
+3. Saving figures & cropping margins (e.g., ['./templates/gif'](./templates/gif))
 
-
-#### Key files
-- ['./vba/ALL-IN-ONE-MACRO.vba'](./vba/ALL-IN-ONE-MACRO.vba)
-  - All-in-one macro for all types of available plot types
-    - (This is because calling macro from another macro seems not allowed)
-- ['./templates/jnb/template.JNB'](./templates/jnb/template.JNB)
-  - The template file for all types of plot. This file contains the all-in-one macro.
-- ['./PySigMacro/examples/demo.py'](./PySigMacro/examples/demo.py)
-  - Demo Python code to plot figures using SigmaPlot
-- ['./templates/gif/*.gif'](./templates/gif/*.gif)
-  - The produced figures by running the demo.py script.
+For more details, please see refer to the entry script for the above demonstrations ['./PySigMacro/examples/demo.py'](./PySigMacro/examples/demo.py)
 
 ## Prerequisite
 
