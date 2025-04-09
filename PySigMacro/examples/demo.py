@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-04-09 13:59:02 (ywatanabe)"
+# Timestamp: "2025-04-09 15:51:41 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/examples/demo.py
 # ----------------------------------------
 import os
@@ -10,7 +10,7 @@ __FILE__ = (
 __DIR__ = os.path.dirname(__FILE__)
 # ----------------------------------------
 
-# Environmental variables only set if not already defined
+# Environmental variables before importing pysigmacro
 VARIABLE_DICT = {
     "SIGMACRO_JNB_PATH": rf"C:\Users\{os.getlogin()}\Documents\SigMacro\SigMacro.JNB",
     "SIGMACRO_TEMPLATES_DIR": rf"C:\Users\{os.getlogin()}\Documents\SigMacro\templates",
@@ -21,7 +21,6 @@ for k, v in VARIABLE_DICT.items():
     if k not in os.environ:
         os.environ[k] = v
 
-
 import pysigmacro as psm
 
 
@@ -29,7 +28,7 @@ def run_demo():
     for plot_type in psm.const.PLOT_TYPES:
 
         if plot_type in [
-            # "area",
+            "area",
             # "bar",
             # "barh",
             # "scatter",
@@ -44,8 +43,7 @@ def run_demo():
             # "violin",
             # "filled_line",
             # "histogram",
-            # Not Implemented from here
-            "jitter"
+            # "jitter"
         ]:
             n_plots = define_n_plots(plot_type)
             plot_types = [plot_type for _ in range(n_plots)]
@@ -54,14 +52,15 @@ def run_demo():
 
 
 def define_n_plots(plot_type):
-    # 1
-    if plot_type in ["contour", "heatmap", "lines_y_many_x", "lines_x_many_y", "filled_line"]:
-        return 1
-    if plot_type in ["histogram"]:
-        return 3
-    else:
-        return len(psm.const.COLORS)
-
+    return {
+        "contour": 1,
+        "heatmap": 1,
+        "lines_y_many_x": 1,
+        "lines_x_many_y": 1,
+        "filled_line": 1,
+        "area": 3,
+        "histogram": 3,
+    }.get(plot_type, len(psm.const.COLORS))
 
 def main():
     run_demo()

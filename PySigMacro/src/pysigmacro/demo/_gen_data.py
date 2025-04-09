@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-04-09 14:04:35 (ywatanabe)"
+# Timestamp: "2025-04-09 15:45:00 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/demo/_gen_data.py
 # ----------------------------------------
 import os
@@ -211,24 +211,81 @@ def _gen_single_data_barh(ii):
     )
 
 
-def _gen_single_data_area(ii, alpha=0.5):
+def _gen_single_data_area(ii, alpha=0.7):
     # Random Seed
-    np.random.seed(42)
-    # X
-    x = np.linspace(0, 10, 20) + ii
-    # Y
-    y = np.exp(-((x - 5 * (ii % 3)) ** 2) / 10)
-    y += np.random.normal(0, 0.05 * (ii + 1), size=len(x))
-    # y_lower = y - np.random.normal(0, 0.05 * (ii + 1), size=len(x))
-    # y_upper = y + np.random.normal(0, 0.05 * (ii + 1), size=len(x))
-    # Color
-    bgra = BGRA[COLORS[ii % len(COLORS)]]
+    np.random.seed(42 + ii)
+
+    # X values - common x-axis for all plots with more points for smoother curves
+    x = np.linspace(0, 10, 100)
+
+    # Generate different probability distributions based on plot index
+    if ii % 4 == 0:
+        # Normal distribution
+        mean = 5
+        std = 1 + 0.3 * ii
+        y = stats.norm.pdf(x, mean, std)
+        # Scale for visibility
+        y = y * 3.0 * (1 + 0.2 * ii)
+
+    elif ii % 4 == 1:
+        # Beta distribution
+        alpha_param = 2 + 0.5 * ii
+        beta_param = 5 - 0.3 * ii
+        # Scale x to [0,1] for beta distribution calculation
+        x_scaled = x / 10.0
+        y = stats.beta.pdf(x_scaled, alpha_param, beta_param)
+        # Scale for visibility and back to original x range
+        y = y * 2.5 * (1 + 0.15 * ii) / 10.0
+
+    elif ii % 4 == 2:
+        # Gamma distribution
+        shape = 2 + 0.3 * ii
+        scale = 1 + 0.1 * ii
+        y = stats.gamma.pdf(x, shape, scale=scale)
+        # Scale for visibility
+        y = y * 2.0 * (1 + 0.1 * ii)
+
+    else:
+        # Chi-squared distribution
+        df = 3 + ii
+        # Scale x for better visualization
+        x_scaled = x * 1.5
+        y = stats.chi2.pdf(x_scaled, df)
+        # Scale for visibility
+        y = y * 3.5 * (1 + 0.25 * ii)
+
+    # Add subtle random variation
+    y += np.random.normal(0, 0.01, size=len(x))
+
+    # Ensure y values are positive
+    y = np.maximum(y, 0)
+
+    # Color with proper alpha for stacking visibility
+    bgra = BGRA[COLORS[ii % len(COLORS)]].copy()
     bgra[-1] = alpha
+
     return dict(
         x=x,
         y=y,
         bgra=bgra,
     )
+
+# def _gen_single_data_area(ii, alpha=0.5):
+#     # Random Seed
+#     np.random.seed(42)
+#     # X
+#     x = np.linspace(0, 10, 20) + ii
+#     # Y
+#     y = np.exp(-((x - 5 * (ii % 3)) ** 2) / 10)
+#     y += np.random.normal(0, 0.05 * (ii + 1), size=len(x))
+#     # Color
+#     bgra = BGRA[COLORS[ii % len(COLORS)]]
+#     bgra[-1] = alpha
+#     return dict(
+#         x=x,
+#         y=y,
+#         bgra=bgra,
+#     )
 
 
 def _gen_single_data_box(ii):
@@ -402,7 +459,7 @@ def _gen_single_data_histogram(
     bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
 
     # Get color based on index
-    color_name = COLORS[(i_plot+3) % len(COLORS)]
+    color_name = COLORS[(i_plot + 3) % len(COLORS)]
     bgra_color = BGRA[color_name].copy()
     bgra_color[-1] = alpha
 
@@ -411,6 +468,7 @@ def _gen_single_data_histogram(
         y=hist,
         bgra=bgra_color,
     )
+
 
 def _gen_single_data_jitter(i_plot, jitter_width=0.2, alpha=0.8):
     """Generate data for a jitter plot (scatter plot with categorical x-axis).
@@ -444,7 +502,9 @@ def _gen_single_data_jitter(i_plot, jitter_width=0.2, alpha=0.8):
 
     # Create jittered x positions around the category position
     x_positions = np.full(points_per_category, x_position)
-    jitter = np.random.uniform(-jitter_width, jitter_width, points_per_category)
+    jitter = np.random.uniform(
+        -jitter_width, jitter_width, points_per_category
+    )
     jittered_positions = x_positions + jitter
 
     # Get color based on index
@@ -454,7 +514,7 @@ def _gen_single_data_jitter(i_plot, jitter_width=0.2, alpha=0.8):
 
     # Return data with jittered x positions and category mapping
     return dict(
-        x=jittered_positions,       # Numerical positions with jitter
+        x=jittered_positions,  # Numerical positions with jitter
         y=y_values,
         bgra=bgra_color,
     )

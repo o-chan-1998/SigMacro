@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-04-09 15:14:04
+!-- Timestamp: 2025-04-09 15:50:50
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/win/documents/SigMacro/README.md
 !-- --- -->
@@ -31,63 +31,46 @@ This package allows users to create publication-ready figures using [SigmaPlot](
 <img src="./docs/demo.gif" alt="SigMacro Demo" width="400"/>
 
 ## How does it work?
-
 #### In SigmaPlot:
 1. [All-in-one macro](./vba/ALL-IN-ONE-MACRO.vba) is embedded in a [SigmaPlot template file](./templates/jnb/template.JNB) for:
    - Reading graph parameters
    - Plotting data
 
 #### From Python:
-1. Sending plotting data and graph visualization parameters to SigmaPlot
-2. Calling SigmaPlot macros
-3. Saving (cropped) figures
+1. Send plotting data and graph visualization parameters to SigmaPlot
+2. Call SigmaPlot macros
+3. Save (cropped) figures
 
-In other wards, [csv files in these formats](./templates/csv) can be rendered by the [all-in-one-macro](./vba/ALL-IN-ONE-MACRO.vba). For more details, please see refer to [the entry script](./PySigMacro/examples/demo.py) for the above demonstrations )
+In other words, [CSV files in these formats](./templates/csv) can be rendered by the [all-in-one-macro](./vba/ALL-IN-ONE-MACRO.vba). For more details, please refer to [the entry script](./PySigMacro/examples/demo.py) for the above demonstrations.
 
 ## Prerequisite
-
  - SigmaPlot License 
  - Windows OS
 
-## Insallation
+## Quick Start
+```powershell
+# Install pysigmacro package in development mode
+cd PySigMacro
+pip install -e .
 
-- [SigmaPlot](https://grafiti.com/sigmaplot-detail/)
-
-- SigMacro
-  - Series of macros for automating SigmaPlot
-  - Installation
-    - [`./SigMacro/README.md`](./SigMacro/README.md)
-
-- PySigMacro
-  - Python Interface for calling SigMacro
-  - [Demo Movie](https://onedrive.live.com/?qt=allmyphotos&photosData=%2Fshare%2F12F1169924695EF9%213150863%3Fithint%3Dvideo%26e%3DLnoc26&sw=bypassConfig&cid=12F1169924695EF9&id=12F1169924695EF9%213150863&authkey=%21AFE1u69Zha9Sois&v=photos)
-  - Installation
-    - [`./PySigMacro/README.md`](./PySigMacro/README.md)
-
-## Usage
-
-``` powershell
+# Run the demonstration script
 python.exe ./PySigMacro/examples/demo.py
 ```
 
 ## TODO
 - [ ] Implement simple interface like below
+```python
+import pysigmacro as psm
+import pandas as pd
 
-  ``` python
-  import pysigmacro as psm
-  import pandas as pd
-
-  df = pd.DataFrame(...)
-
-  plotter = psm.Plotter()
-  plotter.add("area", df["x", "y"])
-  plotter.add("line", df["x", "y", "yerr"])
-  plotter.add("box", df["x"])
-  plotter.add("scatter", df["x", "y"])
-  # plotter.add("boxh", df["y"])
-  ...
-
-    ```
+df = pd.DataFrame(...)
+plotter = psm.Plotter()
+plotter.add("area", df[["x", "y"]])
+plotter.add("line", df[["x", "y", "yerr"]])
+plotter.add("box", df[["x"]])
+plotter.add("scatter", df[["x", "y"]])
+# plotter.add("boxh", df[["y"]])
+```
 
 ## Contact
 Yusuke Watanabe (ywatanabe@alumni.u-tokyo.ac.jp)
