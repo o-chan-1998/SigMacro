@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-04-09 14:51:04
+!-- Timestamp: 2025-04-09 14:51:54
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/win/documents/SigMacro/README.md
 !-- --- -->
@@ -33,7 +33,7 @@ This package allows users to create publication-ready figures using [SigmaPlot](
 ## How does it work?
 
 #### In SigmaPlot:
-1. ['Pre-defined macros'](./vba/ALL-IN-ONE-MACRO.vba)) are embedded in a ['SigmaPlot template file'](./templates/jnb/template.JNB)) for:
+1. [Pre-defined macros](./vba/ALL-IN-ONE-MACRO.vba) are embedded in a [SigmaPlot template file](./templates/jnb/template.JNB)) for:
    - Reading graph parameters
    - Plotting data
 
@@ -42,7 +42,7 @@ This package allows users to create publication-ready figures using [SigmaPlot](
 2. Calling SigmaPlot macros
 3. Saving figures & cropping margins
 
-For more details, please see refer to ['the entry script'](./PySigMacro/examples/demo.py) for the above demonstrations 
+For more details, please see refer to [the entry script](./PySigMacro/examples/demo.py) for the above demonstrations 
 
 ## Prerequisite
 
