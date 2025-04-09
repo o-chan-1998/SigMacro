@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-04-09 15:04:53
+!-- Timestamp: 2025-04-09 15:07:45
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/win/documents/SigMacro/README.md
 !-- --- -->
@@ -33,7 +33,7 @@ This package allows users to create publication-ready figures using [SigmaPlot](
 ## How does it work?
 
 #### In SigmaPlot:
-1. [Pre-defined macros](./vba/ALL-IN-ONE-MACRO.vba) are embedded in a [SigmaPlot template file](./templates/jnb/template.JNB)) for:
+1. [Pre-defined all-in-one macro](./vba/ALL-IN-ONE-MACRO.vba) are embedded in a [SigmaPlot template file](./templates/jnb/template.JNB)) for:
    - Reading graph parameters
    - Plotting data
 
@@ -42,7 +42,7 @@ This package allows users to create publication-ready figures using [SigmaPlot](
 2. Calling SigmaPlot macros
 3. Saving figures & cropping margins
 
-In other wards, [csv files in these formats](./templates/csv) will be rendered by the all-in-one-macro. For more details, please see refer to [the entry script](./PySigMacro/examples/demo.py) for the above demonstrations 
+In other wards, [csv files in these formats](./templates/csv) can be rendered by the [all-in-one-macro]((./vba/ALL-IN-ONE-MACRO.vba)). For more details, please see refer to [the entry script](./PySigMacro/examples/demo.py) for the above demonstrations 
 
 ## Prerequisite
 
@@ -71,7 +71,7 @@ python.exe ./PySigMacro/examples/demo.py
 ```
 
 ## TODO
-- [ ] Simple interface like below
+- [ ] Implement simple interface like below
 
   ``` python
   import pysigmacro as psm
