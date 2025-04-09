@@ -1,0 +1,21 @@
+visual parameter label,visual parameter value,xticks,yticks,preserved 0,preserved 1,preserved 2,preserved 3,gw_param_keys 0,gw_param_values 0,label 0,x,y,bgra,gw_param_keys 1,gw_param_values 1,label 1,x,y,bgra,gw_param_keys 2,gw_param_values 2,label 2,x,y,bgra
+xlabel,X-Axis Label,-10,0,NONE_STR,NONE_STR,NONE_STR,NONE_STR,plot_type,Vertical Bar Chart,histogram,1.5,1.0,192.0,plot_type,Vertical Bar Chart,histogram,-0.5,1.0,20.0,plot_type,Vertical Bar Chart,histogram,0.5,9,50.0
+xrot,45,0,100,NONE_STR,NONE_STR,NONE_STR,NONE_STR,plot_style_type,Simple Bar,NONE_STR,2.5,16.0,128.0,plot_style_type,Simple Bar,NONE_STR,0.5,6.0,180.0,plot_style_type,Simple Bar,NONE_STR,1.5,64,70.0
+xmm,40,10,200,NONE_STR,NONE_STR,NONE_STR,NONE_STR,plot_data_type,XY Pair,NONE_STR,3.5,130.0,0.0,plot_data_type,XY Pair,NONE_STR,1.5,69.0,20.0,plot_data_type,XY Pair,NONE_STR,2.5,91,255.0
+xscale,linear,20,300,NONE_STR,NONE_STR,NONE_STR,NONE_STR,plot_columns_per_plot,ColumnsPerPlot,NONE_STR,4.5,343.0,0.5,plot_columns_per_plot,ColumnsPerPlot,NONE_STR,2.5,170.0,0.5,plot_columns_per_plot,ColumnsPerPlot,NONE_STR,3.5,143,0.5
+xmin,-1,,,NONE_STR,NONE_STR,NONE_STR,NONE_STR,plot_plot_columns_count_array,PlotColumnCountArray,NONE_STR,5.5,355.0,,plot_plot_columns_count_array,PlotColumnCountArray,NONE_STR,3.5,183.0,,plot_plot_columns_count_array,PlotColumnCountArray,NONE_STR,4.5,127,
+xmax,20,,,NONE_STR,NONE_STR,NONE_STR,NONE_STR,plot_data_source,Worksheet Columns,NONE_STR,6.5,131.0,,plot_data_source,Worksheet Columns,NONE_STR,4.5,58.0,,plot_data_source,Worksheet Columns,NONE_STR,5.5,131,
+ylabel,Y-Axis Label,,,NONE_STR,NONE_STR,NONE_STR,NONE_STR,plot_polarunits,NONE_STR,NONE_STR,7.5,22.0,,plot_polarunits,NONE_STR,NONE_STR,5.5,11.0,,plot_polarunits,NONE_STR,NONE_STR,6.5,99,
+yrot,0,,,NONE_STR,NONE_STR,NONE_STR,NONE_STR,plot_anguleunits,Degrees,NONE_STR,8.5,2.0,,plot_anguleunits,Degrees,NONE_STR,6.5,12.0,,plot_anguleunits,Degrees,NONE_STR,7.5,89,
+ymm,28.0,,,NONE_STR,NONE_STR,NONE_STR,NONE_STR,plot_min_angle_row,0,NONE_STR,,,,plot_min_angle_row,0,NONE_STR,7.5,61.0,,plot_min_angle_row,0,NONE_STR,8.5,61,
+yscale,linear,,,NONE_STR,NONE_STR,NONE_STR,NONE_STR,plot_max_angle_row,360,NONE_STR,,,,plot_max_angle_row,360,NONE_STR,8.5,173.0,,plot_max_angle_row,360,NONE_STR,9.5,46,
+ymin,0,,,NONE_STR,NONE_STR,NONE_STR,NONE_STR,plot_unknown1,NONE_STR,NONE_STR,,,,plot_unknown1,NONE_STR,NONE_STR,9.5,172.0,,plot_unknown1,NONE_STR,NONE_STR,10.5,38,
+ymax,363.875,,,NONE_STR,NONE_STR,NONE_STR,NONE_STR,plot_group_style,NONE_STR,NONE_STR,,,,plot_group_style,NONE_STR,NONE_STR,10.5,73.0,,plot_group_style,NONE_STR,NONE_STR,11.5,27,
+,,,,,,,,plot_use_automatic_legends,True,NONE_STR,,,,plot_use_automatic_legends,True,NONE_STR,11.5,11.0,,plot_use_automatic_legends,True,NONE_STR,12.5,29,
+,,,,,,,,,,,,,,,,,,,,,,,13.5,16,
+,,,,,,,,,,,,,,,,,,,,,,,14.5,9,
+,,,,,,,,,,,,,,,,,,,,,,,15.5,10,
+,,,,,,,,,,,,,,,,,,,,,,,16.5,2,
+,,,,,,,,,,,,,,,,,,,,,,,17.5,2,
+,,,,,,,,,,,,,,,,,,,,,,,18.5,5,
+,,,,,,,,,,,,,,,,,,,,,,,19.5,2,

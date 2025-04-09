@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Timestamp: "2025-04-09 14:08:13 (ywatanabe)"
+# Timestamp: "2025-04-09 15:29:23 (ywatanabe)"
 # File: /home/ywatanabe/win/documents/SigMacro/PySigMacro/src/pysigmacro/demo/_gen_visual_params.py
 # ----------------------------------------
 import os
@@ -360,14 +360,14 @@ def _gen_demo_visual_params_heatmap():
         "xscale": "linear",
         "xmin": "auto",
         "xmax": "auto",
-        "xticks": ["auto"],
+        "xticks": [ii for ii in range(1, 32)],
         "ylabel": "Y-Axis Label",
         "yrot": 0,
         "ymm": 40,
         "yscale": "linear",
         "ymin": "auto",
         "ymax": "auto",
-        "yticks": ["auto"],
+        "yticks": [ii for ii in range(1, 32)],
     }
 
 
