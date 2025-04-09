@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-04-09 14:44:53
+!-- Timestamp: 2025-04-09 14:46:13
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/win/documents/SigMacro/README.md
 !-- --- -->
@@ -30,18 +30,20 @@ This package allows users to create publication-ready figures using [SigmaPlot](
 ## Working with GUI
 <img src="./docs/demo.gif" alt="SigMacro Demo" width="400"/>
 
-## In SigmaPlot:
+## How does it work?
+
+#### In SigmaPlot:
 1. Preparing template SigmaPlot files with embedded macros for:
    - Reading graph parameters
    - Plotting data
 
-## From Python:
+#### From Python:
 1. Sending plotting data and graph visualization parameters to SigmaPlot
 2. Calling SigmaPlot macros
 3. Saving figures & cropping margins
 
 
-## Key files
+#### Key files
 - ['./vba/ALL-IN-ONE-MACRO.vba'](./vba/ALL-IN-ONE-MACRO.vba)
   - All-in-one macro for all types of available plot types
     - (This is because calling macro from another macro seems not allowed)
@@ -82,8 +84,6 @@ python.exe ./PySigMacro/examples/demo.py
 ```
 
 ## TODO
-- [ ] Jitter (= area + line + area)
-
 - [ ] Simple interface like below
 
   ``` python
