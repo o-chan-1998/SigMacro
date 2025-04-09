@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-04-09 14:51:54
+!-- Timestamp: 2025-04-09 14:52:38
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/win/documents/SigMacro/README.md
 !-- --- -->
@@ -51,10 +51,7 @@ For more details, please see refer to [the entry script](./PySigMacro/examples/d
 
 ## Insallation
 
-- ['SigmaPlot'](https://grafiti.com/sigmaplot-detail/)
-  <!-- - A proprietary software for professional plotting (https://grafiti.com/sigmaplot-detail/)
-   !-- - Installation
-   !--   - [`./docs/v12_Installer/README.md`](./docs/v12_Installer/README.md) -->
+- [SigmaPlot](https://grafiti.com/sigmaplot-detail/)
 
 - SigMacro
   - Series of macros for automating SigmaPlot
