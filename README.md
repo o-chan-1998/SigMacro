@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-04-09 14:42:34
+!-- Timestamp: 2025-04-09 14:44:53
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/win/documents/SigMacro/README.md
 !-- --- -->
@@ -8,6 +8,7 @@
 
 This package allows users to create publication-ready figures using [SigmaPlot](https://grafiti.com/sigmaplot-v16/) from Python, in a similar manner to matplotlib.
 
+## Gallery
 <div style="display: flex; flex-wrap: wrap; justify-content: space-between; max-width: 800px; margin: 0 auto;">
     <img src="templates/gif/line-line-line-line-line-line-line-line-line-line-line-line-line_cropped.gif" alt="Line Plot" width="150" />
     <img src="templates/gif/line_yerr-line_yerr-line_yerr-line_yerr-line_yerr-line_yerr-line_yerr-line_yerr-line_yerr-line_yerr-line_yerr-line_yerr-line_yerr_cropped.gif" alt="Line_Yerr Plot" width="150" />
@@ -26,7 +27,7 @@ This package allows users to create publication-ready figures using [SigmaPlot](
     <img src="templates/gif/polar-polar-polar-polar-polar-polar-polar-polar-polar-polar-polar-polar-polar_cropped.gif" alt="Polar Plot" width="150" />
 </div>
 
-<!-- ![SigMacro Demo](./docs/demo.gif)-->
+## Working with GUI
 <img src="./docs/demo.gif" alt="SigMacro Demo" width="400"/>
 
 ## In SigmaPlot:
