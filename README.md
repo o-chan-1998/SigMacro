@@ -1,5 +1,5 @@
 <!-- ---
-!-- Timestamp: 2025-04-09 14:10:16
+!-- Timestamp: 2025-04-09 14:52:38
 !-- Author: ywatanabe
 !-- File: /home/ywatanabe/win/documents/SigMacro/README.md
 !-- --- -->
@@ -8,50 +8,41 @@
 
 This package allows users to create publication-ready figures using [SigmaPlot](https://grafiti.com/sigmaplot-v16/) from Python, in a similar manner to matplotlib.
 
-## In SigmaPlot:
-1. Preparing template SigmaPlot files with embedded macros for:
+## Gallery
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; max-width: 800px; margin: 0 auto;">
+    <img src="templates/gif/line-line-line-line-line-line-line-line-line-line-line-line-line_cropped.gif" alt="Line Plot" width="150" />
+    <img src="templates/gif/line_yerr-line_yerr-line_yerr-line_yerr-line_yerr-line_yerr-line_yerr-line_yerr-line_yerr-line_yerr-line_yerr-line_yerr-line_yerr_cropped.gif" alt="Line_Yerr Plot" width="150" />
+    <img src="templates/gif/filled_line_cropped.gif" alt="Filled Line Plot" width="150" />
+    <img src="templates/gif/area-area-area-area-area-area-area-area-area-area-area-area-area_cropped.gif" alt="Area Plot" width="150" />
+    <img src="templates/gif/bar-bar-bar-bar-bar-bar-bar-bar-bar-bar-bar-bar-bar_cropped.gif" alt="Bar Plot" width="150" />
+    <img src="templates/gif/barh-barh-barh-barh-barh-barh-barh-barh-barh-barh-barh-barh-barh_cropped.gif" alt="Horizontal Histogram Plot" width="150" />
+    <img src="templates/gif/histogram-histogram-histogram_cropped.gif" alt="Histogram Plot" width="150" />
+    <img src="templates/gif/scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter_cropped.gif" alt="Scatter Plot" width="150" />
+    <img src="templates/gif/jitter-jitter-jitter-jitter-jitter-jitter-jitter-jitter-jitter-jitter-jitter-jitter-jitter_cropped.gif" alt="Jitter Plot" width="150" />
+    <img src="templates/gif/box-box-box-box-box-box-box-box-box-box-box-box-box_cropped.gif" alt="Box Plot" width="150" />
+    <img src="templates/gif/boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh_cropped.gif" alt="Horizontal Box Plot" width="150" />
+    <img src="templates/gif/violin-violin-violin-violin-violin-violin-violin-violin-violin-violin-violin-violin-violin_cropped.gif" alt="Violin Plot" width="150" />
+    <img src="templates/gif/contour_cropped.gif" alt="Contour Plot" width="150" />
+    <img src="templates/gif/heatmap_cropped.gif" alt="Confusion Matrix" width="150" />
+    <img src="templates/gif/polar-polar-polar-polar-polar-polar-polar-polar-polar-polar-polar-polar-polar_cropped.gif" alt="Polar Plot" width="150" />
+</div>
+
+## Working with GUI
+<img src="./docs/demo.gif" alt="SigMacro Demo" width="400"/>
+
+## How does it work?
+
+#### In SigmaPlot:
+1. [Pre-defined macros](./vba/ALL-IN-ONE-MACRO.vba) are embedded in a [SigmaPlot template file](./templates/jnb/template.JNB)) for:
    - Reading graph parameters
    - Plotting data
 
-## From Python:
+#### From Python:
 1. Sending plotting data and graph visualization parameters to SigmaPlot
 2. Calling SigmaPlot macros
 3. Saving figures & cropping margins
 
-![SigMacro Demo](./docs/demo.gif)
-
-<div style="display: grid; grid-template-columns: repeat(2, 1fr); grid-gap: 10px;">
-    <img src="templates/gif/area-area-area-area-area-area-area-area-area-area-area-area-area_cropped.gif" alt="Area Plot" width="150" />
-    <img src="templates/gif/bar-bar-bar-bar-bar-bar-bar-bar-bar-bar-bar-bar-bar_cropped.gif" alt="Bar Plot" width="150" />
-    <img src="templates/gif/histogram-histogram-histogram_cropped.gif" alt="Histogram Plot" width="150" />    
-    <img src="templates/gif/barh-barh-barh-barh-barh-barh-barh-barh-barh-barh-barh-barh-barh_cropped.gif" alt="Horizontal Histogram Plot" width="150" />
-    <img src="templates/gif/box-box-box-box-box-box-box-box-box-box-box-box-box_cropped.gif" alt="Box Plot" width="150" />
-    <img src="templates/gif/boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh-boxh_cropped.gif" alt="Horizontal Box Plot" width="150" />
-    <img src="templates/gif/line-line-line-line-line-line-line-line-line-line-line-line-line_cropped.gif" alt="Line Plot" width="150" />
-    <img src="templates/gif/line_yerr-line_yerr-line_yerr-line_yerr-line_yerr-line_yerr-line_yerr-line_yerr-line_yerr-line_yerr-line_yerr-line_yerr-line_yerr_cropped.gif" alt="Line_Yerr Plot" width="150" />
-    <!-- <img src="templates/gif/lines_y_many_x_cropped.gif" alt="Line_Yerr Plot" width="150" />
-     !-- <img src="templates/gif/lines_x_many_y_cropped.gif" alt="Line_Yerr Plot" width="150" /> -->
-    <img src="templates/gif/scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter-scatter_cropped.gif" alt="Scatter Plot" width="150" />
-    <img src="templates/gif/jitter-jitter-jitter-jitter-jitter-jitter-jitter-jitter-jitter-jitter-jitter-jitter-jitter_cropped.gif" alt="Jitter Plot" width="150" />    
-    <img src="templates/gif/polar-polar-polar-polar-polar-polar-polar-polar-polar-polar-polar-polar-polar_cropped.gif" alt="Polar Plot" width="150" />
-    <img src="templates/gif/contour_cropped.gif" alt="Contour Plot" width="150" />
-    <img src="templates/gif/heatmap_cropped.gif" alt="Confusion Matrix" width="150" />
-    <img src="templates/gif/filled_line_cropped.gif" alt="Filled Line Plot" width="150" />    
-    <!-- Not implemented yet -->
-    <img src="templates/gif/violin-violin-violin-violin-violin-violin-violin-violin-violin-violin-violin-violin-violin_cropped.gif" alt="Violin Plot" width="150" />
-</div>
-     <!-- <img src="templates/gif/violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh-violinh_cropped.gif" alt="Horizontal Violin Plot" width="150" /> -->
-
-## Key files
-- ['./vba/ALL-IN-ONE-MACRO.vba'](./vba/ALL-IN-ONE-MACRO.vba)
-  - All-in-one macro for all types of available plot types
-    - (This is because calling macro from another macro seems not allowed)
-- ['./templates/jnb/template.JNB'](./templates/jnb/template.JNB)
-  - The template file for all types of plot. This file contains the all-in-one macro.
-- ['./PySigMacro/examples/demo.py'](./PySigMacro/examples/demo.py)
-  - Demo Python code to plot figures using SigmaPlot
-- ['./templates/gif/*.gif'](./templates/gif/*.gif)
-  - The produced figures by running the demo.py script.
+For more details, please see refer to [the entry script](./PySigMacro/examples/demo.py) for the above demonstrations 
 
 ## Prerequisite
 
@@ -60,10 +51,7 @@ This package allows users to create publication-ready figures using [SigmaPlot](
 
 ## Insallation
 
-- ['SigmaPlot'](https://grafiti.com/sigmaplot-detail/)
-  <!-- - A proprietary software for professional plotting (https://grafiti.com/sigmaplot-detail/)
-   !-- - Installation
-   !--   - [`./docs/v12_Installer/README.md`](./docs/v12_Installer/README.md) -->
+- [SigmaPlot](https://grafiti.com/sigmaplot-detail/)
 
 - SigMacro
   - Series of macros for automating SigmaPlot
@@ -83,8 +71,6 @@ python.exe ./PySigMacro/examples/demo.py
 ```
 
 ## TODO
-- [ ] Jitter (= area + line + area)
-
 - [ ] Simple interface like below
 
   ``` python
